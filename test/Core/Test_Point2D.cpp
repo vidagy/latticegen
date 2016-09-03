@@ -75,17 +75,17 @@ TEST(TestPoint2D,MultiplicationWithDouble)
   const Point2D p = Point2D(1.0,2.0);
 
   const Point2D q = p * 2.0;
-  ASSERT_DOUBLE_EQ(2.0, q.x_ );
-  ASSERT_DOUBLE_EQ(4.0, q.y_ );
+  EXPECT_DOUBLE_EQ(2.0, q.x_ );
+  EXPECT_DOUBLE_EQ(4.0, q.y_ );
 
   const Point2D r = 2.0 * p;
-  ASSERT_DOUBLE_EQ(2.0, r.x_ );
-  ASSERT_DOUBLE_EQ(4.0, r.y_ );
+  EXPECT_DOUBLE_EQ(2.0, r.x_ );
+  EXPECT_DOUBLE_EQ(4.0, r.y_ );
 
   Point2D s = Point2D(1.0,2.0);
   s *= 3.0;
-  ASSERT_DOUBLE_EQ(3.0, s.x_ );
-  ASSERT_DOUBLE_EQ(6.0, s.y_ );
+  EXPECT_DOUBLE_EQ(3.0, s.x_ );
+  EXPECT_DOUBLE_EQ(6.0, s.y_ );
 }
 
 TEST(TestPoint2D,ScalarMultiplication)
@@ -94,11 +94,25 @@ TEST(TestPoint2D,ScalarMultiplication)
   const Point2D q = Point2D(10.0,20.0);
 
   const Point2D r = p * q;
-  ASSERT_DOUBLE_EQ(10.0, r.x_ );
-  ASSERT_DOUBLE_EQ(40.0, r.y_ );
+  EXPECT_DOUBLE_EQ(10.0, r.x_ );
+  EXPECT_DOUBLE_EQ(40.0, r.y_ );
   
   const Point2D s = q * p;
-  ASSERT_DOUBLE_EQ(10.0, s.x_ );
-  ASSERT_DOUBLE_EQ(40.0, s.y_ );
+  EXPECT_DOUBLE_EQ(10.0, s.x_ );
+  EXPECT_DOUBLE_EQ(40.0, s.y_ );
 
+}
+
+TEST(TestPoint2D,Compare)
+{
+  const Point2D p = Point2D(1.0,2.0);
+  const Point2D q = Point2D(1.0,2.0);
+  const Point2D r = Point2D(2.0,2.0);
+  const Point2D s = Point2D(1.0,3.0);
+  const Point2D t = Point2D(2.0,3.0);
+
+  EXPECT_TRUE(p == q);
+  EXPECT_FALSE(p == r);
+  EXPECT_FALSE(p == s);
+  EXPECT_FALSE(p == t);
 }

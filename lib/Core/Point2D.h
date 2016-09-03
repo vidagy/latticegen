@@ -6,13 +6,15 @@
 #include <iomanip>
 #include <sstream>
 
+#include "ComparisonHelpers.h"
+
 namespace Core
 {
   namespace Geometry
   {
     struct Point2D
     {
-  	 Point2D(const double& x, const double& y) : x_(x), y_(y)
+      Point2D(const double x, const double y) : x_(x), y_(y)
       { }
       
       // operators
@@ -34,7 +36,7 @@ namespace Core
         this->y_ -= rhs.y_;
         return *this;
       }
-      Point2D& operator*=(const double& num)
+      Point2D& operator*=(const double num)
       {
         this->x_ *= num;
         this->y_ *= num;
@@ -58,7 +60,10 @@ namespace Core
   	  double y_;
     };
 
-
+    inline bool operator==(const Point2D& lhs, const Point2D& rhs)
+    {
+      return equalsWithTolerance(lhs.x_, rhs.x_) && equalsWithTolerance(lhs.y_, rhs.y_);
+    }
     inline Point2D operator+(Point2D lhs, const Point2D& rhs)
     {
       lhs += rhs;
@@ -69,12 +74,12 @@ namespace Core
       lhs -= rhs;
       return lhs;
     }
-    inline Point2D operator*(Point2D lhs, const double& num)
+    inline Point2D operator*(Point2D lhs, const double num)
     {
       lhs *= num;
       return lhs;
     }
-    inline Point2D operator*(const double& num, Point2D rhs)
+    inline Point2D operator*(const double num, Point2D rhs)
     {
       rhs *= num;
       return rhs;
