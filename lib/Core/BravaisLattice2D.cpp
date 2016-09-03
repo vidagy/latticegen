@@ -1,4 +1,4 @@
-#include "BravaisLattice.h" 
+#include "BravaisLattice2D.h" 
 #include "ComparisonHelpers.h"
 
 #include <math.h>
