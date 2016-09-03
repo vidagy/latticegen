@@ -1,4 +1,4 @@
-#include "Symmetries.h" 
+#include "BravaisLattice.h" 
 #include "ComparisonHelpers.h"
 
 #include <math.h>

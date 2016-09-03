@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <Core/Symmetries.h>
+#include <Core/BravaisLattice.h>
 
 #include <stdexcept>
 #include <tuple>

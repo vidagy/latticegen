@@ -1,5 +1,5 @@
-#ifndef LATTICEGEN_SYMMETRIES_H_
-#define LATTICEGEN_SYMMETRIES_H_
+#ifndef LATTICEGEN_BRAVAISLATTICE_H_
+#define LATTICEGEN_BRAVAISLATTICE_H_
 
 #include "Point2D.h"
 #include <utility>
@@ -28,4 +28,4 @@ namespace Core
     };
   }
 }
-#endif // LATTICEGEN_SYMMETRIES_H_
+#endif // LATTICEGEN_BRAVAISLATTICE_H_
