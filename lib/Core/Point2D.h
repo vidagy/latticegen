@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <math.h>
 
 #include "ComparisonHelpers.h"
 
@@ -14,7 +15,7 @@ namespace Core
   {
     struct Point2D
     {
-      Point2D(const double x, const double y) : x_(x), y_(y)
+      Point2D(const double x = 0.0, const double y = 0.0) : x_(x), y_(y)
       { }
       
       // operators
@@ -42,11 +43,10 @@ namespace Core
         this->y_ *= num;
         return *this;
       }
-      Point2D& operator*=(const Point2D& rhs)
+
+      double getLength() const
       {
-        this->x_ *= rhs.x_;
-        this->y_ *= rhs.y_;
-        return *this;
+        return sqrt( x_*x_ + y_*y_ );
       }
 
       std::string toString() const 
@@ -84,11 +84,23 @@ namespace Core
       rhs *= num;
       return rhs;
     }
-    inline Point2D operator*(Point2D lhs, const Point2D& rhs)
+    inline double operator*(Point2D lhs, const Point2D& rhs)
     {
-      lhs *= rhs;
-      return lhs;
+      return lhs.x_ * rhs.x_ + lhs.y_ * rhs.y_;
     }
-  } // namespace Core
+    inline bool isRectangular(const Point2D& lhs, const Point2D& rhs)
+    {
+      return equalsWithTolerance(lhs * rhs, 0.0);
+    }
+    inline void swap(Point2D& lhs, Point2D& rhs)
+    {
+      double tmp_x = lhs.x_;
+      double tmp_y = lhs.y_;
+      lhs.x_ = rhs.x_;
+      lhs.y_ = rhs.y_;
+      rhs.x_ = tmp_x;
+      rhs.y_ = tmp_y;
+    }
+  }
 }
 #endif // LATTICEGEN_GEOMETRY_H_

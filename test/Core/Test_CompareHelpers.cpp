@@ -35,3 +35,16 @@ TEST(TestCompareHelpers,equalsWithTolerance)
   EXPECT_FALSE( equalsWithTolerance(y,yme,2e-11,2e-14) );
   EXPECT_FALSE( equalsWithTolerance(y,ype,2e-11,2e-14) );
 }
+
+TEST(TestCompareHelpers,NearlyZero)
+{
+  const double x = 1.0;
+  const double pe =  0.0000000001;
+  const double me = -0.0000000001;
+
+  EXPECT_TRUE( nearlyZero(me,1e-9) );
+  EXPECT_TRUE( nearlyZero(pe,1e-9) );
+
+  EXPECT_FALSE( nearlyZero(me,1e-11) );
+  EXPECT_FALSE( nearlyZero(pe,1e-11) );
+}

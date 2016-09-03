@@ -12,6 +12,17 @@ TEST(TestPoint2D,Ctor)
   EXPECT_DOUBLE_EQ(2.0, p.y_ );
 }
 
+TEST(TestPoint2D,Swap)
+{
+  Point2D p = Point2D(1.0,2.0);
+  Point2D q = Point2D(10.0,20.0);
+  swap(p,q);
+  EXPECT_DOUBLE_EQ(10.0, p.x_ );
+  EXPECT_DOUBLE_EQ(20.0, p.y_ );
+  EXPECT_DOUBLE_EQ(1.0, q.x_ );
+  EXPECT_DOUBLE_EQ(2.0, q.y_ );
+}
+
 TEST(TestPoint2D,Copy)
 {
   const Point2D p = Point2D(1.0,2.0);
@@ -93,13 +104,11 @@ TEST(TestPoint2D,ScalarMultiplication)
   const Point2D p = Point2D(1.0,2.0);
   const Point2D q = Point2D(10.0,20.0);
 
-  const Point2D r = p * q;
-  EXPECT_DOUBLE_EQ(10.0, r.x_ );
-  EXPECT_DOUBLE_EQ(40.0, r.y_ );
+  const double pq = p * q;
+  EXPECT_DOUBLE_EQ(50.0, pq );
   
-  const Point2D s = q * p;
-  EXPECT_DOUBLE_EQ(10.0, s.x_ );
-  EXPECT_DOUBLE_EQ(40.0, s.y_ );
+  const double qp = q * p;
+  EXPECT_DOUBLE_EQ(50.0, qp );
 
 }
 
@@ -115,4 +124,17 @@ TEST(TestPoint2D,Compare)
   EXPECT_FALSE(p == r);
   EXPECT_FALSE(p == s);
   EXPECT_FALSE(p == t);
+}
+
+TEST(TestPoint2D,IsRectangular)
+{
+  const Point2D p = Point2D(1.0,2.0);
+  const Point2D q = Point2D(1.0,2.0);
+  
+  EXPECT_FALSE(isRectangular(p,q));
+
+  const Point2D r = Point2D(2.0,-1.0);
+
+  EXPECT_TRUE(isRectangular(p,r));
+  EXPECT_TRUE(isRectangular(r,p));
 }
