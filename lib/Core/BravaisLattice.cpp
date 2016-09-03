@@ -79,5 +79,20 @@ namespace Core
       }
       return Oblique;
     }
+
+    BravaisLattice2D::BravaisLattice2D(const Point2D& unit_vector, const double scale, const size_t width_x, const size_t width_y)
+    : unit_vector_(unit_vector), scale_(scale), width_x_(width_x), width_y_(width_y)
+    {
+      lattice_.reserve(width_x_ * width_y_);
+      Point2D x0 = Point2D(1.0,0.0);
+      
+      for (unsigned int j = 0; j < width_y_; ++j)
+      {
+        for (unsigned int i = 0; i < width_x_; ++i)
+        {
+          lattice_.push_back( i*x0 + j*unit_vector_ );
+        }
+      }
+    }
   }
 }

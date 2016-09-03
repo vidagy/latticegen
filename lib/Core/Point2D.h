@@ -103,4 +103,9 @@ namespace Core
     }
   }
 }
+
+namespace std
+{
+  ostream& operator<<(ostream& o, const Core::Geometry::Point2D& p);
+}
 #endif // LATTICEGEN_GEOMETRY_H_
