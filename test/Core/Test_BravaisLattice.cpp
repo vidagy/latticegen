@@ -6,8 +6,6 @@
 #include <stdexcept>
 #include <tuple>
 #include <math.h>
-#include <algorithm>
-#include <iostream>
 
 using namespace Core::Geometry;
 
