@@ -6,6 +6,8 @@
 #include <stdexcept>
 #include <tuple>
 #include <math.h>
+#include <algorithm>
+#include <iostream>
 
 using namespace Core::Geometry;
 
@@ -118,7 +120,7 @@ TEST(BravaisLattice2D,FindLatticeType)
   EXPECT_EQ(BravaisLattice2D::find_lattice_type(Point2D(0.0,1.0)), BravaisLattice2D::Square);
 }
 
-TEST(BravaisLattice2D,CtorOblique)
+TEST(BravaisLattice2D,ObliqueLattice)
 {
   const BravaisLattice2D lattice = BravaisLattice2D( Point2D(0.2,0.3), 1.0, 3, 3 );
   
@@ -132,7 +134,7 @@ TEST(BravaisLattice2D,CtorOblique)
   EXPECT_THAT( lattice.get_lattice(), ::testing::ContainerEq(reference) );
 }
 
-TEST(BravaisLattice2D,CtorRectangular)
+TEST(BravaisLattice2D,RectangularLattice)
 {
   const BravaisLattice2D lattice = BravaisLattice2D( Point2D(0.0,0.5), 1.0, 3, 3 );
   
@@ -146,7 +148,7 @@ TEST(BravaisLattice2D,CtorRectangular)
   EXPECT_THAT( lattice.get_lattice(), ::testing::ContainerEq(reference) );
 }
 
-TEST(BravaisLattice2D,CtorCenteredRectangular)
+TEST(BravaisLattice2D,CenteredRectangularLattice)
 {
   const BravaisLattice2D lattice = BravaisLattice2D( Point2D(0.5,0.25), 1.0, 3, 6 );
   
@@ -163,7 +165,7 @@ TEST(BravaisLattice2D,CtorCenteredRectangular)
   EXPECT_THAT( lattice.get_lattice(), ::testing::ContainerEq(reference) );
 }
 
-TEST(BravaisLattice2D,CtorHexagonal)
+TEST(BravaisLattice2D,HexagonalLattice)
 {
   const BravaisLattice2D lattice = BravaisLattice2D( Point2D(0.5,sqrt(3)/2.0), 1.0, 3, 3 );
   
@@ -177,7 +179,7 @@ TEST(BravaisLattice2D,CtorHexagonal)
   EXPECT_THAT( lattice.get_lattice(), ::testing::ContainerEq(reference) );
 }
 
-TEST(BravaisLattice2D,CtorSquare)
+TEST(BravaisLattice2D,SquareLattice)
 {
   const BravaisLattice2D lattice = BravaisLattice2D( Point2D(0.0,1.0), 1.0, 3, 3 );
   
@@ -190,3 +192,23 @@ TEST(BravaisLattice2D,CtorSquare)
   
   EXPECT_THAT( lattice.get_lattice(), ::testing::ContainerEq(reference) );
 }
+
+TEST(BravaisLattice2D,WedgeOblique)
+{
+  Point2D b = Point2D(0.4,0.6);
+  const BravaisLattice2D::BravaisLattice2DType latticeType = BravaisLattice2D::find_lattice_type(b);
+  EXPECT_THAT(latticeType, BravaisLattice2D::Oblique);
+  
+  const static std::vector< Point2D > reference = 
+  {
+    {0.1 , 0.06 },
+    {0.3 , 0.06 }, {0.3 , 0.26 },
+    {0.5 , 0.06 }, {0.5 , 0.26 }, {0.5 , 0.46 },
+    {0.7 , 0.06 }, {0.7 , 0.26 },
+    {0.9 , 0.06 }
+  };
+
+  //std::copy(res.begin(), res.end(), std::ostream_iterator<Point2D>(std::cout, "\n"));
+  EXPECT_THAT( BravaisLattice2D::get_irreducible_wedge(b, 5, 5), ::testing::ContainerEq(reference) );
+}
+
