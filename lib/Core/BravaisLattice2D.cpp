@@ -8,7 +8,7 @@
 
 using namespace Core::Geometry;
 
-std::pair<Point2D,double> BravaisLattice2D::get_canonical_unit_cell_and_scale(Point2D x, Point2D y)
+std::pair< Point2D, Point2D > BravaisLattice2D::get_canonical_unit_cell(Point2D x, Point2D y)
 {
   // validate input
   if ( nearlyZero(x.getLength()) || nearlyZero(y.getLength()))
@@ -27,9 +27,9 @@ std::pair<Point2D,double> BravaisLattice2D::get_canonical_unit_cell_and_scale(Po
     swap(x,y);
 
   const double length = std::max(length_x,length_y);
-  // rotation and scaling to (1.0, 0.0)
-  const double sin_theta = x.y_ / length / length;
-  const double cos_theta = x.x_ / length / length;
+  // rotation
+  const double sin_theta = x.y_ / length;
+  const double cos_theta = x.x_ / length;
 
   Point2D b = Point2D(
     cos_theta * y.x_ + sin_theta * y.y_,
@@ -40,25 +40,28 @@ std::pair<Point2D,double> BravaisLattice2D::get_canonical_unit_cell_and_scale(Po
     b = b * -1.0;
   while (b.x_ < 0.0)
   {
-    b.x_ += 1.0;
+    b.x_ += length;
   }
-  return std::make_pair(b,length);
+  return std::make_pair( Point2D(length, 0.0), b );
 }
 
-BravaisLattice2D::BravaisLattice2DType BravaisLattice2D::find_lattice_type(const Point2D& b)
+BravaisLattice2D::BravaisLattice2DType BravaisLattice2D::find_lattice_type(const Point2D& a, const Point2D& b)
 {
+  double length_a = a.getLength();
   double length_b = b.getLength();
 
+  assert(length_a > 0.0);
   assert(length_b > 0.0);
+  assert( nearlyZero(a.y_) );
   assert(b.x_ >= 0.0 || b.y_ >= 0.0);
 
-  if ( nearlyZero(length_b - 1.0) )
+  if ( nearlyZero(length_b - length_a) )
   {
     if ( nearlyZero(b.x_) )
     {
       return Square;
     }
-    else if ( equalsWithTolerance( b.x_, 0.5) )
+    else if ( equalsWithTolerance( b.x_, 0.5 * a.x_) )
     {
       return Hexagonal;
     }
@@ -69,7 +72,7 @@ BravaisLattice2D::BravaisLattice2DType BravaisLattice2D::find_lattice_type(const
     {
       return Rectangular;
     }
-    else if ( equalsWithTolerance( b.x_, 0.5) )
+    else if ( equalsWithTolerance( b.x_, 0.5 * a.x_) )
     {
       return CenteredRectangular;
     }
@@ -117,11 +120,17 @@ namespace
   }
 }
 
-BravaisLattice2D::Point2DVec BravaisLattice2D::get_irreducible_wedge(const Point2D& b, const unsigned int xsample, const unsigned int ysample)
+BravaisLattice2D::Point2DVec BravaisLattice2D::get_irreducible_wedge(const Point2D& a, const Point2D& b, const unsigned int xsample, const unsigned int ysample)
 {
   // we will sample the convex combination of (0,0), x and y, where x and y is determined by the lattice type and a.
-  BravaisLattice2DType type = find_lattice_type(b);
-  Point2D a = Point2D(1.0,0.0);
+
+  assert( nearlyZero(a.y_) );
+  assert( b.x_ > 0.0 );
+  assert( b.y_ > 0.0 );
+
+  assert( b.x_ < a.x_ );
+  
+  BravaisLattice2DType type = find_lattice_type(a,b);
 
   switch (type)
   {
@@ -156,17 +165,24 @@ BravaisLattice2D::Point2DVec BravaisLattice2D::get_irreducible_wedge(const Point
   }
 }
 
-BravaisLattice2D::BravaisLattice2D(const Point2D& unit_vector, const double scale, const size_t width_x, const size_t width_y)
-: unit_vector_(unit_vector), scale_(scale), width_x_(width_x), width_y_(width_y)
+std::pair<Point2D,Point2D> BravaisLattice2D::get_inverse_unit_cell(const Point2D& a, const Point2D& b)
+{
+  const Point2D kx = Point2D(1.0,1.0);
+  const Point2D ky = Point2D(1.0,1.0);
+
+  return std::make_pair(kx,ky);
+}
+
+BravaisLattice2D::BravaisLattice2D(const Point2D& a, const Point2D& b, const size_t width_x, const size_t width_y)
+: a_(a), b_(b), width_x_(width_x), width_y_(width_y)
 {
   lattice_.reserve(width_x_ * width_y_);
-  Point2D x0 = Point2D(1.0,0.0);
   
   for (unsigned int j = 0; j < width_y_; ++j)
   {
     for (unsigned int i = 0; i < width_x_; ++i)
     {
-      lattice_.push_back( i*x0 + j*unit_vector_ );
+      lattice_.push_back( i*a_ + j*b_ );
     }
   }
 }
