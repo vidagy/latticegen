@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 # project name
 project (LatticeGen CXX)
 
+include(ExternalProject)
+include(include/include.cmake)
+
 set(MULTITHREADED_BUILD "4")
 set(CMAKE_MAKE_PROGRAM "${CMAKE_MAKE_PROGRAM} -j${MULTITHREADED_BUILD}")
 message(STATUS "Added arguments to CMAKE_BUILD_TOOL: ${CMAKE_MAKE_PROGRAM}")
@@ -24,10 +27,6 @@ include_directories("lib")
 
 # set up testing
 enable_testing()
-
-set(GTEST_LIBRARY_DEBUG "/usr/src/gtest/build/libgtest.a")
-set(GTEST_MAIN_LIBRARY_DEBUG "/usr/src/gtest/build/libgtest_main.a")
-include_directories("/usr/include/")
 
 add_subdirectory(test)
 
