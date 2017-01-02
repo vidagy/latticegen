@@ -8,6 +8,11 @@
 
 using namespace Core::Geometry;
 
+namespace
+{
+  static const double pi = 3.14159265358979323846;
+}
+
 std::pair< Point2D, Point2D > BravaisLattice2D::get_canonical_unit_cell(Point2D x, Point2D y)
 {
   // validate input
@@ -167,10 +172,14 @@ BravaisLattice2D::Point2DVec BravaisLattice2D::get_irreducible_wedge(const Point
 
 std::pair<Point2D,Point2D> BravaisLattice2D::get_inverse_unit_cell(const Point2D& a, const Point2D& b)
 {
-  const Point2D kx = Point2D(1.0,1.0);
-  const Point2D ky = Point2D(1.0,1.0);
+  assert( nearlyZero(a.y_) );
+  assert( ! nearlyZero(a.x_) );
+  assert( ! nearlyZero(b.y_) );
 
-  return std::make_pair(kx,ky);
+  const Point2D k1 = Point2D(-2.0*pi/a.x_, 2.0*pi*b.x_/b.y_/a.x_);
+  const Point2D k2 = Point2D(0.0,2.0*pi/b.y_);
+
+  return std::make_pair(k1,k2);
 }
 
 BravaisLattice2D::BravaisLattice2D(const Point2D& a, const Point2D& b, const size_t width_x, const size_t width_y)

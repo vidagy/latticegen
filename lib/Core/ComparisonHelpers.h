@@ -25,7 +25,7 @@ namespace Core
 
   inline bool nearlyZero(const double x, const double abs_tolerance = ABS_TOLERANCE)
   {
-    return x < abs_tolerance && (-1.0)*x < abs_tolerance;
+    return x < abs_tolerance && x > -1.0 * abs_tolerance;
   }
 }
 #endif // LATTICEGEN_COMPARISONHELPERS_H_

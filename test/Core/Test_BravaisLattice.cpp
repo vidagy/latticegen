@@ -2,12 +2,18 @@
 #include <gmock/gmock.h>
 
 #include <Core/BravaisLattice2D.h>
+#include <Core/ComparisonHelpers.h>
 
 #include <stdexcept>
 #include <tuple>
 #include <math.h>
 
 using namespace Core::Geometry;
+
+namespace
+{
+  static const double pi = 3.14159265358979323846;
+}
 
 TEST(BravaisLattice2D,GetCanonicalUnitCellAndScaleThrows)
 {
@@ -205,5 +211,19 @@ TEST(BravaisLattice2D,WedgeOblique)
 
   //std::copy(res.begin(), res.end(), std::ostream_iterator<Point2D>(std::cout, "\n"));
   EXPECT_THAT( BravaisLattice2D::get_irreducible_wedge(a, b, 5, 5), ::testing::ContainerEq(reference) );
+}
+
+TEST(BravaisLattice2D,inverseLattice)
+{
+  Point2D a = Point2D(1.0,0.0);
+  Point2D b = Point2D(0.4,0.6);
+  Point2D ca, cb, ka, kb;
+  std::tie(ca, cb) = BravaisLattice2D::get_canonical_unit_cell(a,b);
+  std::tie(ka, kb) = BravaisLattice2D::get_inverse_unit_cell(ca,cb);
+
+  EXPECT_THAT( 2*pi, ca*ka );
+  EXPECT_TRUE( Core::nearlyZero(ca*kb) );
+  EXPECT_TRUE( Core::nearlyZero(cb*ka) );
+  EXPECT_THAT( 2*pi, cb*kb );
 }
 
