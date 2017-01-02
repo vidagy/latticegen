@@ -176,8 +176,8 @@ std::pair<Point2D,Point2D> BravaisLattice2D::get_inverse_unit_cell(const Point2D
   assert( ! nearlyZero(a.x_) );
   assert( ! nearlyZero(b.y_) );
 
-  const Point2D k1 = Point2D(-2.0*pi/a.x_, 2.0*pi*b.x_/b.y_/a.x_);
-  const Point2D k2 = Point2D(0.0,2.0*pi/b.y_);
+  const Point2D k1 = Point2D(2.0*pi, -2.0*pi*b.x_/b.y_/a.x_);
+  const Point2D k2 = Point2D(0.0,2.0*pi/b.y_/a.x_);
 
   return std::make_pair(k1,k2);
 }
