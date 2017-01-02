@@ -4,7 +4,6 @@
 #include "Point2D.h"
 #include <utility>
 #include <vector>
-#include <cassert>
 
 namespace Core
 {
