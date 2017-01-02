@@ -4,7 +4,6 @@
 #include <math.h>
 #include <stdexcept>
 #include <algorithm>
-#include <cassert>
 
 using namespace Core::Geometry;
 
@@ -13,14 +12,39 @@ namespace
   static const double pi = 3.14159265358979323846;
 }
 
-std::pair< Point2D, Point2D > BravaisLattice2D::get_canonical_unit_cell(Point2D x, Point2D y)
+BravaisLattice2D::UnitCell::UnitCell(const Point2D& a_, const Point2D& b_)
+  : a(a_), b(b_)
+{
+  if (! a_.getLength() > 0.0)
+    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: a must be non null vector but a = " + a_.toString());
+  if (! b_.getLength() > 0.0)
+    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: b must be non null vector but b = " + b_.toString());
+  
+  if (! a_.x > 0.0)
+    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: a.x must be positive but a = " + a_.toString());
+  if (! nearlyZero(a_.y) )
+    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: a.y must be zero but a = " + a_.toString());
+  
+  if (! positiveWithTolerance(b_.x))
+    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: b.x must be positive but b = " + b_.toString());
+  if (! b_.y > 0.0)
+    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: b.y must be non-negative but b = " + b_.toString());
+  
+  if (! greaterEqualsWithTolerance(a_.getLength(), b_.getLength()))
+    throw std::invalid_argument(
+      "In BravaisLattice2D::UnitCell::ctor: a must be longer than b but a = " + a_.toString() + " and b = " + b.toString()
+      );
+}
+
+
+BravaisLattice2D::UnitCell BravaisLattice2D::get_unit_cell(Point2D x, Point2D y)
 {
   // validate input
   if ( nearlyZero(x.getLength()) || nearlyZero(y.getLength()))
   {
     throw std::invalid_argument("Null vector on the input of get_canonical_unit_cell");
   }
-  if ( equalsWithTolerance( x.x_ * y.y_, x.y_ * y.x_) )
+  if ( equalsWithTolerance( x.x * y.y, x.y * y.x) )
   {
     throw std::invalid_argument("Non-independent vectors on the input of get_canonical_unit_cell");
   }
@@ -33,51 +57,49 @@ std::pair< Point2D, Point2D > BravaisLattice2D::get_canonical_unit_cell(Point2D 
 
   const double length = std::max(length_x,length_y);
   // rotation
-  const double sin_theta = x.y_ / length;
-  const double cos_theta = x.x_ / length;
+  const double sin_theta = x.y / length;
+  const double cos_theta = x.x / length;
 
   Point2D b = Point2D(
-    cos_theta * y.x_ + sin_theta * y.y_,
-    cos_theta * y.y_ - sin_theta * y.x_);
+    cos_theta * y.x + sin_theta * y.y,
+    cos_theta * y.y - sin_theta * y.x);
   
   // invert and shift to the (++) quarter plane
-  if (b.y_ < 0.0)
+  if (b.y < 0.0)
     b = b * -1.0;
-  while (b.x_ < 0.0)
+  while (b.x < 0.0)
   {
-    b.x_ += length;
+    b.x += length;
   }
-  return std::make_pair( Point2D(length, 0.0), b );
+  return UnitCell( Point2D(length, 0.0), b );
 }
 
-BravaisLattice2D::BravaisLattice2DType BravaisLattice2D::find_lattice_type(const Point2D& a, const Point2D& b)
+BravaisLattice2D::BravaisLattice2DType BravaisLattice2D::find_lattice_type(const UnitCell& unit_cell_)
 {
+  const Point2D& a = unit_cell_.a;
+  const Point2D& b = unit_cell_.b;
+
   double length_a = a.getLength();
   double length_b = b.getLength();
 
-  assert(length_a > 0.0);
-  assert(length_b > 0.0);
-  assert( nearlyZero(a.y_) );
-  assert(b.x_ >= 0.0 || b.y_ >= 0.0);
-
   if ( nearlyZero(length_b - length_a) )
   {
-    if ( nearlyZero(b.x_) )
+    if ( nearlyZero(b.x) )
     {
       return Square;
     }
-    else if ( equalsWithTolerance( b.x_, 0.5 * a.x_) )
+    else if ( equalsWithTolerance( b.x, 0.5 * a.x) )
     {
       return Hexagonal;
     }
   }
   else
   {
-    if ( nearlyZero(b.x_) )
+    if ( nearlyZero(b.x) )
     {
       return Rectangular;
     }
-    else if ( equalsWithTolerance( b.x_, 0.5 * a.x_) )
+    else if ( equalsWithTolerance( b.x, 0.5 * a.x) )
     {
       return CenteredRectangular;
     }
@@ -89,19 +111,13 @@ namespace
 {
   BravaisLattice2D::Point2DVec sample_between(const Point2D& a, const Point2D& b, const unsigned int xsample, const unsigned int ysample)
   {
-    assert( Core::nearlyZero(a.y_) );
-    assert( b.x_ > 0.0 );
-    assert( b.y_ > 0.0 );
-
-    assert( b.x_ < a.x_ );
-    
-    // x is in [0.0, a.x_], y > 0.0 and < line (0,b) and y < line (a,b)
+    // x is in [0.0, a.x], y > 0.0 and < line (0,b) and y < line(a,b)
 
     BravaisLattice2D::Point2DVec result;
     result.reserve( xsample*ysample / 2 + 1);
 
-    const double xstep = a.x_ / xsample;
-    const double ystep = b.y_ / ysample;
+    const double xstep = a.x / xsample;
+    const double ystep = b.y / ysample;
 
     const double xshift = xstep / 2.0;
     const double yshift = ystep / 2.0;
@@ -113,9 +129,9 @@ namespace
       {
         const double y = yshift + j * xstep;
         if ( 
-          x < b.x_ 
-          ? x*b.y_/b.x_ < y 
-          : (a.x_-x)*b.y_/(a.x_-b.x_) < y )
+          x < b.x 
+          ? x*b.y/b.x < y 
+          : (a.x-x)*b.y/(a.x-b.x) < y )
           break;
         result.push_back(Point2D(x,y));
       }
@@ -125,73 +141,65 @@ namespace
   }
 }
 
-BravaisLattice2D::Point2DVec BravaisLattice2D::get_irreducible_wedge(const Point2D& a, const Point2D& b, const unsigned int xsample, const unsigned int ysample)
+BravaisLattice2D::Point2DVec BravaisLattice2D::get_irreducible_wedge(const UnitCell& unit_cell_, const unsigned int xsample, const unsigned int ysample)
 {
-  // we will sample the convex combination of (0,0), x and y, where x and y is determined by the lattice type and a.
-
-  assert( nearlyZero(a.y_) );
-  assert( b.x_ > 0.0 );
-  assert( b.y_ > 0.0 );
-
-  assert( b.x_ < a.x_ );
-  
-  BravaisLattice2DType type = find_lattice_type(a,b);
+  // we will sample the convex combination of (0,0), x and y, where x and y is determined by the lattice type and unit_cell_.a.
+  BravaisLattice2DType type = find_lattice_type(unit_cell_);
 
   switch (type)
   {
     case Oblique:
     {
-      return sample_between(a,b,xsample,ysample);
+      return sample_between(unit_cell_.a, unit_cell_.b, xsample, ysample);
     }
     case Rectangular:
     {
-      return sample_between(a,b,xsample,ysample);
+      return sample_between(unit_cell_.a, unit_cell_.b, xsample, ysample);
     }
     case CenteredRectangular:
     {
-      Point2D x = a * 0.5;
-      Point2D y = b;
-      return sample_between(x,y,xsample,ysample);
+      Point2D x = unit_cell_.a * 0.5;
+      Point2D y = unit_cell_.b;
+      return sample_between(x, y, xsample, ysample);
     }
     case Hexagonal:
     {
-      Point2D x = a;
-      Point2D y = (a + b) * 0.5;
-      return sample_between(x,y,xsample,ysample);
+      Point2D x = unit_cell_.a;
+      Point2D y = (unit_cell_.a + unit_cell_.b) * 0.5;
+      return sample_between(x, y, xsample, ysample);
     }
     case Square:
     {
-      Point2D x = a * 0.5;
-      Point2D y = (a + b) * 0.5;
-      return sample_between(x,y,xsample,ysample);
+      Point2D x = unit_cell_.a * 0.5;
+      Point2D y = (unit_cell_.a + unit_cell_.b) * 0.5;
+      return sample_between(x, y, xsample, ysample);
     }
     default:
       throw std::logic_error("Unhandled BravaisLattice2DType.");
   }
 }
 
-std::pair<Point2D,Point2D> BravaisLattice2D::get_inverse_unit_cell(const Point2D& a, const Point2D& b)
+std::pair<Point2D,Point2D> BravaisLattice2D::get_inverse_unit_cell(const UnitCell& unit_cell_)
 {
-  assert( nearlyZero(a.y_) );
-  assert( ! nearlyZero(a.x_) );
-  assert( ! nearlyZero(b.y_) );
+  const Point2D& a = unit_cell_.a;
+  const Point2D& b = unit_cell_.b;
 
-  const Point2D k1 = Point2D(2.0*pi, -2.0*pi*b.x_/b.y_/a.x_);
-  const Point2D k2 = Point2D(0.0,2.0*pi/b.y_/a.x_);
+  Point2D k1 = Point2D(2.0*pi, -2.0*pi*b.x/b.y/a.x);
+  Point2D k2 = Point2D(0.0,2.0*pi/b.y/a.x);
 
   return std::make_pair(k1,k2);
 }
 
-BravaisLattice2D::BravaisLattice2D(const Point2D& a, const Point2D& b, const size_t width_x, const size_t width_y)
-: a_(a), b_(b), width_x_(width_x), width_y_(width_y)
+BravaisLattice2D::BravaisLattice2D(const Point2D& a, const Point2D& b, const size_t x_width_, const size_t y_width_)
+: unit_cell(get_unit_cell(a, b)), x_width(x_width_), y_width(y_width_)
 {
-  lattice_.reserve(width_x_ * width_y_);
+  lattice.reserve(x_width * y_width);
   
-  for (unsigned int j = 0; j < width_y_; ++j)
+  for (unsigned int j = 0; j < y_width; ++j)
   {
-    for (unsigned int i = 0; i < width_x_; ++i)
+    for (unsigned int i = 0; i < x_width; ++i)
     {
-      lattice_.push_back( i*a_ + j*b_ );
+      lattice.push_back( i*unit_cell.a + j*unit_cell.b );
     }
   }
 }

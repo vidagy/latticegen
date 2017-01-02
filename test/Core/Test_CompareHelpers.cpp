@@ -38,7 +38,6 @@ TEST(TestCompareHelpers,equalsWithTolerance)
 
 TEST(TestCompareHelpers,NearlyZero)
 {
-  const double x = 1.0;
   const double pe =  0.0000000001;
   const double me = -0.0000000001;
 
@@ -47,4 +46,54 @@ TEST(TestCompareHelpers,NearlyZero)
 
   EXPECT_FALSE( nearlyZero(me,1e-11) );
   EXPECT_FALSE( nearlyZero(pe,1e-11) );
+}
+
+TEST(TestCompareHelpers,GreaterEqualsWithTolerance)
+{
+  const double x = 1.0;
+  const double pe =  0.0000000001;
+  const double me = -0.0000000001;
+
+  EXPECT_TRUE( greaterEqualsWithTolerance(x, x + me,1e-9) );
+  EXPECT_TRUE( greaterEqualsWithTolerance(x, x + pe,1e-9) );
+
+  EXPECT_TRUE( greaterEqualsWithTolerance(x, x + me,1e-11) );
+  EXPECT_FALSE( greaterEqualsWithTolerance(x, x + pe,1e-11) );
+}
+
+TEST(TestCompareHelpers,LessEqualsWithTolerance)
+{
+  const double x = 1.0;
+  const double pe =  0.0000000001;
+  const double me = -0.0000000001;
+
+  EXPECT_TRUE( lessEqualsWithTolerance(x, x + me,1e-9) );
+  EXPECT_TRUE( lessEqualsWithTolerance(x, x + pe,1e-9) );
+
+  EXPECT_FALSE( lessEqualsWithTolerance(x, x + me,1e-11) );
+  EXPECT_TRUE( lessEqualsWithTolerance(x, x + pe,1e-11) );
+}
+
+TEST(TestCompareHelpers,PositiveWithTolerance)
+{
+  const double pe =  0.0000000001;
+  const double me = -0.0000000001;
+
+  EXPECT_TRUE( positiveWithTolerance(me,1e-9) );
+  EXPECT_TRUE( positiveWithTolerance(pe,1e-9) );
+
+  EXPECT_FALSE( positiveWithTolerance(me,1e-11) );
+  EXPECT_TRUE( positiveWithTolerance(pe,1e-11) );
+}
+
+TEST(TestCompareHelpers,NegativeWithTolerance)
+{
+  const double pe =  0.0000000001;
+  const double me = -0.0000000001;
+
+  EXPECT_TRUE( negativeWithTolerance(me,1e-9) );
+  EXPECT_TRUE( negativeWithTolerance(pe,1e-9) );
+
+  EXPECT_TRUE( negativeWithTolerance(me,1e-11) );
+  EXPECT_FALSE( negativeWithTolerance(pe,1e-11) );
 }

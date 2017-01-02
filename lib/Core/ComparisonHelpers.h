@@ -27,6 +27,24 @@ namespace Core
   {
     return x < abs_tolerance && x > -1.0 * abs_tolerance;
   }
+
+  inline bool greaterEqualsWithTolerance(const double x, const double y, const double abs_tolerance = ABS_TOLERANCE)
+  {
+    return x > y - abs_tolerance;
+  }
+  inline bool lessEqualsWithTolerance(const double x, const double y, const double abs_tolerance = ABS_TOLERANCE)
+  {
+    return greaterEqualsWithTolerance(y, x, abs_tolerance);
+  }
+
+  inline bool positiveWithTolerance(const double x, const double abs_tolerance = ABS_TOLERANCE)
+  {
+    return greaterEqualsWithTolerance(x, 0.0, abs_tolerance);
+  }
+  inline bool negativeWithTolerance(const double x, const double abs_tolerance = ABS_TOLERANCE)
+  {
+    return lessEqualsWithTolerance(x, 0.0, abs_tolerance);
+  }
 }
 #endif // LATTICEGEN_COMPARISONHELPERS_H_
  

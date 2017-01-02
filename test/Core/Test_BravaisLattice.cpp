@@ -22,102 +22,108 @@ TEST(BravaisLattice2D,GetCanonicalUnitCellAndScaleThrows)
   const Point2D p10 = Point2D(1.0,0.0);
   const Point2D p11 = Point2D(1.0,1.0);
 
-  EXPECT_THROW(BravaisLattice2D::get_canonical_unit_cell(p00,p11), std::invalid_argument);
-  EXPECT_THROW(BravaisLattice2D::get_canonical_unit_cell(p00,p01), std::invalid_argument);
-  EXPECT_THROW(BravaisLattice2D::get_canonical_unit_cell(p00,p10), std::invalid_argument);
+  EXPECT_THROW(BravaisLattice2D::get_unit_cell(p00,p11), std::invalid_argument);
+  EXPECT_THROW(BravaisLattice2D::get_unit_cell(p00,p01), std::invalid_argument);
+  EXPECT_THROW(BravaisLattice2D::get_unit_cell(p00,p10), std::invalid_argument);
 
-  EXPECT_THROW(BravaisLattice2D::get_canonical_unit_cell(p11,p00), std::invalid_argument);
-  EXPECT_THROW(BravaisLattice2D::get_canonical_unit_cell(p01,p00), std::invalid_argument);
-  EXPECT_THROW(BravaisLattice2D::get_canonical_unit_cell(p10,p00), std::invalid_argument);
+  EXPECT_THROW(BravaisLattice2D::get_unit_cell(p11,p00), std::invalid_argument);
+  EXPECT_THROW(BravaisLattice2D::get_unit_cell(p01,p00), std::invalid_argument);
+  EXPECT_THROW(BravaisLattice2D::get_unit_cell(p10,p00), std::invalid_argument);
 
-  EXPECT_THROW(BravaisLattice2D::get_canonical_unit_cell(p11,p11), std::invalid_argument);
-  EXPECT_THROW(BravaisLattice2D::get_canonical_unit_cell(p01,p01), std::invalid_argument);
-  EXPECT_THROW(BravaisLattice2D::get_canonical_unit_cell(p10,p10), std::invalid_argument);
-  EXPECT_THROW(BravaisLattice2D::get_canonical_unit_cell(p00,p00), std::invalid_argument);
+  EXPECT_THROW(BravaisLattice2D::get_unit_cell(p11,p11), std::invalid_argument);
+  EXPECT_THROW(BravaisLattice2D::get_unit_cell(p01,p01), std::invalid_argument);
+  EXPECT_THROW(BravaisLattice2D::get_unit_cell(p10,p10), std::invalid_argument);
+  EXPECT_THROW(BravaisLattice2D::get_unit_cell(p00,p00), std::invalid_argument);
 
-  EXPECT_NO_THROW(BravaisLattice2D::get_canonical_unit_cell(p01,p10));
-  EXPECT_NO_THROW(BravaisLattice2D::get_canonical_unit_cell(p01,p11));
-  EXPECT_NO_THROW(BravaisLattice2D::get_canonical_unit_cell(p10,p01));
-  EXPECT_NO_THROW(BravaisLattice2D::get_canonical_unit_cell(p10,p11));
-  EXPECT_NO_THROW(BravaisLattice2D::get_canonical_unit_cell(p11,p01));
-  EXPECT_NO_THROW(BravaisLattice2D::get_canonical_unit_cell(p11,p10));
+  EXPECT_NO_THROW(BravaisLattice2D::get_unit_cell(p01,p10));
+  EXPECT_NO_THROW(BravaisLattice2D::get_unit_cell(p01,p11));
+  EXPECT_NO_THROW(BravaisLattice2D::get_unit_cell(p10,p01));
+  EXPECT_NO_THROW(BravaisLattice2D::get_unit_cell(p10,p11));
+  EXPECT_NO_THROW(BravaisLattice2D::get_unit_cell(p11,p01));
+  EXPECT_NO_THROW(BravaisLattice2D::get_unit_cell(p11,p10));
 }
 
 TEST(BravaisLattice2D,GetCanonicalUnitCellAndScaleSimpleNoScale)
 {
   const Point2D p01 = Point2D(0.0,1.0);
   const Point2D p10 = Point2D(1.0,0.0);
-  Point2D resa, resb;
+  
+  BravaisLattice2D::UnitCell unit_cell = BravaisLattice2D::get_unit_cell(p01,p10);
 
-  std::tie(resa, resb) = BravaisLattice2D::get_canonical_unit_cell(p01,p10);
+  EXPECT_EQ(unit_cell.a, Point2D(1.0, 0.0));
+  EXPECT_EQ(unit_cell.b, Point2D(0.0, 1.0));
 
-  EXPECT_EQ(resa, Point2D(1.0, 0.0));
-  EXPECT_EQ(resb, Point2D(0.0, 1.0));
+  unit_cell = BravaisLattice2D::get_unit_cell(p10,p01);
 
-  std::tie(resa, resb) = BravaisLattice2D::get_canonical_unit_cell(p10,p01);
-
-  EXPECT_EQ(resa, Point2D(1.0, 0.0));
-  EXPECT_EQ(resb, Point2D(0.0, 1.0));
+  EXPECT_EQ(unit_cell.a, Point2D(1.0, 0.0));
+  EXPECT_EQ(unit_cell.b, Point2D(0.0, 1.0));
 }
 
 TEST(BravaisLattice2D,GetCanonicalUnitCellAndScaleSimpleScale)
 {
   const Point2D p01 = Point2D(0.0,5.0);
   const Point2D p10 = Point2D(1.0,0.0);
-  Point2D resa, resb;
+  
+  BravaisLattice2D::UnitCell unit_cell = BravaisLattice2D::get_unit_cell(p01,p10);
 
-  std::tie(resa, resb) = BravaisLattice2D::get_canonical_unit_cell(p01,p10);
+  EXPECT_EQ(unit_cell.a, Point2D(5.0,0.0));
+  EXPECT_EQ(unit_cell.b, Point2D(0.0,1.0));
 
-  EXPECT_EQ(resa, Point2D(5.0,0.0));
-  EXPECT_EQ(resb, Point2D(0.0,1.0));
+  unit_cell = BravaisLattice2D::get_unit_cell(p10,p01);
 
-  std::tie(resa, resb) = BravaisLattice2D::get_canonical_unit_cell(p10,p01);
-
-  EXPECT_EQ(resa, Point2D(5.0,0.0));
-  EXPECT_EQ(resb, Point2D(0.0,1.0));
+  EXPECT_EQ(unit_cell.a, Point2D(5.0,0.0));
+  EXPECT_EQ(unit_cell.b, Point2D(0.0,1.0));
 }
 
 TEST(BravaisLattice2D,GetCanonicalUnitCellAndScaleRotate)
 {
   const Point2D p11  = Point2D(1.0,1.0);
   const Point2D pm11 = Point2D(-1.0,1.0);
-  Point2D resa, resb;
 
-  std::tie(resa, resb) = BravaisLattice2D::get_canonical_unit_cell(p11,pm11);
+  BravaisLattice2D::UnitCell unit_cell = BravaisLattice2D::get_unit_cell(p11,pm11);
 
-  EXPECT_EQ(resa, Point2D(sqrt(2.0), 0.0));
-  EXPECT_EQ(resb, Point2D(0.0, sqrt(2.0)));
+  EXPECT_EQ(unit_cell.a, Point2D(sqrt(2.0), 0.0));
+  EXPECT_EQ(unit_cell.b, Point2D(0.0, sqrt(2.0)));
 
-  std::tie(resa, resb) = BravaisLattice2D::get_canonical_unit_cell(pm11,p11);
+  unit_cell = BravaisLattice2D::get_unit_cell(pm11,p11);
   
-  EXPECT_EQ(resa, Point2D(sqrt(2.0), 0.0));
-  EXPECT_EQ(resb, Point2D(0.0, sqrt(2.0)));
+  EXPECT_EQ(unit_cell.a, Point2D(sqrt(2.0), 0.0));
+  EXPECT_EQ(unit_cell.b, Point2D(0.0, sqrt(2.0)));
 }
 
 TEST(BravaisLattice2D,GetCanonicalUnitCellAndScaleReflect)
 {
   const Point2D p11  = Point2D(1.0,-2.0);
   const Point2D pm11 = Point2D(0.0,-1.0);
-  Point2D resa, resb;
 
-  std::tie(resa, resb) = BravaisLattice2D::get_canonical_unit_cell(p11,pm11);
+  BravaisLattice2D::UnitCell unit_cell = BravaisLattice2D::get_unit_cell(p11,pm11);
 
-  EXPECT_EQ(resa, Point2D(sqrt(5.0), 0.0));
-  EXPECT_EQ(resb, Point2D(3.0/sqrt(5.0), 1.0/sqrt(5.0)));
+  EXPECT_EQ(unit_cell.a, Point2D(sqrt(5.0), 0.0));
+  EXPECT_EQ(unit_cell.b, Point2D(3.0/sqrt(5.0), 1.0/sqrt(5.0)));
 
-  std::tie(resa, resb) = BravaisLattice2D::get_canonical_unit_cell(pm11,p11);
+  unit_cell = BravaisLattice2D::get_unit_cell(pm11,p11);
 
-  EXPECT_EQ(resa, Point2D(sqrt(5.0), 0.0));
-  EXPECT_EQ(resb, Point2D(3.0/sqrt(5.0), 1.0/sqrt(5.0)));
+  EXPECT_EQ(unit_cell.a, Point2D(sqrt(5.0), 0.0));
+  EXPECT_EQ(unit_cell.b, Point2D(3.0/sqrt(5.0), 1.0/sqrt(5.0)));
 }
 
 TEST(BravaisLattice2D,FindLatticeType)
 {
-  EXPECT_EQ(BravaisLattice2D::find_lattice_type(Point2D(1.0,0.0), Point2D(0.2,0.3)), BravaisLattice2D::Oblique);
-  EXPECT_EQ(BravaisLattice2D::find_lattice_type(Point2D(1.0,0.0), Point2D(0.0,0.75)), BravaisLattice2D::Rectangular);
-  EXPECT_EQ(BravaisLattice2D::find_lattice_type(Point2D(1.0,0.0), Point2D(0.5,0.25)), BravaisLattice2D::CenteredRectangular);
-  EXPECT_EQ(BravaisLattice2D::find_lattice_type(Point2D(1.0,0.0), Point2D(0.5,sqrt(3)/2.0)), BravaisLattice2D::Hexagonal);
-  EXPECT_EQ(BravaisLattice2D::find_lattice_type(Point2D(1.0,0.0), Point2D(0.0,1.0)), BravaisLattice2D::Square);
+  EXPECT_EQ(
+    BravaisLattice2D::find_lattice_type(BravaisLattice2D::get_unit_cell(Point2D(1.0,0.0), Point2D(0.2,0.3))), 
+    BravaisLattice2D::Oblique);
+  EXPECT_EQ(
+    BravaisLattice2D::find_lattice_type(BravaisLattice2D::get_unit_cell(Point2D(1.0,0.0), Point2D(0.0,0.75))), 
+    BravaisLattice2D::Rectangular);
+  EXPECT_EQ(
+    BravaisLattice2D::find_lattice_type(BravaisLattice2D::get_unit_cell(Point2D(1.0,0.0), Point2D(0.5,0.25))), 
+    BravaisLattice2D::CenteredRectangular);
+  EXPECT_EQ(
+    BravaisLattice2D::find_lattice_type(BravaisLattice2D::get_unit_cell(Point2D(1.0,0.0), Point2D(0.5,sqrt(3)/2.0))), 
+    BravaisLattice2D::Hexagonal);
+  EXPECT_EQ(
+    BravaisLattice2D::find_lattice_type(BravaisLattice2D::get_unit_cell(Point2D(1.0,0.0), Point2D(0.0,1.0))),
+    BravaisLattice2D::Square);
 }
 
 TEST(BravaisLattice2D,ObliqueLattice)
@@ -197,7 +203,9 @@ TEST(BravaisLattice2D,WedgeOblique)
 {
   Point2D a = Point2D(1.0,0.0);
   Point2D b = Point2D(0.4,0.6);
-  const BravaisLattice2D::BravaisLattice2DType latticeType = BravaisLattice2D::find_lattice_type(a, b);
+  const BravaisLattice2D::UnitCell unit_cell = BravaisLattice2D::get_unit_cell(a, b);
+  const BravaisLattice2D::BravaisLattice2DType latticeType = 
+    BravaisLattice2D::find_lattice_type(unit_cell);
   EXPECT_THAT(latticeType, BravaisLattice2D::Oblique);
   
   const static std::vector< Point2D > reference = 
@@ -210,20 +218,20 @@ TEST(BravaisLattice2D,WedgeOblique)
   };
 
   //std::copy(res.begin(), res.end(), std::ostream_iterator<Point2D>(std::cout, "\n"));
-  EXPECT_THAT( BravaisLattice2D::get_irreducible_wedge(a, b, 5, 5), ::testing::ContainerEq(reference) );
+  EXPECT_THAT( BravaisLattice2D::get_irreducible_wedge(unit_cell, 5, 5), ::testing::ContainerEq(reference) );
 }
 
 TEST(BravaisLattice2D,inverseLattice)
 {
   Point2D a = Point2D(1.0,0.0);
   Point2D b = Point2D(0.4,0.6);
-  Point2D ca, cb, ka, kb;
-  std::tie(ca, cb) = BravaisLattice2D::get_canonical_unit_cell(a,b);
-  std::tie(ka, kb) = BravaisLattice2D::get_inverse_unit_cell(ca,cb);
+  Point2D ka, kb;
+  const BravaisLattice2D::UnitCell unit_cell = BravaisLattice2D::get_unit_cell(a,b);
+  std::tie(ka, kb) = BravaisLattice2D::get_inverse_unit_cell(unit_cell);
 
-  EXPECT_THAT( 2*pi, ca*ka );
-  EXPECT_TRUE( Core::nearlyZero(ca*kb) );
-  EXPECT_TRUE( Core::nearlyZero(cb*ka) );
-  EXPECT_THAT( 2*pi, cb*kb );
+  EXPECT_THAT( 2*pi, unit_cell.a*ka );
+  EXPECT_TRUE( Core::nearlyZero(unit_cell.a*kb) );
+  EXPECT_TRUE( Core::nearlyZero(unit_cell.b*ka) );
+  EXPECT_THAT( 2*pi, unit_cell.b*kb );
 }
 

@@ -1,5 +1,5 @@
-#ifndef LATTICEGEN_GEOMETRY_H_
-#define LATTICEGEN_GEOMETRY_H_
+#ifndef LATTICEGEN_GEOMETRyH_
+#define LATTICEGEN_GEOMETRyH_
 
 #include <limits>
 #include <iostream>
@@ -15,54 +15,55 @@ namespace Core
   {
     struct Point2D
     {
-      Point2D(const double x = 0.0, const double y = 0.0) : x_(x), y_(y)
-      { }
+      Point2D(const double x_ = 0.0, const double y_ = 0.0) 
+        : x(x_), y(y_)
+      {}
       
       // operators
       Point2D& operator=(const Point2D& rhs)
       {	
-        this->x_ = rhs.x_;
-        this->y_ = rhs.y_;
+        this->x = rhs.x;
+        this->y = rhs.y;
 	     return *this;
 	    }
       Point2D& operator+=(const Point2D& rhs)
       {
-        this->x_ += rhs.x_;
-        this->y_ += rhs.y_;
+        this->x += rhs.x;
+        this->y += rhs.y;
         return *this;
       }
       Point2D& operator-=(const Point2D& rhs)
       {
-        this->x_ -= rhs.x_;
-        this->y_ -= rhs.y_;
+        this->x -= rhs.x;
+        this->y -= rhs.y;
         return *this;
       }
       Point2D& operator*=(const double num)
       {
-        this->x_ *= num;
-        this->y_ *= num;
+        this->x *= num;
+        this->y *= num;
         return *this;
       }
 
       double getLength() const
       {
-        return sqrt( x_*x_ + y_*y_ );
+        return sqrt( x*x + y*y );
       }
 
       std::string toString() const 
       {
         std::stringstream ss;
-        ss << std::scientific << std::setprecision(std::numeric_limits< double >::max_digits10) << "(" << x_ << " , " << y_ << " )";
+        ss << std::scientific << std::setprecision(std::numeric_limits< double >::max_digits10) << "(" << x << " , " << y << " )";
         return ss.str();
       }
 
-  	  double x_;
-  	  double y_;
+  	  double x;
+  	  double y;
     };
 
     inline bool operator==(const Point2D& lhs, const Point2D& rhs)
     {
-      return equalsWithTolerance(lhs.x_, rhs.x_) && equalsWithTolerance(lhs.y_, rhs.y_);
+      return equalsWithTolerance(lhs.x, rhs.x) && equalsWithTolerance(lhs.y, rhs.y);
     }
     inline Point2D operator+(Point2D lhs, const Point2D& rhs)
     {
@@ -86,7 +87,7 @@ namespace Core
     }
     inline double operator*(Point2D lhs, const Point2D& rhs)
     {
-      return lhs.x_ * rhs.x_ + lhs.y_ * rhs.y_;
+      return lhs.x * rhs.x + lhs.y * rhs.y;
     }
     inline bool isRectangular(const Point2D& lhs, const Point2D& rhs)
     {
@@ -94,12 +95,12 @@ namespace Core
     }
     inline void swap(Point2D& lhs, Point2D& rhs)
     {
-      double tmp_x = lhs.x_;
-      double tmp_y = lhs.y_;
-      lhs.x_ = rhs.x_;
-      lhs.y_ = rhs.y_;
-      rhs.x_ = tmp_x;
-      rhs.y_ = tmp_y;
+      double tmp_x = lhs.x;
+      double tmp_y = lhs.y;
+      lhs.x = rhs.x;
+      lhs.y = rhs.y;
+      rhs.x = tmp_x;
+      rhs.y = tmp_y;
     }
   }
 }
@@ -108,4 +109,4 @@ namespace std
 {
   ostream& operator<<(ostream& o, const Core::Geometry::Point2D& p);
 }
-#endif // LATTICEGEN_GEOMETRY_H_
+#endif // LATTICEGEN_GEOMETRyH_
