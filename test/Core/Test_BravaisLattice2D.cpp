@@ -15,7 +15,7 @@ namespace
   static const double pi = 3.14159265358979323846;
 }
 
-TEST(BravaisLattice2D,GetCanonicalUnitCellAndScaleThrows)
+TEST(BravaisLattice2D,GetUnitCellThrows)
 {
   const Point2D p00 = Point2D(0.0,0.0);
   const Point2D p01 = Point2D(0.0,1.0);

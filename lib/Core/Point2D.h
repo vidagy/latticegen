@@ -1,5 +1,5 @@
-#ifndef LATTICEGEN_GEOMETRyH_
-#define LATTICEGEN_GEOMETRyH_
+#ifndef LATTICEGEN_POINT2D_H_
+#define LATTICEGEN_POINT2D_H_
 
 #include <limits>
 #include <iostream>
@@ -109,4 +109,4 @@ namespace std
 {
   ostream& operator<<(ostream& o, const Core::Geometry::Point2D& p);
 }
-#endif // LATTICEGEN_GEOMETRyH_
+#endif // LATTICEGEN_POINT2D_H_

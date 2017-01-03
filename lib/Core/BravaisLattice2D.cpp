@@ -26,9 +26,9 @@ BravaisLattice2D::UnitCell::UnitCell(const Point2D& a_, const Point2D& b_)
     throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: a.y must be zero but a = " + a_.toString());
   
   if (! positiveWithTolerance(b_.x))
-    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: b.x must be positive but b = " + b_.toString());
+    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: b.x must be positive with tolerance but b = " + b_.toString());
   if (! b_.y > 0.0)
-    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: b.y must be non-negative but b = " + b_.toString());
+    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: b.y must be positive but b = " + b_.toString());
   
   if (! greaterEqualsWithTolerance(a_.getLength(), b_.getLength()))
     throw std::invalid_argument(
@@ -42,11 +42,15 @@ BravaisLattice2D::UnitCell BravaisLattice2D::get_unit_cell(Point2D x, Point2D y)
   // validate input
   if ( nearlyZero(x.getLength()) || nearlyZero(y.getLength()))
   {
-    throw std::invalid_argument("Null vector on the input of get_canonical_unit_cell");
+    throw std::invalid_argument(
+      "Null vector on the input of BravaisLattice2D::get_unit_cell: x = " + x.toString() + " y = " + y.toString()
+      );
   }
-  if ( equalsWithTolerance( x.x * y.y, x.y * y.x) )
+  if ( nearlyZero( x.x * y.y - x.y * y.x) )
   {
-    throw std::invalid_argument("Non-independent vectors on the input of get_canonical_unit_cell");
+    throw std::invalid_argument(
+      "Non-independent vectors on the input of BravaisLattice2D::get_unit_cell: x = " + x.toString() + " y = " + y.toString()
+      );
   }
 
   // x will be the longer
