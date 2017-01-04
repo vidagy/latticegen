@@ -115,7 +115,7 @@ TEST(TestPoint3D,MultiplicationWithDouble)
   EXPECT_DOUBLE_EQ(9.0, s.z );
 }
 
-TEST(TestPoint3D,ScalarMultiplication)
+TEST(TestPoint3D,ScalarProduct)
 {
   const Point3D p = Point3D(1.0,2.0,3.0);
   const Point3D q = Point3D(10.0,20.0,30.0);
@@ -125,6 +125,19 @@ TEST(TestPoint3D,ScalarMultiplication)
   
   const double qp = q * p;
   EXPECT_DOUBLE_EQ(140.0, qp );
+
+}
+
+TEST(TestPoint3D,CrossProduct)
+{
+  const Point3D p = Point3D(1.0,0.0,0.0);
+  const Point3D q = Point3D(0.0,1.0,0.0);
+
+  const Point3D pxq = cross_product(p, q);
+  EXPECT_EQ(Point3D(0.0, 0.0, 1.0), pxq );
+  
+  const Point3D qxp = cross_product(q, p);
+  EXPECT_EQ(Point3D(0.0, 0.0, -1.0), qxp );
 
 }
 

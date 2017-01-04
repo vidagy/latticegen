@@ -97,6 +97,14 @@ namespace Core
     {
       return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
     }
+    inline Point3D cross_product(Point3D lhs, const Point3D& rhs)
+    {
+      return Point3D(
+          lhs.y * rhs.z - lhs.z * rhs.y,
+          lhs.z * rhs.x - lhs.x * rhs.z,
+          lhs.x * rhs.y - lhs.y * rhs.x
+        );
+    }
     inline bool isRectangular(const Point3D& lhs, const Point3D& rhs)
     {
       return equalsWithTolerance(lhs * rhs, 0.0);

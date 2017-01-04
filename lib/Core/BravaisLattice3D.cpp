@@ -1,11 +1,13 @@
 #include "BravaisLattice3D.h" 
 #include "ComparisonHelpers.h"
+#include "SymmetryOperations.h"
 
-#include <math.h>
+#include <cmath>
 #include <stdexcept>
-#include <algorithm>
+#include <string>
 
 using namespace Core::Geometry;
+using namespace Core;
 
 namespace
 {
@@ -15,7 +17,6 @@ namespace
 BravaisLattice3D::UnitCell::UnitCell(const Point3D& a_, const Point3D& b_, const Point3D& c_)
   : a(a_), b(b_), c(c_)
 {
-  /*
   if (! a_.getLength() > 0.0)
     throw std::invalid_argument("In BravaisLattice3D::UnitCell::ctor: a must be non null vector but a = " + a_.toString());
   if (! b_.getLength() > 0.0)
@@ -52,22 +53,93 @@ BravaisLattice3D::UnitCell::UnitCell(const Point3D& a_, const Point3D& b_, const
     throw std::invalid_argument(
       "In BravaisLattice3D::UnitCell::ctor: b must be longer than c but b = " + a_.toString() + " and c = " + b.toString()
       );
-  */
 }
 
 namespace
 {
-  std::tuple<Point3D,Point3D,Point3D> get_shortest_linear_combinations(Point3D x, Point3D y, Point3D z)
+  inline double get_volume(const Point3D& x, const Point3D& y, const Point3D& z)
   {
-    return std::make_tuple(x,y,z);
+    return fabs(x * cross_product(y,z));
   }
 
   std::tuple<Point3D,Point3D,Point3D> to_same_octad(Point3D x, Point3D y, Point3D z)
   {
-    return std::make_tuple(x,y,z);
+    const double xy = x*y;
+    const double yz = y*z;
+    const double xz = x*z;
+
+    const double volume = get_volume(x,y,z);
+
+    // all acute
+    if (positiveWithTolerance(xy) && positiveWithTolerance(yz) && positiveWithTolerance(xz))
+      return std::make_tuple(x,y,z);
+
+    // all obtuse
+    if ( xy < 0.0 && yz < 0.0 && xz < 0.0 )
+    {
+      Vector3D temp_x = (-1.0 * x) + y + z;
+      Vector3D temp_y = x + (-1.0 * y) + z;
+      Vector3D temp_z = x + y + (-1.0 * z);
+      if (equalsWithTolerance(volume, get_volume(temp_x, temp_y, temp_z)))
+        return std::make_tuple(x,y,z);    
+
+      throw std::logic_error("could not get all vectors to have acute angles: x = " + x.toString()
+        + " y = " + y.toString()
+        + " z = " + z.toString()
+        );      
+    }
+    
+    // one is obtuse angle
+    if ( negativeWithTolerance(xy * yz * xz) )
+    {
+      if ( negativeWithTolerance(yz) )
+        swap(x,z);
+      if ( negativeWithTolerance(xz) )
+        swap(y,z);
+
+      Vector3D temp = x+y;
+      if ( positiveWithTolerance(temp*y) && positiveWithTolerance(temp*z) && equalsWithTolerance(volume, get_volume(temp,y,z)) )
+        return std::make_tuple(temp,y,z);
+      if ( positiveWithTolerance(temp*x) && positiveWithTolerance(temp*z) && equalsWithTolerance(volume, get_volume(x,temp,z)) )
+        return std::make_tuple(x,temp,z);
+
+      throw std::logic_error("could not get all vectors to have acute angles: x = " + x.toString()
+        + " y = " + y.toString()
+        + " z = " + z.toString()
+        );
+    }
+
+    // two are obtuse angles
+    if ( positiveWithTolerance(xy * yz * xz) )
+    {
+      if ( positiveWithTolerance(yz) )
+        swap(x,z);
+      if ( positiveWithTolerance(xz) )
+        swap(y,z);
+
+      Vector3D temp = x+z;
+      if ( positiveWithTolerance(temp*x) && positiveWithTolerance(temp*y) && equalsWithTolerance(volume, get_volume(x,y,temp)) )
+        return std::make_tuple(x,y,temp);
+      temp = y+z;
+      if ( positiveWithTolerance(temp*x) && positiveWithTolerance(temp*y) && equalsWithTolerance(volume, get_volume(x,y,temp)) )
+        return std::make_tuple(x,y,temp);
+      temp = x+y+z;
+      if ( positiveWithTolerance(temp*x) && positiveWithTolerance(temp*y) && equalsWithTolerance(volume, get_volume(x,y,temp)) )
+        return std::make_tuple(x,y,temp);
+
+      throw std::logic_error("could not get all vectors to have acute angles: x = " + x.toString()
+        + " y = " + y.toString()
+        + " z = " + z.toString()
+        );
+    }
+
+    throw std::logic_error("unhandled angles in to_same_octad:  x = " + x.toString()
+      + " y = " + y.toString()
+      + " z = " + z.toString()
+      );
   }
 
-  std::tuple<Point3D,Point3D,Point3D> rotate(Point3D x, Point3D y, Point3D z)
+  std::tuple<Point3D,Point3D,Point3D> order_vectors(Point3D x, Point3D y, Point3D z)
   {
     if (y.getLength() > x.getLength())
       swap(x,y);
@@ -77,6 +149,42 @@ namespace
       swap(y,z);
 
     return std::make_tuple(x,y,z);
+  }
+
+  std::tuple<Point3D,Point3D,Point3D> get_primitive_cell(Point3D a, Point3D b, Point3D c)
+  {
+    // they are on the same octad
+    // so only rotations are necessary.
+
+    // rotate so a becomes parallel to x
+    const double length_a = a.getLength();
+    const double angle_x = acos(a.x / length_a);
+    const Vector3D rotation_vec_x = -1.0 * angle_x / length_a * cross_product(Vector3D(1.0,0.0,0.0), a);
+    const Rotation rotation_x = Rotation(rotation_vec_x);
+
+    a = rotation_x(a);
+    b = rotation_x(b);
+    c = rotation_x(c);
+
+    if ( (!nearlyZero(a.y)) || (!nearlyZero(a.z)) )
+      throw std::logic_error("a must be parallel to x after rotation but a = " + a.toString());
+
+    // rotate so b.z = 0
+    const double length_b = b.getLength();
+    const double angle_y = acos(b.y / length_b);
+    const Vector3D rotation_vec_y = -1.0 * angle_y * Vector3D(1.0,0.0,0.0);
+    const Rotation rotation_y = Rotation(rotation_vec_y);
+
+    a = rotation_y(a);
+    b = rotation_y(b);
+    c = rotation_y(c);
+
+    if ( (!nearlyZero(a.y)) || (!nearlyZero(a.z)) )
+      throw std::logic_error("a must be parallel to x after second rotation but a = " + a.toString());
+    if ( !nearlyZero(b.z) )
+      throw std::logic_error("b must be perpendicular to z after second rotation but b = " + b.toString());
+
+    return std::make_tuple(a,b,c);
   }
 }
 
@@ -98,17 +206,20 @@ BravaisLattice3D::UnitCell BravaisLattice3D::get_unit_cell(Point3D x, Point3D y,
   if (nearlyZero(determinant))
   {
     throw std::invalid_argument(
-      "Non-independent vectors on the input of BravaisLattice2D::get_unit_cell: x = " + 
+      "Non-independent vectors on the input of BravaisLattice3D::get_unit_cell: x = " + 
       x.toString() + " y = " + y.toString() + " z = " + z.toString()
       );
   }
 
-  Point3D a, b, c;
-  std::tie(a, b, c) = get_shortest_linear_combinations(x, y, z);
-  std::tie(a, b, c) = to_same_octad(a, b, c);
-  std::tie(a, b, c) = rotate(a, b, c);
+  std::tie(x, y, z) = to_same_octad(x, y, z);
 
-  return UnitCell( a, b, c );
+  // ordering is length(x) >= length(y) >= length(z) 
+  std::tie(x, y, z) = order_vectors(x, y, z);
+
+  Point3D a, b, c;
+  std::tie(a, b, c) = get_primitive_cell(x, y, z);
+
+  return UnitCell(a, b, c);
 }
 
 /*
