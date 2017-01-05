@@ -2,7 +2,6 @@
 #define LATTICEGEN_BRAVAISLATTICE3D_H_
 
 #include "Point3D.h"
-#include <utility>
 #include <vector>
 
 namespace Core
@@ -32,31 +31,36 @@ namespace Core
         Cubic_Face
       };
       
-      // canonical unit cell: first cell vector is (a, 0.0), second is (x,y) where x > 0.0 and y >= 0.0 and (x^2 + y^2) < a^2
       struct UnitCell 
       {
-        Point3D a; 
-        Point3D b;
-        Point3D c;
+        static UnitCell create_triclinic(const double a_, const double b_, const double c_, const double alpha_, const double beta_, const double gamma_);
+        static UnitCell create_monoclinic_primitive(const double a_, const double b_, const double c_, const double beta_);
+        static UnitCell create_monoclinic_base(const double a_, const double b_, const double c_, const double beta_);
+        static UnitCell create_orthorhombic_primitive(const double a_, const double b_, const double c_);
+        static UnitCell create_orthorhombic_base(const double a_, const double b_, const double c_);
+        static UnitCell create_orthorhombic_body(const double a_, const double b_, const double c_);
+        static UnitCell create_orthorhombic_face(const double a_, const double b_, const double c_);
+        static UnitCell create_tetragonal_primitive(const double a_, const double c_);
+        static UnitCell create_tetragonal_body(const double a_, const double c_);
+        static UnitCell create_rhombohedral(const double a_, const double alpha_);
+        static UnitCell create_hexagonal(const double a_, const double c_);
+        static UnitCell create_cubic_primitive(const double a_);
+        static UnitCell create_cubic_body(const double a_);
+        static UnitCell create_cubic_face(const double a_);
+
+        const BravaisLattice3DType type;
+
+        const Point3D a; 
+        const Point3D b;
+        const Point3D c;
 
       private: 
-        UnitCell(const Point3D& a_, const Point3D& b_, const Point3D& c_);
+        UnitCell(const BravaisLattice3DType& type_, const Point3D& a_, const Point3D& b_, const Point3D& c_);
 
         friend BravaisLattice3D;
       };
 
-      static UnitCell get_unit_cell(Point3D x, Point3D y, Point3D z);
-      // static BravaisLattice3DType find_lattice_type(const UnitCell& unit_cell);
-      // static Point3DVec get_irreducible_wedge(
-      //   const UnitCell& unit_cell, const unsigned int xsample, const unsigned int ysample, const unsigned int zsample
-      //   );
-      
-      // static std::tuple<Point3D,Point3D,Point3D> get_inverse_unit_cell(const UnitCell& unitCell);
-      
-      BravaisLattice3D(
-        const Point3D& a, const Point3D& b, const Point3D& c, 
-        const size_t x_width, const size_t y_width, const size_t z_width
-        );
+      BravaisLattice3D(const UnitCell& unit_cell_, const size_t x_width, const size_t y_width, const size_t z_width);
 
       UnitCell   get_unit_cell() const { return unit_cell; };
       size_t     get_x_width()   const { return x_width; }
