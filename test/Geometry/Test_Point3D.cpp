@@ -1,9 +1,10 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <Core/Point3D.h>
+#include <Geometry/Point3D.h>
 
-using namespace Core::Geometry;
+using namespace Core;
+using namespace Geometry;
 
 TEST(TestPoint3D,Ctor)
 {

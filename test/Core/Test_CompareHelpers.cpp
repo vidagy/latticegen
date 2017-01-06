@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <Core/Point2D.h>
+#include <Core/ComparisonHelpers.h>
 
 using namespace Core;
 

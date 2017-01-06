@@ -1,12 +1,13 @@
 #include "BravaisLattice3D.h" 
-#include "ComparisonHelpers.h"
+
+#include <Core/ComparisonHelpers.h>
 #include "SymmetryOperations.h"
 
 #include <cmath>
 #include <stdexcept>
 #include <string>
 
-using namespace Core::Geometry;
+using namespace Geometry;
 using namespace Core;
 
 #define CHECK_LENGTH_POSITIVE(x) \

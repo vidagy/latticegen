@@ -1,11 +1,13 @@
 #include "BravaisLattice2D.h" 
-#include "ComparisonHelpers.h"
+
+#include <Core/ComparisonHelpers.h>
 
 #include <math.h>
 #include <stdexcept>
 #include <algorithm>
 
-using namespace Core::Geometry;
+using namespace Core;
+using namespace Geometry;
 
 namespace
 {

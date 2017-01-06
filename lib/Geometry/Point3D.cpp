@@ -2,7 +2,7 @@
 
 namespace std
 {
-  ostream& operator<<(ostream& o, const Core::Geometry::Point3D& p)
+  ostream& operator<<(ostream& o, const Geometry::Point3D& p)
   {
     o << p.toString();
     return o;

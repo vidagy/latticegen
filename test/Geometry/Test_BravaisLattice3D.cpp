@@ -1,14 +1,15 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <Core/BravaisLattice3D.h>
+#include <Geometry/BravaisLattice3D.h>
 #include <Core/ComparisonHelpers.h>
 
 #include <stdexcept>
 #include <tuple>
 #include <math.h>
 
-using namespace Core::Geometry;
+using namespace Core;
+using namespace Geometry;
 
 namespace
 {

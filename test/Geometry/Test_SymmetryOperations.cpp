@@ -1,14 +1,14 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <Core/SymmetryOperations.h>
+#include <Geometry/SymmetryOperations.h>
 
 namespace
 {
   static const double pi = 3.14159265358979323846;
 }
 
-using namespace Core::Geometry;
+using namespace Geometry;
 
 TEST(TestRotation,CtorThrows)
 {
