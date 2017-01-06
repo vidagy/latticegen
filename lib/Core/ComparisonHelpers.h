@@ -28,6 +28,15 @@ namespace Core
     return x < abs_tolerance && x > -1.0 * abs_tolerance;
   }
 
+  inline bool strictlyGreater(const double x, const double y, const double abs_tolerance = ABS_TOLERANCE)
+  {
+    return x > y + abs_tolerance;
+  }
+  inline bool strictlyLess(const double x, const double y, const double abs_tolerance = ABS_TOLERANCE)
+  {
+    return strictlyGreater(y, x, abs_tolerance);
+  }
+
   inline bool greaterEqualsWithTolerance(const double x, const double y, const double abs_tolerance = ABS_TOLERANCE)
   {
     return x > y - abs_tolerance;
@@ -37,13 +46,22 @@ namespace Core
     return greaterEqualsWithTolerance(y, x, abs_tolerance);
   }
 
+  inline bool strictlyPositive(const double x, const double abs_tolerance = ABS_TOLERANCE)
+  {
+    return x > abs_tolerance;
+  }
+  inline bool strictlyNegative(const double x, const double abs_tolerance = ABS_TOLERANCE)
+  {
+    return x < -abs_tolerance;
+  }
+
   inline bool positiveWithTolerance(const double x, const double abs_tolerance = ABS_TOLERANCE)
   {
-    return greaterEqualsWithTolerance(x, 0.0, abs_tolerance);
+    return ! strictlyNegative(x, abs_tolerance);
   }
   inline bool negativeWithTolerance(const double x, const double abs_tolerance = ABS_TOLERANCE)
   {
-    return lessEqualsWithTolerance(x, 0.0, abs_tolerance);
+    return ! strictlyPositive(x, abs_tolerance);
   }
 }
 #endif // LATTICEGEN_COMPARISONHELPERS_H_

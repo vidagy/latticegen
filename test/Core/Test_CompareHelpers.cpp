@@ -48,6 +48,32 @@ TEST(TestCompareHelpers,NearlyZero)
   EXPECT_FALSE( nearlyZero(pe,1e-11) );
 }
 
+TEST(TestCompareHelpers,StrictlyGreater)
+{
+  const double x = 1.0;
+  const double pe =  0.0000000001;
+  const double me = -0.0000000001;
+
+  EXPECT_FALSE( strictlyGreater(x, x + me,1e-9) );
+  EXPECT_FALSE( strictlyGreater(x, x + pe,1e-9) );
+
+  EXPECT_TRUE ( strictlyGreater(x, x + me,1e-11) );
+  EXPECT_FALSE( strictlyGreater(x, x + pe,1e-11) );
+}
+
+TEST(TestCompareHelpers,StrictlyLess)
+{
+  const double x = 1.0;
+  const double pe =  0.0000000001;
+  const double me = -0.0000000001;
+
+  EXPECT_FALSE( strictlyLess(x, x + me,1e-9) );
+  EXPECT_FALSE( strictlyLess(x, x + pe,1e-9) );
+
+  EXPECT_FALSE( strictlyLess(x, x + me,1e-11) );
+  EXPECT_TRUE ( strictlyLess(x, x + pe,1e-11) );
+}
+
 TEST(TestCompareHelpers,GreaterEqualsWithTolerance)
 {
   const double x = 1.0;
@@ -96,4 +122,28 @@ TEST(TestCompareHelpers,NegativeWithTolerance)
 
   EXPECT_TRUE( negativeWithTolerance(me,1e-11) );
   EXPECT_FALSE( negativeWithTolerance(pe,1e-11) );
+}
+
+TEST(TestCompareHelpers,StrictlyPositive)
+{
+  const double pe =  0.0000000001;
+  const double me = -0.0000000001;
+
+  EXPECT_FALSE( strictlyPositive(me,1e-9) );
+  EXPECT_FALSE( strictlyPositive(pe,1e-9) );
+
+  EXPECT_FALSE( strictlyPositive(me,1e-11) );
+  EXPECT_TRUE( strictlyPositive(pe,1e-11) );
+}
+
+TEST(TestCompareHelpers,StrictlyNegative)
+{
+  const double pe =  0.0000000001;
+  const double me = -0.0000000001;
+
+  EXPECT_FALSE( strictlyNegative(me,1e-9) );
+  EXPECT_FALSE( strictlyNegative(pe,1e-9) );
+
+  EXPECT_TRUE( strictlyNegative(me,1e-11) );
+  EXPECT_FALSE( strictlyNegative(pe,1e-11) );
 }

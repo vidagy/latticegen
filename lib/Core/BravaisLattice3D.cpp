@@ -9,6 +9,43 @@
 using namespace Core::Geometry;
 using namespace Core;
 
+#define CHECK_LENGTH_POSITIVE(x) \
+    if (! strictlyPositive(x))         \
+      { throw std::invalid_argument(std::string("Lattice vector length ") + #x  + " must be positive"); } ; 
+
+#define CHECK_LENGTH_DIFFERENT(x, y)   \
+    if (equalsWithTolerance(x, y))     \
+      { throw std::invalid_argument(std::string("Lattice vector length ") + #x  + " and " + #y + " must differ"); } ; 
+
+#define CHECK_ANGLE_ACUTE(x)            \
+    if (! strictlyPositive(x) || ! strictlyLess(x, pi/2.0) )    \
+      throw std::invalid_argument(std::string("Lattice angle ") + #x  + " must be acute");
+
+#define CHECK_ANGLE_DIFFERENT(x, y)   \
+    if (equalsWithTolerance(x, y))     \
+      { throw std::invalid_argument(std::string("Lattice angle ") + #x  + " and " + #y + " must differ"); } ; 
+
+#define CHECK_LENGTH2(x, y) \
+    CHECK_LENGTH_POSITIVE(x); \
+    CHECK_LENGTH_POSITIVE(y); \
+    CHECK_LENGTH_DIFFERENT(x,y); 
+
+#define CHECK_LENGTH(x, y, z) \
+    CHECK_LENGTH_POSITIVE(x); \
+    CHECK_LENGTH_POSITIVE(y); \
+    CHECK_LENGTH_POSITIVE(z); \
+    CHECK_LENGTH_DIFFERENT(x,y); \
+    CHECK_LENGTH_DIFFERENT(x,z); \
+    CHECK_LENGTH_DIFFERENT(y,z);
+
+#define CHECK_ANGLE(x, y, z) \
+    CHECK_ANGLE_ACUTE(x); \
+    CHECK_ANGLE_ACUTE(y); \
+    CHECK_ANGLE_ACUTE(z); \
+    CHECK_ANGLE_DIFFERENT(x,y); \
+    CHECK_ANGLE_DIFFERENT(x,z); \
+    CHECK_ANGLE_DIFFERENT(y,z);
+
 namespace
 {
   static const double pi = 3.14159265358979323846;
@@ -38,6 +75,9 @@ BravaisLattice3D::UnitCell::UnitCell(const BravaisLattice3DType& type_, const Po
 BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_triclinic(
   const double a_, const double b_, const double c_, const double alpha_, const double beta_, const double gamma_)
 {
+  CHECK_LENGTH(a_, b_, c_);
+  CHECK_ANGLE(alpha_, beta_, gamma_);
+
   const Vector3D v1 = x;
 
   const Vector3D v2 = Rotation(gamma_ * z) * x;
@@ -52,6 +92,9 @@ BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_triclinic(
 BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_monoclinic_primitive(
   const double a_, const double b_, const double c_, const double beta_)
 {
+  CHECK_LENGTH(a_, b_, c_);
+  CHECK_ANGLE_ACUTE(beta_);
+
   const Vector3D v1 = a_*x;
   const Vector3D v2 = b_*y;
   const Vector3D v3 = c_* (Rotation(beta_ * y)*z);
@@ -61,6 +104,9 @@ BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_monoclinic_primiti
 BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_monoclinic_base(
   const double a_, const double b_, const double c_, const double beta_)
 {
+  CHECK_LENGTH(a_, b_, c_);
+  CHECK_ANGLE_ACUTE(beta_);
+
   const Vector3D v1 = a_*x;
   const Vector3D v2 = 1.0 / 2.0 * (a_*x + b_*y);
   const Vector3D v3 = c_*(Rotation(beta_ * y)*z);
@@ -69,6 +115,8 @@ BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_monoclinic_base(
 }
 BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_orthorhombic_primitive(const double a_, const double b_, const double c_)
 {
+  CHECK_LENGTH(a_, b_, c_);
+
   const Vector3D v1 = a_*x;
   const Vector3D v2 = b_*y;
   const Vector3D v3 = c_*z;
@@ -77,6 +125,8 @@ BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_orthorhombic_primi
 }
 BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_orthorhombic_base(const double a_, const double b_, const double c_)
 {
+  CHECK_LENGTH(a_, b_, c_);
+
   const Vector3D v1 = a_*x;
   const Vector3D v2 = 1.0 / 2.0 * (a_*x + b_*y);
   const Vector3D v3 = c_*z;
@@ -85,6 +135,8 @@ BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_orthorhombic_base(
 }
 BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_orthorhombic_body(const double a_, const double b_, const double c_)
 {
+  CHECK_LENGTH(a_, b_, c_);
+
   const Vector3D v1 = a_*x;
   const Vector3D v2 = b_*y;
   const Vector3D v3 = (a_*x) + (b_*y) + 1.0 / 2.0 * (c_*z);
@@ -93,6 +145,8 @@ BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_orthorhombic_body(
 }
 BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_orthorhombic_face(const double a_, const double b_, const double c_)
 {
+  CHECK_LENGTH(a_, b_, c_);
+
   const Vector3D v1 = 1.0 / 2.0 * (a_*x + b_*y);
   const Vector3D v2 = 1.0 / 2.0 * (b_*y + c_*z);
   const Vector3D v3 = 1.0 / 2.0 * (a_*x + c_*z);
@@ -101,6 +155,8 @@ BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_orthorhombic_face(
 }
 BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_tetragonal_primitive(const double a_, const double c_)
 {
+  CHECK_LENGTH2(a_, c_);
+
   const Vector3D v1 = a_*x;
   const Vector3D v2 = a_*y;
   const Vector3D v3 = c_*z;
@@ -109,6 +165,8 @@ BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_tetragonal_primiti
 }
 BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_tetragonal_body(const double a_, const double c_)
 {
+  CHECK_LENGTH2(a_, c_);
+
   const Vector3D v1 = a_*x;
   const Vector3D v2 = a_*y;
   const Vector3D v3 = a_*(x+y) + 1.0 / 2.0 * (c_*z);
@@ -117,6 +175,9 @@ BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_tetragonal_body(co
 }
 BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_rhombohedral(const double a_, const double alpha_)
 {
+  CHECK_LENGTH_POSITIVE(a_);
+  CHECK_ANGLE_ACUTE(alpha_);
+
   const Vector3D v1 = x;
   const Vector3D v2 = Vector3D(cos(alpha_), sin(alpha_), 0.0);
   const Vector3D v3 = Vector3D(cos(alpha_)*cos(alpha_/2.0), cos(alpha_)*sin(alpha_/2.0) , sin(alpha_) );
@@ -125,6 +186,8 @@ BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_rhombohedral(const
 }
 BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_hexagonal(const double a_, const double c_)
 {
+  CHECK_LENGTH2(a_, c_);
+
   const Vector3D v1 = x;
   const Vector3D v2 = Vector3D(cos(pi/3.0), sin(pi/3.0), 0.0);
   const Vector3D v3 = z;
@@ -133,6 +196,8 @@ BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_hexagonal(const do
 }
 BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_cubic_primitive(const double a_)
 {
+  CHECK_LENGTH_POSITIVE(a_);
+
   const Vector3D v1 = a_*x;
   const Vector3D v2 = a_*y;
   const Vector3D v3 = a_*z;
@@ -141,6 +206,8 @@ BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_cubic_primitive(co
 }
 BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_cubic_body(const double a_)
 {
+  CHECK_LENGTH_POSITIVE(a_);
+
   const Vector3D v1 = a_*x;
   const Vector3D v2 = a_*y;
   const Vector3D v3 = a_*(x + y + 1.0/2.0*z);
@@ -149,6 +216,8 @@ BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_cubic_body(const d
 }
 BravaisLattice3D::UnitCell BravaisLattice3D::UnitCell::create_cubic_face(const double a_)
 {
+  CHECK_LENGTH_POSITIVE(a_);
+
   const Vector3D v1 = a_ / 2.0 * (x+y);
   const Vector3D v2 = a_ / 2.0 * (y+z);
   const Vector3D v3 = a_ / 2.0 * (y+z);
