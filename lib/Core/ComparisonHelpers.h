@@ -17,10 +17,8 @@ namespace Core
       return false;
     
     double sum = (lhs + rhs) / 2.0;
-    if (diff / sum > rel_tolerance)
-      return false;
-
-    return true;
+    return !(diff / sum > rel_tolerance);
+      
   }
 
   inline bool nearlyZero(const double x, const double abs_tolerance = ABS_TOLERANCE)

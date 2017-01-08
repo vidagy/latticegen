@@ -163,22 +163,3 @@ TEST(TestPoint3D,Compare)
   EXPECT_FALSE(p == w);
   EXPECT_FALSE(p == x);
 }
-
-TEST(TestPoint3D,IsRectangular)
-{
-  const Point3D p = Point3D(1.0,2.0,3.0);
-  const Point3D q = Point3D(1.0,2.0,3.0);
-  
-  EXPECT_FALSE(isRectangular(p,q));
-
-  const Point3D r = Point3D(2.0,-1.0,0.0);
-  const Point3D s = Point3D(3.0,0.0,-1.0);
-  const Point3D t = Point3D(0.0,3.0,-2.0);
-
-  EXPECT_TRUE(isRectangular(p,r));
-  EXPECT_TRUE(isRectangular(r,p));
-  EXPECT_TRUE(isRectangular(p,s));
-  EXPECT_TRUE(isRectangular(s,p));
-  EXPECT_TRUE(isRectangular(p,t));
-  EXPECT_TRUE(isRectangular(t,p));
-}

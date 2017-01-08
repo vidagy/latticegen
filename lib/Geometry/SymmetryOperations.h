@@ -6,8 +6,6 @@
 
 namespace Geometry
 {
-  typedef Point3D Vector3D;
-
   class Rotation
   {
   public:

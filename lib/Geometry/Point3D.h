@@ -66,6 +66,8 @@ namespace Geometry
     double z;
   };
 
+  typedef Point3D Vector3D;
+
   inline bool operator==(const Point3D& lhs, const Point3D& rhs)
   {
     return equalsWithTolerance(lhs.x, rhs.x) && 
@@ -103,10 +105,6 @@ namespace Geometry
         lhs.z * rhs.x - lhs.x * rhs.z,
         lhs.x * rhs.y - lhs.y * rhs.x
       );
-  }
-  inline bool isRectangular(const Point3D& lhs, const Point3D& rhs)
-  {
-    return equalsWithTolerance(lhs * rhs, 0.0);
   }
   inline void swap(Point3D& lhs, Point3D& rhs)
   {
