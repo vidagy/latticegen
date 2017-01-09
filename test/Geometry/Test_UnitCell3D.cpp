@@ -246,32 +246,18 @@ TEST(UnitCell3D,GetOffset)
   const double beta_ = pi/4.0;
   const double gamma_ = pi/6.0;
 
-  std::cout << "UnitCell3D::create_triclinic" << std::endl;
   test_get_offset(UnitCell3D::create_triclinic(a_,  b_,  c_,  alpha_,  beta_,  gamma_));
-  std::cout << "UnitCell3D::create_monoclinic_primitive" << std::endl;
   test_get_offset(UnitCell3D::create_monoclinic_primitive(a_,  b_,  c_,  beta_));
-  std::cout << "UnitCell3D::create_monoclinic_base" << std::endl;
   test_get_offset(UnitCell3D::create_monoclinic_base(a_,  b_,  c_,  beta_));
-  std::cout << "UnitCell3D::create_orthorhombic_primitive" << std::endl;
   test_get_offset(UnitCell3D::create_orthorhombic_primitive(a_,  b_,  c_));
-  std::cout << "UnitCell3D::create_orthorhombic_base" << std::endl;
   test_get_offset(UnitCell3D::create_orthorhombic_base(a_,  b_,  c_));
-  std::cout << "UnitCell3D::create_orthorhombic_body" << std::endl;
   test_get_offset(UnitCell3D::create_orthorhombic_body(a_,  b_,  c_));
-  std::cout << "UnitCell3D::create_orthorhombic_face" << std::endl;
   test_get_offset(UnitCell3D::create_orthorhombic_face(a_,  b_,  c_));
-  std::cout << "UnitCell3D::create_tetragonal_primitive" << std::endl;
   test_get_offset(UnitCell3D::create_tetragonal_primitive(a_,  c_));
-  std::cout << "UnitCell3D::create_tetragonal_body" << std::endl;
   test_get_offset(UnitCell3D::create_tetragonal_body(a_,  c_));
-  std::cout << "UnitCell3D::create_rhombohedral" << std::endl;
   test_get_offset(UnitCell3D::create_rhombohedral(a_,  alpha_));
-  std::cout << "UnitCell3D::create_hexagonal" << std::endl;
   test_get_offset(UnitCell3D::create_hexagonal(a_,  c_));
-  std::cout << "UnitCell3D::create_cubic_primitive" << std::endl;
   test_get_offset(UnitCell3D::create_cubic_primitive(a_));
-  std::cout << "UnitCell3D::create_cubic_body" << std::endl;
   test_get_offset(UnitCell3D::create_cubic_body(a_));
-  std::cout << "UnitCell3D::create_cubic_face" << std::endl;
   test_get_offset(UnitCell3D::create_cubic_face(a_));
 }

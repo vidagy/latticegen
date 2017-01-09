@@ -223,7 +223,6 @@ namespace
 {
   long get_steps(const Point3D& unit_vector, const Point3D& perp1, const Point3D& perp2, const Point3D to_digest)
   {
-
     Point3D parallel = cross_product(perp1, perp2);
     const double parallel_length = parallel.getLength();
     parallel = 1.0 / parallel_length * parallel;
