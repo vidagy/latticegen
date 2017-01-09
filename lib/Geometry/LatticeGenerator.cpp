@@ -16,14 +16,14 @@ namespace Geometry
     long min_x(0), min_y(0), min_z(0);
     if (positive_only)
     {
-      lattice.reserve( (max_x+1) *(max_y+1) * (max_z+1));
+      lattice.reserve((unsigned long) ((max_x + 1) * (max_y + 1) * (max_z + 1)));
     }
     else
     {
       min_x = -max_x;
       min_y = -max_y;
       min_z = -max_z;
-      lattice.reserve( (2*max_x+1) *(2*max_y+1) * (2*max_z+1));
+      lattice.reserve((unsigned long) ((2 * max_x + 1) * (2 * max_y + 1) * (2 * max_z + 1)));
     }
 
     const UnitCell3D& unit_cell = cutoff->unit_cell;
