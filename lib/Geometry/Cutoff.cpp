@@ -1,18 +1,9 @@
 #include "Cutoff.h"
 
-#include <math.h>
-#include <stdexcept>
-#include <string>
-
-#include <Core/ComparisonHelpers.h>
 using namespace Core;
 
 namespace Geometry
 {
-  static const Point3D x = Point3D(1.0, 0.0, 0.0);
-  static const Point3D y = Point3D(1.0, 1.0, 0.0);
-  static const Point3D z = Point3D(1.0, 0.0, 1.0);
-
   namespace
   {
     size_t get_max_steps(const Point3D& v, const Point3D& perp1, const Point3D& perp2, const double max_distance)
@@ -20,14 +11,14 @@ namespace Geometry
       Point3D perp = cross_product(perp1, perp2);
       const double perp_length = perp.getLength();
       perp = 1.0 / perp_length * perp;
-      
-      double perp_component = v * perp; 
-      return max_distance / perp_component + 1;
+
+      double perp_component = v * perp;
+      return (size_t) (max_distance / perp_component + 1);
     }
   }
 
   CutoffCube::CutoffCube(const UnitCell3D& unit_cell_, const double a_)
-    : Cutoff(unit_cell_), a(a_) 
+    : Cutoff(unit_cell_), a(a_)
   {
     if (! strictlyPositive(a))
       throw std::invalid_argument("In CutoffCube::ctor: a must be non-negative but a = " + std::to_string(a));
@@ -35,11 +26,11 @@ namespace Geometry
 
   bool CutoffCube::is_included(const Point3D& point) const
   {
-    return lessEqualsWithTolerance(fabs(point.x), a) && 
-      lessEqualsWithTolerance(fabs(point.y), a) && 
+    return lessEqualsWithTolerance(fabs(point.x), a) &&
+      lessEqualsWithTolerance(fabs(point.y), a) &&
       lessEqualsWithTolerance(fabs(point.z), a);
   }
-  
+
   std::tuple<size_t, size_t, size_t> CutoffCube::steps_to_cover() const
   {
     return std::make_tuple(
@@ -50,7 +41,7 @@ namespace Geometry
   }
 
   CutoffSphere::CutoffSphere(const UnitCell3D& unit_cell_, const double r_)
-    : Cutoff(unit_cell_), r(r_) 
+    : Cutoff(unit_cell_), r(r_)
   {
     if (! strictlyPositive(r))
       throw std::invalid_argument("In CutoffSphere::ctor: a must be non-negative but r = " + std::to_string(r));
@@ -82,11 +73,11 @@ namespace Geometry
   {
     long nx, ny, nz;
     std::tie(nx, ny, nz) = unit_cell.get_offsets(point);
-    return abs(nx) <= a_max &&
-      abs(ny) <= b_max &&
-      abs(nz) <= c_max;
+    return labs(nx) <= a_max &&
+           labs(ny) <= b_max &&
+           labs(nz) <= c_max;
   }
-  
+
   std::tuple<size_t, size_t, size_t> CutoffUnitVectors::steps_to_cover() const
   {
     return std::make_tuple(a_max, b_max, c_max);

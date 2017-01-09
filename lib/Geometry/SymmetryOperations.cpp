@@ -1,9 +1,5 @@
 #include "SymmetryOperations.h" 
 
-#include <Core/ComparisonHelpers.h>
-
-#include <stdexcept>
-
 using namespace Core;
 using namespace Geometry;
 

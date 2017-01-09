@@ -1,9 +1,5 @@
 #include "BravaisLattice2D.h" 
 
-#include <Core/ComparisonHelpers.h>
-
-#include <math.h>
-#include <stdexcept>
 #include <algorithm>
 
 using namespace Core;
@@ -17,19 +13,19 @@ namespace
 BravaisLattice2D::UnitCell::UnitCell(const Point2D& a_, const Point2D& b_)
   : a(a_), b(b_)
 {
-  if (! a_.getLength() > 0.0)
+  if (a_.getLength() <= 0.0)
     throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: a must be non null vector but a = " + a_.toString());
-  if (! b_.getLength() > 0.0)
+  if (b_.getLength() <= 0.0)
     throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: b must be non null vector but b = " + b_.toString());
   
-  if (! a_.x > 0.0)
+  if (a_.x <= 0.0)
     throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: a.x must be positive but a = " + a_.toString());
   if (! nearlyZero(a_.y) )
     throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: a.y must be zero but a = " + a_.toString());
-  
+
   if (! positiveWithTolerance(b_.x))
     throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: b.x must be positive with tolerance but b = " + b_.toString());
-  if (! b_.y > 0.0)
+  if (b_.y <= 0.0)
     throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: b.y must be positive but b = " + b_.toString());
   
   if (! greaterEqualsWithTolerance(a_.getLength(), b_.getLength()))
@@ -37,7 +33,6 @@ BravaisLattice2D::UnitCell::UnitCell(const Point2D& a_, const Point2D& b_)
       "In BravaisLattice2D::UnitCell::ctor: a must be longer than b but a = " + a_.toString() + " and b = " + b.toString()
       );
 }
-
 
 BravaisLattice2D::UnitCell BravaisLattice2D::get_unit_cell(Point2D x, Point2D y)
 {

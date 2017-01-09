@@ -1,10 +1,7 @@
 #include "BravaisLattice3D.h" 
 
-#include <Core/ComparisonHelpers.h>
 #include "Cutoff.h"
 #include "LatticeGenerator.h"
-
-#include <memory>
 
 using namespace Geometry;
 using namespace Core;

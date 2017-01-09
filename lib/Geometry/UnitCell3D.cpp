@@ -1,11 +1,8 @@
 #include "UnitCell3D.h" 
 
-#include <Core/ComparisonHelpers.h>
 #include "SymmetryOperations.h"
 
 #include <cmath>
-#include <stdexcept>
-#include <string>
 
 using namespace Geometry;
 using namespace Core;
@@ -58,11 +55,11 @@ namespace
 UnitCell3D::UnitCell3D(const BravaisLattice3DType& type_, const Point3D& a_, const Point3D& b_, const Point3D& c_)
   : type(type_), a(a_), b(b_), c(c_)
 {
-  if (! a_.getLength() > 0.0)
+  if (a_.getLength() <= 0.0)
     throw std::invalid_argument("In UnitCell3D::ctor: a must be non null vector but a = " + a_.toString());
-  if (! b_.getLength() > 0.0)
+  if (b_.getLength() <= 0.0)
     throw std::invalid_argument("In UnitCell3D::ctor: b must be non null vector but b = " + b_.toString());
-  if (! c_.getLength() > 0.0)
+  if (c_.getLength() <= 0.0)
     throw std::invalid_argument("In UnitCell3D::ctor: c must be non null vector but c = " + c_.toString());
 }
 

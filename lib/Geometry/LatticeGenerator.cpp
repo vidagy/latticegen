@@ -1,7 +1,5 @@
 #include "LatticeGenerator.h"
 
-#include <tuple>
-
 namespace Geometry
 {
   LatticeGenerator::LatticeGenerator(std::unique_ptr<Cutoff> cutoff_)
