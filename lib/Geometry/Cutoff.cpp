@@ -73,9 +73,9 @@ namespace Geometry
   {
     long nx, ny, nz;
     std::tie(nx, ny, nz) = unit_cell.get_offsets(point);
-    return labs(nx) <= a_max &&
-           labs(ny) <= b_max &&
-           labs(nz) <= c_max;
+    return (size_t)labs(nx) <= a_max &&
+           (size_t)labs(ny) <= b_max &&
+           (size_t)labs(nz) <= c_max;
   }
 
   std::tuple<size_t, size_t, size_t> CutoffUnitVectors::steps_to_cover() const

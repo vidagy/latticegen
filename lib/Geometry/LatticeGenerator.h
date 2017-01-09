@@ -12,11 +12,11 @@ namespace Geometry
   class LatticeGenerator
   {
   public:
-    LatticeGenerator(std::unique_ptr<Cutoff> cutoff);
+    LatticeGenerator(std::shared_ptr<Cutoff> cutoff);
 
     std::vector<Point3D> generate(const bool positive_only = false);
 
-    std::unique_ptr<Cutoff> cutoff;
+    std::shared_ptr<Cutoff> cutoff;
   };
 }
 

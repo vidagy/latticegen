@@ -2,7 +2,6 @@
 #include <gmock/gmock.h>
 
 #include <Geometry/Cutoff.h>
-#include <Geometry/UnitCell3D.h>
 
 using namespace Core;
 using namespace Geometry;
