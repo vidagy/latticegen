@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <string>
 #include <math.h>
 
 #include <Core/ComparisonHelpers.h>
@@ -48,17 +49,9 @@ namespace Geometry
       return *this;
     }
 
-    double getLength() const
+    double length() const
     {
       return sqrt( x*x + y*y + z*z );
-    }
-
-    std::string toString() const 
-    {
-      std::stringstream ss;
-      ss << std::scientific << std::setprecision(std::numeric_limits< double >::max_digits10) 
-         << "(" << x << " , " << y << " , " << z << " )";
-      return ss.str();
     }
 
 	  double x;
@@ -124,9 +117,18 @@ namespace Geometry
 
 namespace std
 {
+  using namespace Geometry;
+  inline std::string to_string(const Point3D& point)
+  {
+    std::stringstream ss;
+    ss << std::scientific << std::setprecision(std::numeric_limits< double >::max_digits10)
+       << "(" << point.x << " , " << point.y << " , " << point.z << " )";
+    return ss.str();
+  }
+
   inline ostream& operator<<(ostream& o, const Geometry::Point3D& p)
   {
-    o << p.toString();
+    o << to_string(p);
     return o;
   }
 }

@@ -9,7 +9,7 @@ namespace Geometry
     size_t get_max_steps(const Point3D& v, const Point3D& perp1, const Point3D& perp2, const double max_distance)
     {
       Point3D perp = cross_product(perp1, perp2);
-      const double perp_length = perp.getLength();
+      const double perp_length = perp.length();
       perp = 1.0 / perp_length * perp;
 
       double perp_component = v * perp;
@@ -49,7 +49,7 @@ namespace Geometry
 
   bool CutoffSphere::is_included(const Point3D& point) const
   {
-    return lessEqualsWithTolerance(point.getLength(), r);
+    return lessEqualsWithTolerance(point.length(), r);
   }
 
   std::tuple<size_t, size_t, size_t> CutoffSphere::steps_to_cover() const

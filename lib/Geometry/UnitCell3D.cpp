@@ -55,12 +55,12 @@ namespace
 UnitCell3D::UnitCell3D(const BravaisLattice3DType& type_, const Point3D& a_, const Point3D& b_, const Point3D& c_)
   : type(type_), a(a_), b(b_), c(c_)
 {
-  if (a_.getLength() <= 0.0)
-    throw std::invalid_argument("In UnitCell3D::ctor: a must be non null vector but a = " + a_.toString());
-  if (b_.getLength() <= 0.0)
-    throw std::invalid_argument("In UnitCell3D::ctor: b must be non null vector but b = " + b_.toString());
-  if (c_.getLength() <= 0.0)
-    throw std::invalid_argument("In UnitCell3D::ctor: c must be non null vector but c = " + c_.toString());
+  if (a_.length() <= 0.0)
+    throw std::invalid_argument("In UnitCell3D::ctor: a must be non null vector but a = " + std::to_string(a_));
+  if (b_.length() <= 0.0)
+    throw std::invalid_argument("In UnitCell3D::ctor: b must be non null vector but b = " + std::to_string(b_));
+  if (c_.length() <= 0.0)
+    throw std::invalid_argument("In UnitCell3D::ctor: c must be non null vector but c = " + std::to_string(c_));
 }
 
 UnitCell3D UnitCell3D::create_triclinic(
@@ -221,7 +221,7 @@ namespace
   long get_steps(const Point3D& unit_vector, const Point3D& perp1, const Point3D& perp2, const Point3D to_digest)
   {
     Point3D parallel = cross_product(perp1, perp2);
-    const double parallel_length = parallel.getLength();
+    const double parallel_length = parallel.length();
     parallel = 1.0 / parallel_length * parallel;
     
     double parallel_to_digest = to_digest * parallel; 
@@ -231,10 +231,10 @@ namespace
     long l_ratio = std::lround(ratio);
 
     if (! (equalsWithTolerance(ratio, l_ratio) || nearlyZero( ratio - (double)l_ratio)))
-      throw std::invalid_argument("Point " + to_digest.toString() + " is not a lattice vector. Unit vectors are unit_vector = "
-        + unit_vector.toString() + " perp1 = "
-        + perp1.toString() + " perp2 = "
-        + perp2.toString() + " diff for n = " + std::to_string(ratio - (double)l_ratio)
+      throw std::invalid_argument("Point " + std::to_string(to_digest) + " is not a lattice vector. Unit vectors are unit_vector = "
+        + std::to_string(unit_vector) + " perp1 = "
+        + std::to_string(perp1) + " perp2 = "
+        + std::to_string(perp2) + " diff for n = " + std::to_string(ratio - (double)l_ratio)
         ); 
 
     return l_ratio;

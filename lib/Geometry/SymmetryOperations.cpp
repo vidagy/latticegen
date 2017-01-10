@@ -7,7 +7,7 @@ namespace
 {
   Matrix3D get_rotation_matrix(const Vector3D& rotation_vector)
   {
-    const double angle = rotation_vector.getLength();
+    const double angle = rotation_vector.length();
     
     if (Core::nearlyZero(angle))
       throw std::invalid_argument("Rotation can not be created from null vector");
@@ -62,8 +62,8 @@ namespace
 Reflection::Reflection(const Vector3D& reflection_plane)
 : reflection_matrix(get_reflection_matrix(reflection_plane))
 {
-  if (! equalsWithTolerance(reflection_plane.getLength(), 1.0))
-    throw std::invalid_argument("Non-unit vector on input of Reflection: " + reflection_plane.toString());
+  if (! equalsWithTolerance(reflection_plane.length(), 1.0))
+    throw std::invalid_argument("Non-unit vector on input of Reflection: " + std::to_string(reflection_plane));
 }
 
 Vector3D Reflection::operator()(const Vector3D& vector) const
