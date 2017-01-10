@@ -124,6 +124,10 @@ namespace Geometry
 
 namespace std
 {
-  ostream& operator<<(ostream& o, const Geometry::Point3D& p);
+  inline ostream& operator<<(ostream& o, const Geometry::Point3D& p)
+  {
+    o << p.toString();
+    return o;
+  }
 }
 #endif // LATTICEGEN_POINT3D_H_

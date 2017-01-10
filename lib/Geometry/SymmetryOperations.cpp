@@ -5,7 +5,7 @@ using namespace Geometry;
 
 namespace
 {
-  Rotation::RotationMatrix get_rotation_matrix(const Vector3D& rotation_vector)
+  Matrix3D get_rotation_matrix(const Vector3D& rotation_vector)
   {
     const double angle = rotation_vector.getLength();
     
@@ -14,7 +14,7 @@ namespace
 
     const Vector3D axis = rotation_vector * (1.0 / angle);
 
-    Rotation::RotationMatrix result = {
+    Matrix3D result = {
         cos(angle)+pow(axis.x,2)*(1.0-cos(angle)) , 
         axis.x*axis.y*(1.0-cos(angle))-axis.z*sin(angle) ,
         axis.x*axis.z*(1.0-cos(angle))+axis.y*sin(angle) ,
@@ -38,9 +38,35 @@ Rotation::Rotation(const Vector3D& rotation_vector)
 
 Vector3D Rotation::operator()(const Vector3D& vector) const
 {
-  return Vector3D(
-      rotation_matrix[0][0] * vector.x + rotation_matrix[0][1] * vector.y + rotation_matrix[0][2] * vector.z,
-      rotation_matrix[1][0] * vector.x + rotation_matrix[1][1] * vector.y + rotation_matrix[1][2] * vector.z,
-      rotation_matrix[2][0] * vector.x + rotation_matrix[2][1] * vector.y + rotation_matrix[2][2] * vector.z
-    );
+  return rotation_matrix * vector;
+}
+
+namespace
+{
+  Matrix3D get_diad(const Vector3D& vector)
+  {
+    return Matrix3D {
+    vector.x *vector.x, vector.x *vector.y, vector.x *vector.z,
+    vector.y *vector.x, vector.y *vector.y, vector.y *vector.z,
+    vector.z *vector.x, vector.z *vector.y, vector.z *vector.z
+    };
+  }
+
+  Matrix3D get_reflection_matrix(const Vector3D& vector)
+  {
+    Matrix3D unit_matrix = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+    return unit_matrix -2.0 * get_diad(vector);
+  }
+}
+
+Reflection::Reflection(const Vector3D& reflection_plane)
+: reflection_matrix(get_reflection_matrix(reflection_plane))
+{
+  if (! equalsWithTolerance(reflection_plane.getLength(), 1.0))
+    throw std::invalid_argument("Non-unit vector on input of Reflection: " + reflection_plane.toString());
+}
+
+Vector3D Reflection::operator()(const Vector3D& vector) const
+{
+  return reflection_matrix * vector;
 }
