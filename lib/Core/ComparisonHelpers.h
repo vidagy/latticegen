@@ -5,7 +5,7 @@
 
 namespace Core
 {
-  static const double ABS_TOLERANCE = 1e-15;
+  static const double ABS_TOLERANCE = 1e-14;
   static const double REL_TOLERANCE = 1e-10;
 
   inline bool equalsWithTolerance(

@@ -99,3 +99,59 @@ TEST(TestImproperRotation,RotateAndReflect)
   EXPECT_EQ(improper_rotation * xz, Vector3D(0.0, 1.0, -1.0) );
 }
 
+namespace 
+{
+  void test_inversion(const Vector3D& vector)
+  {
+    Rotation rotation = Rotation(vector/vector.length()*pi);
+    Reflection reflection = Reflection(vector/vector.length());
+
+    for (auto x = -2.0; x <= 2.0; x += 0.6)
+    {
+      for (auto y = -2.0; y <= 2.0; y += 0.7)
+      {
+        for (auto z = -2.0; z <= 2.0; z += 0.8)
+        {
+          Vector3D v = Vector3D(x,y,z);
+          EXPECT_EQ(rotation * reflection * v, Inversion() * v);
+          EXPECT_EQ(reflection * rotation * v, Inversion() * v);
+        }
+      }
+    }
+  }
+}
+
+TEST(test_inversion,Rotate180AndReflectIsInversion)
+{
+  test_inversion(Vector3D(1.0,0.0,0.0));
+  test_inversion(Vector3D(0.0,1.0,0.0));
+  test_inversion(Vector3D(0.0,0.0,1.0));
+
+  test_inversion(Vector3D( 1.0, 1.0, 0.0));
+  test_inversion(Vector3D( 1.0, 0.0, 1.0));
+  test_inversion(Vector3D( 0.0, 1.0, 1.0));
+
+  test_inversion(Vector3D(-1.0, 1.0, 0.0));
+  test_inversion(Vector3D(-1.0, 0.0, 1.0));
+  test_inversion(Vector3D( 0.0,-1.0, 1.0));
+
+  test_inversion(Vector3D( 1.0,-1.0, 0.0));
+  test_inversion(Vector3D( 1.0, 0.0,-1.0));
+  test_inversion(Vector3D( 0.0, 1.0,-1.0));
+
+  test_inversion(Vector3D(-1.0,-1.0, 0.0));
+  test_inversion(Vector3D(-1.0, 0.0,-1.0));
+  test_inversion(Vector3D( 0.0,-1.0,-1.0));
+
+  test_inversion(Vector3D( 1.0, 1.0, 1.0));
+  test_inversion(Vector3D(-1.0, 1.0, 1.0));
+  test_inversion(Vector3D( 1.0,-1.0, 1.0));
+  test_inversion(Vector3D( 1.0, 1.0,-1.0));
+  test_inversion(Vector3D(-1.0,-1.0, 1.0));
+  test_inversion(Vector3D(-1.0, 1.0,-1.0));
+  test_inversion(Vector3D( 1.0,-1.0,-1.0));
+  test_inversion(Vector3D(-1.0,-1.0,-1.0));
+
+  test_inversion(Vector3D(1.0,2.0,3.0));
+}
+
