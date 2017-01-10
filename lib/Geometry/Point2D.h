@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <string>
 #include <math.h>
 
 #include <Core/ComparisonHelpers.h>
@@ -41,15 +42,8 @@ namespace Geometry {
           return *this;
         }
 
-        double getLength() const {
+        double length() const {
           return sqrt(x * x + y * y);
-        }
-
-        std::string toString() const {
-          std::stringstream ss;
-          ss << std::scientific << std::setprecision(std::numeric_limits<double>::max_digits10) << "(" << x << " , "
-             << y << " )";
-          return ss.str();
         }
 
         double x;
@@ -98,7 +92,19 @@ namespace Geometry {
     }
 }
 
-namespace std {
-    ostream &operator<<(ostream &o, const Geometry::Point2D &p);
+namespace std
+{
+  inline std::string to_string(const Geometry::Point2D &p)
+  {
+    std::stringstream ss;
+    ss << std::scientific << std::setprecision(std::numeric_limits<double>::max_digits10) << "(" << p.x << " , "
+       << p.y << " )";
+    return ss.str();
+  }
+  inline ostream &operator<<(ostream &o, const Geometry::Point2D &p)
+  {
+    o << std::to_string(p);
+    return o;
+  }
 }
 #endif // LATTICEGEN_POINT2D_H_
