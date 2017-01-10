@@ -7,6 +7,8 @@
 
 namespace Geometry
 {
+  class ImproperRotation;
+
   class Rotation
   {
   public:
@@ -14,6 +16,7 @@ namespace Geometry
     Vector3D operator()(const Vector3D& vector) const;
   private:
     Matrix3D rotation_matrix;
+    friend class ImproperRotation;
   };
 
   inline Vector3D operator*(const Rotation& rotation, const Vector3D& vector)
@@ -28,11 +31,26 @@ namespace Geometry
     Vector3D operator()(const Vector3D& vector) const;
   private:
     Matrix3D reflection_matrix;
+    friend class ImproperRotation;
   };
 
   inline Vector3D operator*(const Reflection& reflection, const Vector3D& vector)
   {
     return reflection(vector);
+  }
+
+  class ImproperRotation
+  {
+  public:
+    ImproperRotation(const Vector3D& rotation_vector);
+    Vector3D operator()(const Vector3D& vector) const;
+  private:
+    Matrix3D transformation_matrix;
+  };
+
+  inline Vector3D operator*(const ImproperRotation& improper_rotation, const Vector3D& vector)
+  {
+    return improper_rotation(vector);
   }
 }
  

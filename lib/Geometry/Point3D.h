@@ -48,6 +48,13 @@ namespace Geometry
       this->z *= num;
       return *this;
     }
+    Point3D& operator/=(const double num)
+    {
+      this->x /= num;
+      this->y /= num;
+      this->z /= num;
+      return *this;
+    }
 
     double length() const
     {
@@ -86,6 +93,11 @@ namespace Geometry
   {
     rhs *= num;
     return rhs;
+  }
+  inline Point3D operator/(Point3D lhs, const double num)
+  {
+    lhs /= num;
+    return lhs;
   }
   inline double operator*(Point3D lhs, const Point3D& rhs)
   {

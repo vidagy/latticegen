@@ -60,7 +60,7 @@ namespace
 }
 
 Reflection::Reflection(const Vector3D& reflection_plane)
-: reflection_matrix(get_reflection_matrix(reflection_plane))
+  : reflection_matrix(get_reflection_matrix(reflection_plane))
 {
   if (! equalsWithTolerance(reflection_plane.length(), 1.0))
     throw std::invalid_argument("Non-unit vector on input of Reflection: " + std::to_string(reflection_plane));
@@ -69,4 +69,16 @@ Reflection::Reflection(const Vector3D& reflection_plane)
 Vector3D Reflection::operator()(const Vector3D& vector) const
 {
   return reflection_matrix * vector;
+}
+
+ImproperRotation::ImproperRotation(const Vector3D& rotation_vector)
+  : transformation_matrix(
+    Reflection(rotation_vector/rotation_vector.length()).reflection_matrix *
+    Rotation(rotation_vector).rotation_matrix )
+{
+}
+
+Vector3D ImproperRotation::operator()(const Vector3D& vector) const
+{
+  return transformation_matrix * vector;
 }

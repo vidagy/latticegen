@@ -88,3 +88,14 @@ TEST(TestReflection,Plane111)
 
   EXPECT_EQ(reflection * x, Vector3D(1.0/3.0, -2.0/3.0, -2.0/3.0) );
 }
+
+TEST(TestImproperRotation,RotateAndReflect)
+{
+  const Vector3D xz = Vector3D(1.0,0.0,1.0);
+
+  Vector3D z90 = Vector3D(0.0, 0.0, pi/2.0);
+  ImproperRotation improper_rotation = ImproperRotation(z90);
+
+  EXPECT_EQ(improper_rotation * xz, Vector3D(0.0, 1.0, -1.0) );
+}
+

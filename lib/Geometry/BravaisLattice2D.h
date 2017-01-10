@@ -30,7 +30,7 @@ namespace Geometry
     private: 
       UnitCell(const Point2D& a_, const Point2D& b_);
 
-      friend BravaisLattice2D;
+      friend class BravaisLattice2D;
     };
 
     static UnitCell get_unit_cell(Point2D x, Point2D y);
