@@ -8,7 +8,7 @@ namespace Geometry
 {
   enum BravaisLattice3DType
   {
-    Triclinic,
+    Triclinic_Primitive,
     Monoclinic_Primitive,
     Monoclinic_Base,
     Orthorhombic_Primitive,
@@ -17,8 +17,8 @@ namespace Geometry
     Orthorhombic_Face,
     Tetragonal_Primitive,
     Tetragonal_Body,
-    Rhombohedral,
-    Hexagonal,
+    Rhombohedral_Centered,
+    Hexagonal_Primitive,
     Cubic_Primitive,
     Cubic_Body,
     Cubic_Face
@@ -27,7 +27,9 @@ namespace Geometry
   class UnitCell3D
   {
   public: 
-    static UnitCell3D create_triclinic(const double a_, const double b_, const double c_, const double alpha_, const double beta_, const double gamma_);
+    static UnitCell3D create_triclinic_primitive(
+      const double a_, const double b_, const double c_,
+      const double alpha_, const double beta_, const double gamma_);
     static UnitCell3D create_monoclinic_primitive(const double a_, const double b_, const double c_, const double beta_);
     static UnitCell3D create_monoclinic_base(const double a_, const double b_, const double c_, const double beta_);
     static UnitCell3D create_orthorhombic_primitive(const double a_, const double b_, const double c_);
@@ -36,8 +38,8 @@ namespace Geometry
     static UnitCell3D create_orthorhombic_face(const double a_, const double b_, const double c_);
     static UnitCell3D create_tetragonal_primitive(const double a_, const double c_);
     static UnitCell3D create_tetragonal_body(const double a_, const double c_);
-    static UnitCell3D create_rhombohedral(const double a_, const double alpha_);
-    static UnitCell3D create_hexagonal(const double a_, const double c_);
+    static UnitCell3D create_rhombohedral_centered(const double a_, const double alpha_);
+    static UnitCell3D create_hexagonal_primitive(const double a_, const double c_);
     static UnitCell3D create_cubic_primitive(const double a_);
     static UnitCell3D create_cubic_body(const double a_);
     static UnitCell3D create_cubic_face(const double a_);

@@ -143,7 +143,7 @@ TEST(TestCutoff,SphereCutoffFalse)
 
 TEST(TestCutoff,UnitVectorsCutoffTrue)
 {
-  UnitCell3D unit_cell = UnitCell3D::create_rhombohedral(1.0, pi/3.0);
+  UnitCell3D unit_cell = UnitCell3D::create_rhombohedral_centered(1.0, pi / 3.0);
   const Vector3D& a = unit_cell.a;
   const Vector3D& b = unit_cell.b;
   const Vector3D& c = unit_cell.c;
@@ -185,7 +185,7 @@ TEST(TestCutoff,UnitVectorsCutoffTrue)
 
 TEST(TestCutoff,UnitVectorsCutoffFalse)
 {
-  UnitCell3D unit_cell = UnitCell3D::create_rhombohedral(1.0, pi/3.0);
+  UnitCell3D unit_cell = UnitCell3D::create_rhombohedral_centered(1.0, pi / 3.0);
   const Vector3D& a = unit_cell.a;
   const Vector3D& b = unit_cell.b;
   const Vector3D& c = unit_cell.c;

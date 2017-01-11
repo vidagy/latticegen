@@ -63,7 +63,7 @@ UnitCell3D::UnitCell3D(const BravaisLattice3DType& type_, const Point3D& a_, con
     throw std::invalid_argument("In UnitCell3D::ctor: c must be non null vector but c = " + std::to_string(c_));
 }
 
-UnitCell3D UnitCell3D::create_triclinic(
+UnitCell3D UnitCell3D::create_triclinic_primitive(
   const double a_, const double b_, const double c_, const double alpha_, const double beta_, const double gamma_)
 {
   CHECK_LENGTH(a_, b_, c_);
@@ -78,7 +78,7 @@ UnitCell3D UnitCell3D::create_triclinic(
   const double v3z = sqrt(1.0 - v3x*v3x - v3y*v3y);
   const Vector3D v3 = Vector3D( v3x , v3y , v3z );
 
-  return UnitCell3D(Triclinic, a_ * v1, b_ * v2, c_ * v3);
+  return UnitCell3D(Triclinic_Primitive, a_ * v1, b_ * v2, c_ * v3);
 }
 UnitCell3D UnitCell3D::create_monoclinic_primitive(
   const double a_, const double b_, const double c_, const double beta_)
@@ -164,7 +164,7 @@ UnitCell3D UnitCell3D::create_tetragonal_body(const double a_, const double c_)
 
   return UnitCell3D(Tetragonal_Body, v1, v2, v3);
 }
-UnitCell3D UnitCell3D::create_rhombohedral(const double a_, const double alpha_)
+UnitCell3D UnitCell3D::create_rhombohedral_centered(const double a_, const double alpha_)
 {
   CHECK_LENGTH_POSITIVE(a_);
   CHECK_ANGLE_ACUTE(alpha_);
@@ -173,9 +173,9 @@ UnitCell3D UnitCell3D::create_rhombohedral(const double a_, const double alpha_)
   const Vector3D v2 = Vector3D(cos(alpha_), sin(alpha_), 0.0);
   const Vector3D v3 = Vector3D(cos(alpha_)*cos(alpha_/2.0), cos(alpha_)*sin(alpha_/2.0) , sin(alpha_) );
 
-  return UnitCell3D(Rhombohedral, a_*v1, a_*v2, a_*v3);
+  return UnitCell3D(Rhombohedral_Centered, a_*v1, a_*v2, a_*v3);
 }
-UnitCell3D UnitCell3D::create_hexagonal(const double a_, const double c_)
+UnitCell3D UnitCell3D::create_hexagonal_primitive(const double a_, const double c_)
 {
   CHECK_LENGTH2(a_, c_);
 
@@ -183,7 +183,7 @@ UnitCell3D UnitCell3D::create_hexagonal(const double a_, const double c_)
   const Vector3D v2 = Vector3D(cos(pi/3.0), sin(pi/3.0), 0.0);
   const Vector3D v3 = z;
 
-  return UnitCell3D(Hexagonal, a_*v1, a_*v2, c_*v3);
+  return UnitCell3D(Hexagonal_Primitive, a_*v1, a_*v2, c_*v3);
 }
 UnitCell3D UnitCell3D::create_cubic_primitive(const double a_)
 {

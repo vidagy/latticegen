@@ -27,9 +27,9 @@ TEST(UnitCell3D,CreateThrowsForZeroLength)
   const double beta_ = pi/3.18;
   const double gamma_ = pi/3.78;
 
-  EXPECT_THROW( UnitCell3D::create_triclinic(0.0,  b_,  c_,  alpha_,  beta_,  gamma_), std::invalid_argument);
-  EXPECT_THROW( UnitCell3D::create_triclinic(a_,  0.0,  c_,  alpha_,  beta_,  gamma_), std::invalid_argument);
-  EXPECT_THROW( UnitCell3D::create_triclinic(a_,  b_,  0.0,  alpha_,  beta_,  gamma_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_triclinic_primitive(0.0, b_, c_, alpha_, beta_, gamma_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_triclinic_primitive(a_, 0.0, c_, alpha_, beta_, gamma_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_triclinic_primitive(a_, b_, 0.0, alpha_, beta_, gamma_), std::invalid_argument);
   
   EXPECT_THROW( UnitCell3D::create_monoclinic_primitive(0.0,  b_,  c_,  beta_), std::invalid_argument);
   EXPECT_THROW( UnitCell3D::create_monoclinic_primitive(a_,  0.0,  c_,  beta_), std::invalid_argument);
@@ -61,10 +61,10 @@ TEST(UnitCell3D,CreateThrowsForZeroLength)
   EXPECT_THROW( UnitCell3D::create_tetragonal_body(0.0,  c_), std::invalid_argument);
   EXPECT_THROW( UnitCell3D::create_tetragonal_body(a_,  0.0), std::invalid_argument);
   
-  EXPECT_THROW( UnitCell3D::create_rhombohedral(0.0,  alpha_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_rhombohedral_centered(0.0, alpha_), std::invalid_argument);
   
-  EXPECT_THROW( UnitCell3D::create_hexagonal(0.0,  c_), std::invalid_argument);
-  EXPECT_THROW( UnitCell3D::create_hexagonal(a_,  0.0), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_hexagonal_primitive(0.0, c_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_hexagonal_primitive(a_, 0.0), std::invalid_argument);
   
   EXPECT_THROW( UnitCell3D::create_cubic_primitive(0.0), std::invalid_argument);
   
@@ -83,9 +83,9 @@ TEST(UnitCell3D,CreateThrowsForNegativeLength)
   const double beta_ = pi/3.18;
   const double gamma_ = pi/3.78;
 
-  EXPECT_THROW( UnitCell3D::create_triclinic(-1.5,  b_,  c_,  alpha_,  beta_,  gamma_), std::invalid_argument);
-  EXPECT_THROW( UnitCell3D::create_triclinic(a_,  -1.5,  c_,  alpha_,  beta_,  gamma_), std::invalid_argument);
-  EXPECT_THROW( UnitCell3D::create_triclinic(a_,  b_,  -1.5,  alpha_,  beta_,  gamma_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_triclinic_primitive(-1.5, b_, c_, alpha_, beta_, gamma_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_triclinic_primitive(a_, -1.5, c_, alpha_, beta_, gamma_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_triclinic_primitive(a_, b_, -1.5, alpha_, beta_, gamma_), std::invalid_argument);
   
   EXPECT_THROW( UnitCell3D::create_monoclinic_primitive(-1.5,  b_,  c_,  beta_), std::invalid_argument);
   EXPECT_THROW( UnitCell3D::create_monoclinic_primitive(a_,  -1.5,  c_,  beta_), std::invalid_argument);
@@ -117,10 +117,10 @@ TEST(UnitCell3D,CreateThrowsForNegativeLength)
   EXPECT_THROW( UnitCell3D::create_tetragonal_body(-1.5,  c_), std::invalid_argument);
   EXPECT_THROW( UnitCell3D::create_tetragonal_body(a_,  -1.5), std::invalid_argument);
   
-  EXPECT_THROW( UnitCell3D::create_rhombohedral(-1.5,  alpha_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_rhombohedral_centered(-1.5, alpha_), std::invalid_argument);
   
-  EXPECT_THROW( UnitCell3D::create_hexagonal(-1.5,  c_), std::invalid_argument);
-  EXPECT_THROW( UnitCell3D::create_hexagonal(a_,  -1.5), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_hexagonal_primitive(-1.5, c_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_hexagonal_primitive(a_, -1.5), std::invalid_argument);
   
   EXPECT_THROW( UnitCell3D::create_cubic_primitive(-1.5), std::invalid_argument);
   
@@ -139,15 +139,15 @@ TEST(UnitCell3D,CreateThrowsForZeroAngle)
   const double beta_ = pi/3.18;
   const double gamma_ = pi/3.78;
 
-  EXPECT_THROW( UnitCell3D::create_triclinic(a_,  b_,  c_,     0.0,  beta_,  gamma_), std::invalid_argument);
-  EXPECT_THROW( UnitCell3D::create_triclinic(a_,  b_,  c_,  alpha_,    0.0,  gamma_), std::invalid_argument);
-  EXPECT_THROW( UnitCell3D::create_triclinic(a_,  b_,  c_,  alpha_,  beta_,     0.0), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_triclinic_primitive(a_, b_, c_, 0.0, beta_, gamma_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_triclinic_primitive(a_, b_, c_, alpha_, 0.0, gamma_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_triclinic_primitive(a_, b_, c_, alpha_, beta_, 0.0), std::invalid_argument);
   
   EXPECT_THROW( UnitCell3D::create_monoclinic_primitive(a_,  b_,  c_,  0.0), std::invalid_argument);
   
   EXPECT_THROW( UnitCell3D::create_monoclinic_base(a_,  b_,  c_,  0.0), std::invalid_argument);
 
-  EXPECT_THROW( UnitCell3D::create_rhombohedral(a_,  0.0), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_rhombohedral_centered(a_, 0.0), std::invalid_argument);
 }
 
 TEST(UnitCell3D,CreateThrowsForNegativeAngle)
@@ -160,15 +160,15 @@ TEST(UnitCell3D,CreateThrowsForNegativeAngle)
   const double beta_ = pi/3.18;
   const double gamma_ = pi/3.78;
 
-  EXPECT_THROW( UnitCell3D::create_triclinic(a_,  b_,  c_, -pi/4.0,  beta_,  gamma_), std::invalid_argument);
-  EXPECT_THROW( UnitCell3D::create_triclinic(a_,  b_,  c_,  alpha_,-pi/4.0,  gamma_), std::invalid_argument);
-  EXPECT_THROW( UnitCell3D::create_triclinic(a_,  b_,  c_,  alpha_,  beta_, -pi/4.0), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_triclinic_primitive(a_, b_, c_, -pi / 4.0, beta_, gamma_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_triclinic_primitive(a_, b_, c_, alpha_, -pi / 4.0, gamma_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_triclinic_primitive(a_, b_, c_, alpha_, beta_, -pi / 4.0), std::invalid_argument);
   
   EXPECT_THROW( UnitCell3D::create_monoclinic_primitive(a_,  b_,  c_, -pi/4.0), std::invalid_argument);
   
   EXPECT_THROW( UnitCell3D::create_monoclinic_base(a_,  b_,  c_, -pi/4.0), std::invalid_argument);
 
-  EXPECT_THROW( UnitCell3D::create_rhombohedral(a_, -pi/4.0), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_rhombohedral_centered(a_, -pi / 4.0), std::invalid_argument);
 }
 
 TEST(UnitCell3D,CreateThrowsForObtuseAngle)
@@ -181,15 +181,15 @@ TEST(UnitCell3D,CreateThrowsForObtuseAngle)
   const double beta_ = pi/3.18;
   const double gamma_ = pi/3.78;
 
-  EXPECT_THROW( UnitCell3D::create_triclinic(a_,  b_,  c_,  pi/1.5,  beta_,  gamma_), std::invalid_argument);
-  EXPECT_THROW( UnitCell3D::create_triclinic(a_,  b_,  c_,  alpha_, pi/1.5,  gamma_), std::invalid_argument);
-  EXPECT_THROW( UnitCell3D::create_triclinic(a_,  b_,  c_,  alpha_,  beta_,  pi/1.5), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_triclinic_primitive(a_, b_, c_, pi / 1.5, beta_, gamma_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_triclinic_primitive(a_, b_, c_, alpha_, pi / 1.5, gamma_), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_triclinic_primitive(a_, b_, c_, alpha_, beta_, pi / 1.5), std::invalid_argument);
   
   EXPECT_THROW( UnitCell3D::create_monoclinic_primitive(a_,  b_,  c_, pi/1.5), std::invalid_argument);
   
   EXPECT_THROW( UnitCell3D::create_monoclinic_base(a_,  b_,  c_, pi/1.5), std::invalid_argument);
 
-  EXPECT_THROW( UnitCell3D::create_rhombohedral(a_, pi/1.5), std::invalid_argument);
+  EXPECT_THROW(UnitCell3D::create_rhombohedral_centered(a_, pi / 1.5), std::invalid_argument);
 }
 
 namespace
@@ -246,7 +246,7 @@ TEST(UnitCell3D,GetOffset)
   const double beta_ = pi/4.0;
   const double gamma_ = pi/6.0;
 
-  test_get_offset(UnitCell3D::create_triclinic(a_,  b_,  c_,  alpha_,  beta_,  gamma_));
+  test_get_offset(UnitCell3D::create_triclinic_primitive(a_, b_, c_, alpha_, beta_, gamma_));
   test_get_offset(UnitCell3D::create_monoclinic_primitive(a_,  b_,  c_,  beta_));
   test_get_offset(UnitCell3D::create_monoclinic_base(a_,  b_,  c_,  beta_));
   test_get_offset(UnitCell3D::create_orthorhombic_primitive(a_,  b_,  c_));
@@ -255,8 +255,8 @@ TEST(UnitCell3D,GetOffset)
   test_get_offset(UnitCell3D::create_orthorhombic_face(a_,  b_,  c_));
   test_get_offset(UnitCell3D::create_tetragonal_primitive(a_,  c_));
   test_get_offset(UnitCell3D::create_tetragonal_body(a_,  c_));
-  test_get_offset(UnitCell3D::create_rhombohedral(a_,  alpha_));
-  test_get_offset(UnitCell3D::create_hexagonal(a_,  c_));
+  test_get_offset(UnitCell3D::create_rhombohedral_centered(a_, alpha_));
+  test_get_offset(UnitCell3D::create_hexagonal_primitive(a_, c_));
   test_get_offset(UnitCell3D::create_cubic_primitive(a_));
   test_get_offset(UnitCell3D::create_cubic_body(a_));
   test_get_offset(UnitCell3D::create_cubic_face(a_));
