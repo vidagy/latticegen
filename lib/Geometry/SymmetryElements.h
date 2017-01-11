@@ -7,104 +7,88 @@
 
 namespace Geometry
 {
-  class ImproperRotation;
-
-  class Identity
+  class SymmetryElement
   {
   public:
-    Vector3D operator()(const Vector3D& vector) { return vector; }
-    operator const Matrix3D&() const
+    enum Type
     {
-      return identity_matrix;
-    }
+      Identity,
+      Rotation,
+      Reflection,
+      ImproperRotation,
+      Inversion
+    };
 
-  private:
-    static const Matrix3D identity_matrix;
-  };
-
-  inline Vector3D operator*(const Identity& identity, const Vector3D& vector)
-  {
-    return vector;
-  }
-
-  class Rotation
-  {
-  public:
-    Rotation(const Vector3D& rotation_vector);
-    Vector3D operator()(const Vector3D& vector) const;
-
-    operator const Matrix3D&() const
-    {
-      return rotation_matrix;
-    }
-
-  private:
-    Matrix3D rotation_matrix;
-    friend class ImproperRotation;
-  };
-
-  inline Vector3D operator*(const Rotation& rotation, const Vector3D& vector)
-  {
-    return rotation(vector);
-  }
-
-  class Reflection
-  {
-  public:
-    Reflection(const Vector3D& reflection_plane);
-    Vector3D operator()(const Vector3D& vector) const;
-
-    operator const Matrix3D&() const
-    {
-      return reflection_matrix;
-    }
-  private:
-    Matrix3D reflection_matrix;
-    friend class ImproperRotation;
-  };
-
-  inline Vector3D operator*(const Reflection& reflection, const Vector3D& vector)
-  {
-    return reflection(vector);
-  }
-
-  class ImproperRotation
-  {
-  public:
-    ImproperRotation(const Vector3D& rotation_vector);
-    Vector3D operator()(const Vector3D& vector) const;
+    virtual Type get_type() const { return type; }
 
     operator const Matrix3D&() const
     {
       return transformation_matrix;
     }
-  private:
-    Matrix3D transformation_matrix;
-  };
-
-  inline Vector3D operator*(const ImproperRotation& improper_rotation, const Vector3D& vector)
-  {
-    return improper_rotation(vector);
-  }
-
-  class Inversion
-  {
-  public:
     Vector3D operator()(const Vector3D& vector) const
     {
-      return inversion_matrix * vector;
+      return transformation_matrix * vector;
     }
-    operator const Matrix3D&() const
-    {
-      return inversion_matrix;
-    }
-    static const Matrix3D inversion_matrix;
+
+    const Matrix3D transformation_matrix;
+
+  protected:
+    SymmetryElement(const Type type_, const Matrix3D& matrix_)
+      : transformation_matrix(matrix_), type(type_)
+    {}
+  private:
+    const Type type;
   };
 
-  inline Vector3D operator*(const Inversion& inversion, const Vector3D& vector)
+  inline Vector3D operator*(const SymmetryElement& symmetry_element, const Vector3D& vector)
   {
-    return inversion(vector);
+    return symmetry_element.transformation_matrix * vector;
   }
+
+  class Identity : public SymmetryElement
+  {
+  public:
+    Identity()
+      : SymmetryElement(SymmetryElement::Identity, Matrix3D{
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0
+      })
+    {}
+  };
+
+  class Rotation : public SymmetryElement
+  {
+  public:
+    Rotation(const Vector3D& rotation_vector);
+  };
+
+
+  class Reflection : public SymmetryElement
+  {
+  public:
+    Reflection(const Vector3D& reflection_plane);
+  };
+
+
+  class ImproperRotation : public SymmetryElement
+  {
+  public:
+    ImproperRotation(const Vector3D& rotation_vector);
+  };
+
+  class Inversion : public SymmetryElement
+  {
+  public:
+    Inversion()
+      : SymmetryElement(SymmetryElement::Inversion, Matrix3D{
+        -1.0, 0.0, 0.0,
+        0.0, -1.0, 0.0,
+        0.0, 0.0, -1.0
+      })
+    {}
+  };
+
 }
  
 #endif // LATTICEGEN_SYMMETRYELEMENTS_H_

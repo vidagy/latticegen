@@ -33,64 +33,38 @@ namespace
 }
 
 Rotation::Rotation(const Vector3D& rotation_vector)
-  : rotation_matrix(get_rotation_matrix(rotation_vector))
+  : SymmetryElement(SymmetryElement::Rotation, get_rotation_matrix(rotation_vector))
 {}
-
-Vector3D Rotation::operator()(const Vector3D& vector) const
-{
-  return rotation_matrix * vector;
-}
 
 namespace
 {
   Matrix3D get_diad(const Vector3D& vector)
   {
     return Matrix3D {
-    vector.x *vector.x, vector.x *vector.y, vector.x *vector.z,
-    vector.y *vector.x, vector.y *vector.y, vector.y *vector.z,
-    vector.z *vector.x, vector.z *vector.y, vector.z *vector.z
+      vector.x *vector.x, vector.x *vector.y, vector.x *vector.z,
+      vector.y *vector.x, vector.y *vector.y, vector.y *vector.z,
+      vector.z *vector.x, vector.z *vector.y, vector.z *vector.z
     };
   }
 
   Matrix3D get_reflection_matrix(const Vector3D& vector)
   {
-    Matrix3D unit_matrix = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+    const Matrix3D unit_matrix = Identity().transformation_matrix;
     return unit_matrix -2.0 * get_diad(vector);
   }
 }
 
 Reflection::Reflection(const Vector3D& reflection_plane)
-  : reflection_matrix(get_reflection_matrix(reflection_plane))
+  : SymmetryElement(SymmetryElement::Reflection, get_reflection_matrix(reflection_plane))
 {
   if (! equalsWithTolerance(reflection_plane.length(), 1.0))
     throw std::invalid_argument("Non-unit vector on input of Reflection: " + std::to_string(reflection_plane));
 }
 
-Vector3D Reflection::operator()(const Vector3D& vector) const
-{
-  return reflection_matrix * vector;
-}
-
 ImproperRotation::ImproperRotation(const Vector3D& rotation_vector)
-  : transformation_matrix(
-    Reflection(rotation_vector/rotation_vector.length()).reflection_matrix *
-    Rotation(rotation_vector).rotation_matrix )
-{
-}
+  : SymmetryElement(SymmetryElement::ImproperRotation,
+      Geometry::Reflection(rotation_vector/rotation_vector.length()).transformation_matrix *
+      Geometry::Rotation(rotation_vector).transformation_matrix
+    )
+{}
 
-Vector3D ImproperRotation::operator()(const Vector3D& vector) const
-{
-  return transformation_matrix * vector;
-}
-
-const Matrix3D Identity::identity_matrix = Matrix3D{
-  1.0, 0.0, 0.0,
-  0.0, 1.0, 0.0,
-  0.0, 0.0, 1.0
-};
-
-const Matrix3D Inversion::inversion_matrix = Matrix3D{
-  -1.0, 0.0, 0.0,
-  0.0, -1.0, 0.0,
-  0.0, 0.0, -1.0
-};
