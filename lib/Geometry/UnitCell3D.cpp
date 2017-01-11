@@ -1,6 +1,6 @@
 #include "UnitCell3D.h" 
 
-#include "SymmetryOperations.h"
+#include "SymmetryElements.h"
 
 #include <cmath>
 

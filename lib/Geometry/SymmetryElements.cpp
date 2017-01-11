@@ -1,4 +1,4 @@
-#include "SymmetryOperations.h" 
+#include "SymmetryElements.h"
 
 using namespace Core;
 using namespace Geometry;

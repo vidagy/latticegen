@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <Geometry/SymmetryOperations.h>
+#include <Geometry/SymmetryElements.h>
 
 namespace
 {
