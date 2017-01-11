@@ -83,7 +83,13 @@ Vector3D ImproperRotation::operator()(const Vector3D& vector) const
   return transformation_matrix * vector;
 }
 
-Matrix3D Inversion::inversion_matrix = Matrix3D{
+const Matrix3D Identity::identity_matrix = Matrix3D{
+  1.0, 0.0, 0.0,
+  0.0, 1.0, 0.0,
+  0.0, 0.0, 1.0
+};
+
+const Matrix3D Inversion::inversion_matrix = Matrix3D{
   -1.0, 0.0, 0.0,
   0.0, -1.0, 0.0,
   0.0, 0.0, -1.0

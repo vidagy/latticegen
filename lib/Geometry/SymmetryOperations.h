@@ -9,6 +9,24 @@ namespace Geometry
 {
   class ImproperRotation;
 
+  class Identity
+  {
+  public:
+    Vector3D operator()(const Vector3D& vector) { return vector; }
+    operator const Matrix3D&() const
+    {
+      return identity_matrix;
+    }
+
+  private:
+    static const Matrix3D identity_matrix;
+  };
+
+  inline Vector3D operator*(const Identity& identity, const Vector3D& vector)
+  {
+    return vector;
+  }
+
   class Rotation
   {
   public:
@@ -80,7 +98,7 @@ namespace Geometry
     {
       return inversion_matrix;
     }
-    static Matrix3D inversion_matrix;
+    static const Matrix3D inversion_matrix;
   };
 
   inline Vector3D operator*(const Inversion& inversion, const Vector3D& vector)
