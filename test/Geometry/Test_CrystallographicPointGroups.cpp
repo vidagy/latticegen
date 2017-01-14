@@ -27,10 +27,10 @@ namespace
     const Range& elements)
   {
     const static Group group = Group();
-    EXPECT_EQ(group.get_crystal_class(), crystal_class);
-    EXPECT_EQ(get_crystal_system(group.get_crystal_class()), crystal_system);
-    EXPECT_THAT(group.get_generators(), ::testing::UnorderedElementsAreArray(generators) );
-    EXPECT_THAT(group.get_elements(), ::testing::UnorderedElementsAreArray(elements) );
+    EXPECT_EQ(crystal_class, group.get_crystal_class());
+    EXPECT_EQ(crystal_system, get_crystal_system(group.get_crystal_class()));
+    EXPECT_THAT(generators, ::testing::UnorderedElementsAreArray(group.get_generators()) );
+    EXPECT_THAT(elements, ::testing::UnorderedElementsAreArray(group.get_elements()) );
   };
 }
 
