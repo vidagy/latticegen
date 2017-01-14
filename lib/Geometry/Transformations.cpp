@@ -1,4 +1,4 @@
-#include "SymmetryElements.h"
+#include "Transformations.h"
 
 using namespace Core;
 using namespace Geometry;
@@ -33,7 +33,7 @@ namespace
 }
 
 Rotation::Rotation(const Vector3D& rotation_vector)
-  : SymmetryElement(SymmetryElement::Rotation, get_rotation_matrix(rotation_vector))
+  : Transformation(Transformation::Rotation, get_rotation_matrix(rotation_vector))
 {}
 
 namespace
@@ -55,14 +55,14 @@ namespace
 }
 
 Reflection::Reflection(const Vector3D& reflection_plane)
-  : SymmetryElement(SymmetryElement::Reflection, get_reflection_matrix(reflection_plane))
+  : Transformation(Transformation::Reflection, get_reflection_matrix(reflection_plane))
 {
   if (! equalsWithTolerance(reflection_plane.length(), 1.0))
     throw std::invalid_argument("Non-unit vector on input of Reflection: " + std::to_string(reflection_plane));
 }
 
 ImproperRotation::ImproperRotation(const Vector3D& rotation_vector)
-  : SymmetryElement(SymmetryElement::ImproperRotation,
+  : Transformation(Transformation::ImproperRotation,
       Geometry::Reflection(rotation_vector/rotation_vector.length()).transformation_matrix *
       Geometry::Rotation(rotation_vector).transformation_matrix
     )

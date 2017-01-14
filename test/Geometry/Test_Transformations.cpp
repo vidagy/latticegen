@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <Geometry/SymmetryElements.h>
+#include <Geometry/Transformations.h>
 
 namespace
 {
@@ -10,12 +10,12 @@ namespace
 
 using namespace Geometry;
 
-TEST(TestSymmetyOperations,RotationCtorThrows)
+TEST(TestTransformations,RotationCtorThrows)
 {
   EXPECT_THROW(Rotation(Vector3D(0.0, 0.0, 0.0)), std::invalid_argument);
 }
 
-TEST(TestSymmetyOperations,RotationIdentity)
+TEST(TestTransformations,RotationIdentity)
 {
   const Vector3D v = 2.0 * pi / sqrt(1.0 + 4.0 + 9.0) * Vector3D(1.0, 2.0, 3.0);
   Rotation rotation = Rotation(v);
@@ -29,7 +29,7 @@ TEST(TestSymmetyOperations,RotationIdentity)
   EXPECT_EQ(v001, rotation(v001));
 }
 
-TEST(TestSymmetyOperations,RotationDegrees90)
+TEST(TestTransformations,RotationDegrees90)
 {
   const Vector3D x = pi / 2.0 * Vector3D(1.0, 0.0, 0.0);
   const Vector3D y = pi / 2.0 * Vector3D(0.0, 1.0, 0.0);
@@ -55,13 +55,13 @@ TEST(TestSymmetyOperations,RotationDegrees90)
   EXPECT_EQ(z, rotation_z(z));
 }
 
-TEST(TestSymmetyOperations,ReflectionCtorThrows)
+TEST(TestTransformations,ReflectionCtorThrows)
 {
   EXPECT_THROW(Reflection(Vector3D(0.0, 0.0, 0.0)), std::invalid_argument);
   EXPECT_THROW(Reflection(Vector3D(1.0, 2.0, -3.0)), std::invalid_argument);
 }
 
-TEST(TestSymmetyOperations,ReflectionPlaneXY)
+TEST(TestTransformations,ReflectionPlaneXY)
 {
   Reflection reflection = Reflection(Vector3D{0.0, 0.0, 1.0});
 
@@ -78,7 +78,7 @@ TEST(TestSymmetyOperations,ReflectionPlaneXY)
   EXPECT_EQ(reflection(z), (-1.0)*z );
 }
 
-TEST(TestSymmetyOperations,ReflectionPlane111)
+TEST(TestTransformations,ReflectionPlane111)
 {
   const Vector3D x = Vector3D(1.0,0.0,0.0);
 
@@ -89,7 +89,7 @@ TEST(TestSymmetyOperations,ReflectionPlane111)
   EXPECT_EQ(reflection * x, Vector3D(1.0/3.0, -2.0/3.0, -2.0/3.0) );
 }
 
-TEST(TestSymmetyOperations,ImproperRotationRotateAndReflect)
+TEST(TestTransformations,ImproperRotationRotateAndReflect)
 {
   const Vector3D xz = Vector3D(1.0,0.0,1.0);
 
@@ -124,7 +124,7 @@ namespace
   }
 }
 
-TEST(TestSymmetyOperations,InversionRotate180AndReflectIsInversion)
+TEST(TestTransformations,InversionRotate180AndReflectIsInversion)
 {
   test_inversion(Vector3D(1.0,0.0,0.0));
   test_inversion(Vector3D(0.0,1.0,0.0));
@@ -194,7 +194,7 @@ namespace
   }
 }
 
-TEST(TestSymmetyOperations,Identity)
+TEST(TestTransformations,Identity)
 {
   test_identity(Vector3D(1.0,0.0,0.0));
   test_identity(Vector3D(0.0,1.0,0.0));

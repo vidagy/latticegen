@@ -1,13 +1,15 @@
-#ifndef LATTICEGEN_SYMMETRYELEMENTS_H_
-#define LATTICEGEN_SYMMETRYELEMENTS_H_
+#ifndef LATTICEGEN_TRANSFORMATIONS_H_
+#define LATTICEGEN_TRANSFORMATIONS_H_
 
 #include "Point3D.h"
 #include "Matrix3D.h"
 #include <array>
 
+#include <Core/ComparisonHelpers.h>
+
 namespace Geometry
 {
-  class SymmetryElement
+  class Transformation
   {
   public:
     enum Type
@@ -33,23 +35,27 @@ namespace Geometry
     const Matrix3D transformation_matrix;
 
   protected:
-    SymmetryElement(const Type type_, const Matrix3D& matrix_)
+    Transformation(const Type type_, const Matrix3D& matrix_)
       : transformation_matrix(matrix_), type(type_)
     {}
   private:
     const Type type;
   };
 
-  inline Vector3D operator*(const SymmetryElement& symmetry_element, const Vector3D& vector)
+  inline Vector3D operator*(const Transformation& symmetry_element, const Vector3D& vector)
   {
     return symmetry_element.transformation_matrix * vector;
   }
+  inline bool operator==(const Transformation& lhs, const Transformation& rhs)
+  {
+    return lhs.transformation_matrix == rhs.transformation_matrix;
+  }
 
-  class Identity : public SymmetryElement
+  class Identity : public Transformation
   {
   public:
     Identity()
-      : SymmetryElement(SymmetryElement::Identity, Matrix3D{
+      : Transformation(Transformation::Identity, Matrix3D{
         1.0, 0.0, 0.0,
         0.0, 1.0, 0.0,
         0.0, 0.0, 1.0
@@ -57,31 +63,31 @@ namespace Geometry
     {}
   };
 
-  class Rotation : public SymmetryElement
+  class Rotation : public Transformation
   {
   public:
     Rotation(const Vector3D& rotation_vector);
   };
 
 
-  class Reflection : public SymmetryElement
+  class Reflection : public Transformation
   {
   public:
     Reflection(const Vector3D& reflection_plane);
   };
 
 
-  class ImproperRotation : public SymmetryElement
+  class ImproperRotation : public Transformation
   {
   public:
     ImproperRotation(const Vector3D& rotation_vector);
   };
 
-  class Inversion : public SymmetryElement
+  class Inversion : public Transformation
   {
   public:
     Inversion()
-      : SymmetryElement(SymmetryElement::Inversion, Matrix3D{
+      : Transformation(Transformation::Inversion, Matrix3D{
         -1.0, 0.0, 0.0,
         0.0, -1.0, 0.0,
         0.0, 0.0, -1.0
@@ -91,4 +97,4 @@ namespace Geometry
 
 }
  
-#endif // LATTICEGEN_SYMMETRYELEMENTS_H_
+#endif // LATTICEGEN_TRANSFORMATIONS_H_
