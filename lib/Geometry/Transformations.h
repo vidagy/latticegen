@@ -21,8 +21,6 @@ namespace Geometry
       Inversion
     };
 
-    virtual Type get_type() const { return type; }
-
     operator const Matrix3D&() const
     {
       return transformation_matrix;
@@ -32,14 +30,13 @@ namespace Geometry
       return transformation_matrix * vector;
     }
 
+    const Type type;
     const Matrix3D transformation_matrix;
 
   protected:
     Transformation(const Type type_, const Matrix3D& matrix_)
-      : transformation_matrix(matrix_), type(type_)
+      : type(type_), transformation_matrix(matrix_)
     {}
-  private:
-    const Type type;
   };
 
   inline Vector3D operator*(const Transformation& symmetry_element, const Vector3D& vector)
