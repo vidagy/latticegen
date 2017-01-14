@@ -1,7 +1,64 @@
 #include "CrystallographicPointGroups.h"
 
+#include <stdexcept>
+
 namespace Geometry
 {
+  CrystalSystem get_crystal_system(const CrystalClass& crystal_class)
+  {
+    switch (crystal_class)
+    {
+      case Triclinic_Pedion:
+      case Triclinic_Pinacoid:
+        return Triclinic;
+
+      case Monoclinic_Sphenoid:
+      case Monoclinic_Dome:
+      case Monoclinic_Prism:
+        return Monoclinic;
+
+      case Orthorhombic_Didphenoid:
+      case Orthorhombic_Pyramid:
+      case Orthorhombic_Dipyramid:
+        return Orthorhombic;
+
+      case Tetragonal_Pyramid:
+      case Tetragonal_Didphenoid:
+      case Tetragonal_Dipyramid:
+      case Tetragonal_Trapezohedron:
+      case Ditetragonal_Pyramid:
+      case Tetragonal_Scalenohedron:
+      case Ditetragonal_Dipyramid:
+        return Tetragonal;
+
+      case Trigonal_Pyramid:
+      case Rombohedron:
+      case Trigonal_Trapezohedron:
+      case Ditrigonal_Pyramid:
+      case Ditrigonal_Scalenohedron:
+        return Trigonal;
+
+      case Hexagonal_Pyramid:
+      case Trigonal_Dipyramid:
+      case Hexagonal_Dipyramid:
+      case Hexagonal_Trapezohedron:
+      case Dihexagonal_Pyramid:
+      case Ditrigonal_Dipyramid:
+      case Dihexagonal_Dipyramid:
+        return Hexagonal;
+
+      case Tetatroid:
+      case Diploid:
+      case Gyroid:
+      case Hexatetrahedron:
+      case Hexaoctahedron:
+        return Cubic;
+
+      default:
+        throw std::invalid_argument("Unrecognised crystal class on the input of get_crystal_system");
+    }
+  }
+
   typedef CrystallographicPointGroup::Elements Elements;
 
 #define POPULATE_GROUP_CLASS(group_, crystal_class_) \

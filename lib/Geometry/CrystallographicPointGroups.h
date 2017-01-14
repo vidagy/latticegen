@@ -57,6 +57,8 @@ namespace Geometry
     Hexaoctahedron
   };
 
+  CrystalSystem get_crystal_system(const CrystalClass& crystal_class);
+
   class CrystallographicPointGroup
   {
   public:
