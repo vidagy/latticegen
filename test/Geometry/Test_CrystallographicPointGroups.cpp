@@ -9,7 +9,9 @@ typedef CrystallographicPointGroup::Elements Elements;
 TEST(TestCrystallographicPointGroups,TestViaInterface)
 {
   const static std::unique_ptr<CrystallographicPointGroup> c1 = std::make_unique<C1>();
-  EXPECT_EQ(c1->get_crystal_class(), Triclinic_Pedion);
+  EXPECT_EQ(c1->get_crystal_class(), C1().get_crystal_class());
+  EXPECT_THAT(c1->get_generators(), ::testing::ContainerEq(C1().get_generators()) );
+  EXPECT_THAT(c1->get_elements(), ::testing::ContainerEq(C1().get_elements()) );
 }
 
 namespace
