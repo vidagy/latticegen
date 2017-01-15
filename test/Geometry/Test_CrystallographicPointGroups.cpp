@@ -310,7 +310,7 @@ TEST(TestCrystallographicPointGroups,C3h)
   testCrystallographicPointGroup<C3h>(
     Trigonal_Dipyramid,
     Hexagonal,
-    { CrystallographicPointGroup::Rotationp3001, CrystallographicPointGroup::Reflection001 },
+    { CrystallographicPointGroup::ImproperRotationp3001, },
     { CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotationp3001,
       CrystallographicPointGroup::Rotationm3001, CrystallographicPointGroup::Reflection001,
       CrystallographicPointGroup::ImproperRotationp3001, CrystallographicPointGroup::ImproperRotationm3001 }
