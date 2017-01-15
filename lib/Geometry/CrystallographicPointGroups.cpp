@@ -125,29 +125,29 @@ namespace Geometry
                           Reflection001, ImproperRotationp4001, Inversion, ImproperRotationm4001);
 
   POPULATE_GROUP_CLASS(D4, Tetragonal_Trapezohedron);
-  POPULATE_GROUP_GENERATORS(D4, Rotation2100, Rotation2m450);
+  POPULATE_GROUP_GENERATORS(D4, Rotation2100, Rotation2p1m10);
   POPULATE_GROUP_ELEMENTS(D4,
                           Identity, Rotationp4001, Rotation2001, Rotationm4001,
-                          Rotation2100, Rotation2m450, Rotation2010, Rotation2p450);
+                          Rotation2100, Rotation2p1m10, Rotation2010, Rotation2p1p10);
 
   POPULATE_GROUP_CLASS(C4v, Ditetragonal_Pyramid);
-  POPULATE_GROUP_GENERATORS(C4v, Reflection100, Reflectionp450);
+  POPULATE_GROUP_GENERATORS(C4v, Reflection100, Reflectionp1m10);
   POPULATE_GROUP_ELEMENTS(C4v,
                           Identity, Rotationp4001, Rotation2001, Rotationm4001,
-                          Reflectionp450, Reflectionp450, Reflection010, Reflectionm450 );
+                          Reflectionp1m10, Reflectionp1m10, Reflection010, Reflectionp1p10 );
 
   POPULATE_GROUP_CLASS(D2d, Tetragonal_Scalenohedron);
-  POPULATE_GROUP_GENERATORS(D2d, Rotation2100, Reflectionp450);
+  POPULATE_GROUP_GENERATORS(D2d, Rotation2100, Reflectionp1m10);
   POPULATE_GROUP_ELEMENTS(D2d,
                           Identity, ImproperRotationp4001, Rotation2001, ImproperRotationm4001,
-                          Rotation2100, Reflectionp450, Rotation2010, Reflectionm450);
+                          Rotation2100, Reflectionp1m10, Rotation2010, Reflectionp1p10);
 
   POPULATE_GROUP_CLASS(D4h, Ditetragonal_Dipyramid);
-  POPULATE_GROUP_GENERATORS(D4h, Reflection100, Reflectionp450, Reflection001);
+  POPULATE_GROUP_GENERATORS(D4h, Reflection100, Reflectionp1m10, Reflection001);
   POPULATE_GROUP_ELEMENTS(D4h,
                           Identity, Rotationp4001, Rotation2001, Rotationm4001,
-                          Rotation2100, Rotation2p450, Rotation2010, Rotation2m450,
-                          Reflection100, Reflectionm450, Reflection010, Reflectionp450,
+                          Rotation2100, Rotation2p1p10, Rotation2010, Rotation2p1m10,
+                          Reflection100, Reflectionp1p10, Reflection010, Reflectionp1m10,
                           ImproperRotationp4001, ImproperRotationm4001, Inversion, Reflection001);
 
   ////////////////   Trigonal   ////////////////
@@ -243,26 +243,59 @@ namespace Geometry
 
   ////////////////     Cubic    ////////////////
 
-  //TODO implement Cubic point groups
-
   POPULATE_GROUP_CLASS(T, Tetatroid);
-  POPULATE_GROUP_GENERATORS(T, Identity);
-  POPULATE_GROUP_ELEMENTS(T, Identity);
+  POPULATE_GROUP_GENERATORS(T, Rotation2001, Rotationp3p1p1p1);
+  POPULATE_GROUP_ELEMENTS(T,
+                          Identity, Rotation2100, Rotation2010, Rotation2001,
+                          Rotationp3p1p1p1, Rotationp3p1m1m1, Rotationp3m1p1m1, Rotationp3m1m1p1,
+                          Rotationm3p1p1p1, Rotationm3p1m1m1, Rotationm3m1p1m1, Rotationm3m1m1p1);
 
-  POPULATE_GROUP_CLASS(Td, Diploid);
-  POPULATE_GROUP_GENERATORS(Td, Identity);
-  POPULATE_GROUP_ELEMENTS(Td, Identity);
+  POPULATE_GROUP_CLASS(Th, Diploid);
+  POPULATE_GROUP_GENERATORS(Th, Rotation2100, Rotationp3p1p1p1, Inversion);
+  POPULATE_GROUP_ELEMENTS(Th,
+                          Identity, Rotation2100, Rotation2010, Rotation2001,
+                          Rotationp3p1p1p1, Rotationp3p1m1m1, Rotationp3m1p1m1, Rotationp3m1m1p1,
+                          Rotationm3p1p1p1, Rotationm3p1m1m1, Rotationm3m1p1m1, Rotationm3m1m1p1,
+                          Inversion, Reflection001, Reflection010, Reflection100,
+                          ImproperRotationp6p1p1p1, ImproperRotationp6p1m1m1, ImproperRotationp6m1p1m1, ImproperRotationp6m1m1p1,
+                          ImproperRotationm6p1p1p1, ImproperRotationm6p1m1m1, ImproperRotationm6m1p1m1, ImproperRotationm6m1m1p1);
 
-  POPULATE_GROUP_CLASS(Th, Gyroid);
-  POPULATE_GROUP_GENERATORS(Th, Identity);
-  POPULATE_GROUP_ELEMENTS(Th, Identity);
+  POPULATE_GROUP_CLASS(O, Gyroid);
+  POPULATE_GROUP_GENERATORS(O, Rotation2100, Rotationp3p1p1p1, Rotation2p1p10);
+  POPULATE_GROUP_ELEMENTS(O,
+                          Identity, Rotation2100, Rotation2010, Rotation2001,
+                          Rotationp3p1p1p1, Rotationp3p1m1m1, Rotationp3m1p1m1, Rotationp3m1m1p1,
+                          Rotationm3p1p1p1, Rotationm3p1m1m1, Rotationm3m1p1m1, Rotationm3m1m1p1,
+                          Rotationp4001, Rotationm4001, Rotationp4010, Rotationm4010, Rotationp4100, Rotationm4100,
+                          Rotation2p1p10, Rotation2p1m10, Rotation2p10p1, Rotation2p10m1, Rotation20p1p1, Rotation20p1m1);
 
-  POPULATE_GROUP_CLASS(O, Hexatetrahedron);
-  POPULATE_GROUP_GENERATORS(O, Identity);
-  POPULATE_GROUP_ELEMENTS(O, Identity);
+  POPULATE_GROUP_CLASS(Td, Hexatetrahedron);
+  POPULATE_GROUP_GENERATORS(Td, Rotation2100, Rotationp3p1p1p1, Reflectionp1m10);
+  POPULATE_GROUP_ELEMENTS(Td,
+                          Identity, Rotation2100, Rotation2010, Rotation2001,
+                          Rotationp3p1p1p1, Rotationp3p1m1m1, Rotationp3m1p1m1, Rotationp3m1m1p1,
+                          Rotationm3p1p1p1, Rotationm3p1m1m1, Rotationm3m1p1m1, Rotationm3m1m1p1,
+                          ImproperRotationp4001, ImproperRotationp4010, ImproperRotationp4100,
+                          ImproperRotationm4001, ImproperRotationm4010, ImproperRotationm4100,
+                          Reflectionp1p10, Reflectionp10p1, Reflection0p1p1,
+                          Reflectionp1m10, Reflectionp10m1, Reflection0p1m1);
 
   POPULATE_GROUP_CLASS(Oh, Hexaoctahedron);
-  POPULATE_GROUP_GENERATORS(Oh, Identity);
-  POPULATE_GROUP_ELEMENTS(Oh, Identity);
+  POPULATE_GROUP_GENERATORS(Oh, Rotation2100, Rotationp3p1p1p1, Rotation2p1p10, Inversion);
+  POPULATE_GROUP_ELEMENTS(Oh,
+                          Identity, Rotation2100, Rotation2010, Rotation2001,
+                          Rotationp3p1p1p1, Rotationp3p1m1m1, Rotationp3m1p1m1, Rotationp3m1m1p1,
+                          Rotationm3p1p1p1, Rotationm3p1m1m1, Rotationm3m1p1m1, Rotationm3m1m1p1,
+                          Rotation2p1p10, Rotation2p1m10, Rotation2p10p1,
+                          Rotation2p10m1, Rotation20p1p1, Rotation20p1m1,
+                          Rotationp4001, Rotationp4010, Rotationp4100,
+                          Rotationm4001, Rotationm4010, Rotationm4100,
+                          Inversion, Reflection001, Reflection010, Reflection100,
+                          ImproperRotationp6p1p1p1, ImproperRotationp6p1m1m1, ImproperRotationp6m1p1m1, ImproperRotationp6m1m1p1,
+                          ImproperRotationm6p1p1p1, ImproperRotationm6p1m1m1, ImproperRotationm6m1p1m1, ImproperRotationm6m1m1p1,
+                          Reflectionp1p10, Reflectionp10p1, Reflection0p1p1,
+                          Reflectionp1m10, Reflectionp10m1, Reflection0p1m1,
+                          ImproperRotationp4001, ImproperRotationp4010, ImproperRotationp4100,
+                          ImproperRotationm4001, ImproperRotationm4010, ImproperRotationm4100);
 
 }

@@ -69,8 +69,6 @@ namespace Geometry
       Rotation2100,
       Rotation2010,
       Rotation2001,
-      Rotation2p450,
-      Rotation2m450,
       Rotation2p300,
       Rotation2m300,
       Rotation2p600,
@@ -79,13 +77,35 @@ namespace Geometry
       Rotationm3001,
       Rotationp4001,
       Rotationm4001,
+      Rotationp4010,
+      Rotationm4010,
+      Rotationp4100,
+      Rotationm4100,
       Rotationp6001,
       Rotationm6001,
+      Rotation2p1p10,
+      Rotation2p1m10,
+      Rotation2p10p1,
+      Rotation2p10m1,
+      Rotation20p1p1,
+      Rotation20p1m1,
+      Rotationp3p1p1p1,
+      Rotationm3p1p1p1,
+      Rotationp3p1m1m1,
+      Rotationm3p1m1m1,
+      Rotationp3m1p1m1,
+      Rotationm3m1p1m1,
+      Rotationp3m1m1p1,
+      Rotationm3m1m1p1,
       Reflection100,
       Reflection010,
       Reflection001,
-      Reflectionp450,
-      Reflectionm450,
+      Reflectionp1p10,
+      Reflectionp10p1,
+      Reflection0p1p1,
+      Reflectionp1m10,
+      Reflectionp10m1,
+      Reflection0p1m1,
       Reflectionp600,
       Reflectionm600,
       Reflectionp300,
@@ -94,8 +114,20 @@ namespace Geometry
       ImproperRotationm3001,
       ImproperRotationp4001,
       ImproperRotationm4001,
+      ImproperRotationp4010,
+      ImproperRotationm4010,
+      ImproperRotationp4100,
+      ImproperRotationm4100,
       ImproperRotationp6001,
-      ImproperRotationm6001
+      ImproperRotationm6001,
+      ImproperRotationp6p1p1p1,
+      ImproperRotationm6p1p1p1,
+      ImproperRotationp6p1m1m1,
+      ImproperRotationm6p1m1m1,
+      ImproperRotationp6m1p1m1,
+      ImproperRotationm6m1p1m1,
+      ImproperRotationp6m1m1p1,
+      ImproperRotationm6m1m1p1,
     };
 
     typedef std::vector<SymmetryElement> Elements;
@@ -167,9 +199,9 @@ namespace Geometry
   class D6h : public CrystallographicPointGroupX<D6h> {};
 
   class T : public CrystallographicPointGroupX<T> {};
-  class Td : public CrystallographicPointGroupX<Td> {};
   class Th : public CrystallographicPointGroupX<Th> {};
   class O : public CrystallographicPointGroupX<O> {};
+  class Td : public CrystallographicPointGroupX<Td> {};
   class Oh : public CrystallographicPointGroupX<Oh> {};
 }
 

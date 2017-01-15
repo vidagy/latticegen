@@ -175,11 +175,11 @@ TEST(TestCrystallographicPointGroups,D4)
   testCrystallographicPointGroup<D4>(
     Tetragonal_Trapezohedron,
     Tetragonal,
-    { CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Rotation2m450 },
+    { CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Rotation2p1m10 },
     { CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotationp4001,
       CrystallographicPointGroup::Rotation2001, CrystallographicPointGroup::Rotationm4001,
-      CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Rotation2m450,
-      CrystallographicPointGroup::Rotation2010, CrystallographicPointGroup::Rotation2p450 }
+      CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Rotation2p1m10,
+      CrystallographicPointGroup::Rotation2010, CrystallographicPointGroup::Rotation2p1p10 }
   );
 }
 
@@ -188,11 +188,11 @@ TEST(TestCrystallographicPointGroups,C4v)
   testCrystallographicPointGroup<C4v>(
     Ditetragonal_Pyramid,
     Tetragonal,
-    { CrystallographicPointGroup::Reflection100, CrystallographicPointGroup::Reflectionp450  },
+    { CrystallographicPointGroup::Reflection100, CrystallographicPointGroup::Reflectionp1m10  },
     { CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotationp4001,
       CrystallographicPointGroup::Rotation2001, CrystallographicPointGroup::Rotationm4001,
-      CrystallographicPointGroup::Reflectionp450, CrystallographicPointGroup::Reflectionp450,
-      CrystallographicPointGroup::Reflection010, CrystallographicPointGroup::Reflectionm450  }
+      CrystallographicPointGroup::Reflectionp1m10, CrystallographicPointGroup::Reflectionp1m10,
+      CrystallographicPointGroup::Reflection010, CrystallographicPointGroup::Reflectionp1p10  }
   );
 }
 
@@ -201,11 +201,11 @@ TEST(TestCrystallographicPointGroups,D2d)
   testCrystallographicPointGroup<D2d>(
     Tetragonal_Scalenohedron,
     Tetragonal,
-    { CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Reflectionp450 },
+    { CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Reflectionp1m10 },
     { CrystallographicPointGroup::Identity, CrystallographicPointGroup::ImproperRotationp4001,
       CrystallographicPointGroup::Rotation2001, CrystallographicPointGroup::ImproperRotationm4001,
-      CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Reflectionp450,
-      CrystallographicPointGroup::Rotation2010, CrystallographicPointGroup::Reflectionm450}
+      CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Reflectionp1m10,
+      CrystallographicPointGroup::Rotation2010, CrystallographicPointGroup::Reflectionp1p10}
   );
 }
 
@@ -215,13 +215,13 @@ TEST(TestCrystallographicPointGroups,D4h)
     Ditetragonal_Dipyramid,
     Tetragonal,
     { CrystallographicPointGroup::Reflection100,
-      CrystallographicPointGroup::Reflectionp450, CrystallographicPointGroup::Reflection001 },
+      CrystallographicPointGroup::Reflectionp1m10, CrystallographicPointGroup::Reflection001 },
     { CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotationp4001,
       CrystallographicPointGroup::Rotation2001, CrystallographicPointGroup::Rotationm4001,
-      CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Rotation2p450,
-      CrystallographicPointGroup::Rotation2010, CrystallographicPointGroup::Rotation2m450,
-      CrystallographicPointGroup::Reflection100, CrystallographicPointGroup::Reflectionm450,
-      CrystallographicPointGroup::Reflection010, CrystallographicPointGroup::Reflectionp450,
+      CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Rotation2p1p10,
+      CrystallographicPointGroup::Rotation2010, CrystallographicPointGroup::Rotation2p1m10,
+      CrystallographicPointGroup::Reflection100, CrystallographicPointGroup::Reflectionp1p10,
+      CrystallographicPointGroup::Reflection010, CrystallographicPointGroup::Reflectionp1m10,
       CrystallographicPointGroup::ImproperRotationp4001, CrystallographicPointGroup::ImproperRotationm4001,
       CrystallographicPointGroup::Inversion, CrystallographicPointGroup::Reflection001 }
   );
@@ -405,4 +405,124 @@ TEST(TestCrystallographicPointGroups,D6h)
 
 ////////////////     Cubic    ////////////////
 
-//TODO implement Cubic point groups
+TEST(TestCrystallographicPointGroups,T)
+{
+  testCrystallographicPointGroup<T>(
+    Tetatroid,
+    Cubic,
+    { CrystallographicPointGroup::Rotation2001, CrystallographicPointGroup::Rotationp3p1p1p1 },
+    { CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotation2100,
+      CrystallographicPointGroup::Rotation2010, CrystallographicPointGroup::Rotation2001,
+      CrystallographicPointGroup::Rotationp3p1p1p1, CrystallographicPointGroup::Rotationp3p1m1m1,
+      CrystallographicPointGroup::Rotationp3m1p1m1, CrystallographicPointGroup::Rotationp3m1m1p1,
+      CrystallographicPointGroup::Rotationm3p1p1p1, CrystallographicPointGroup::Rotationm3p1m1m1,
+      CrystallographicPointGroup::Rotationm3m1p1m1, CrystallographicPointGroup::Rotationm3m1m1p1 }
+  );
+}
+
+TEST(TestCrystallographicPointGroups,Th)
+{
+  testCrystallographicPointGroup<Th>(
+    Diploid,
+    Cubic,
+    { CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Rotationp3p1p1p1,
+      CrystallographicPointGroup::Inversion },
+    { CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotation2100,
+      CrystallographicPointGroup::Rotation2010, CrystallographicPointGroup::Rotation2001,
+      CrystallographicPointGroup::Rotationp3p1p1p1, CrystallographicPointGroup::Rotationp3p1m1m1,
+      CrystallographicPointGroup::Rotationp3m1p1m1, CrystallographicPointGroup::Rotationp3m1m1p1,
+      CrystallographicPointGroup::Rotationm3p1p1p1, CrystallographicPointGroup::Rotationm3p1m1m1,
+      CrystallographicPointGroup::Rotationm3m1p1m1, CrystallographicPointGroup::Rotationm3m1m1p1,
+      CrystallographicPointGroup::Inversion, CrystallographicPointGroup::Reflection001,
+      CrystallographicPointGroup::Reflection010, CrystallographicPointGroup::Reflection100,
+      CrystallographicPointGroup::ImproperRotationp6p1p1p1, CrystallographicPointGroup::ImproperRotationp6p1m1m1,
+      CrystallographicPointGroup::ImproperRotationp6m1p1m1, CrystallographicPointGroup::ImproperRotationp6m1m1p1,
+      CrystallographicPointGroup::ImproperRotationm6p1p1p1, CrystallographicPointGroup::ImproperRotationm6p1m1m1,
+      CrystallographicPointGroup::ImproperRotationm6m1p1m1, CrystallographicPointGroup::ImproperRotationm6m1m1p1 }
+  );
+}
+
+TEST(TestCrystallographicPointGroups,O)
+{
+  testCrystallographicPointGroup<O>(
+    Gyroid,
+    Cubic,
+    { CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Rotationp3p1p1p1,
+      CrystallographicPointGroup::Rotation2p1p10 },
+    { CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotation2100,
+      CrystallographicPointGroup::Rotation2010, CrystallographicPointGroup::Rotation2001,
+      CrystallographicPointGroup::Rotationp3p1p1p1, CrystallographicPointGroup::Rotationp3p1m1m1,
+      CrystallographicPointGroup::Rotationp3m1p1m1, CrystallographicPointGroup::Rotationp3m1m1p1,
+      CrystallographicPointGroup::Rotationm3p1p1p1, CrystallographicPointGroup::Rotationm3p1m1m1,
+      CrystallographicPointGroup::Rotationm3m1p1m1, CrystallographicPointGroup::Rotationm3m1m1p1,
+      CrystallographicPointGroup::Rotationp4001, CrystallographicPointGroup::Rotationm4001,
+      CrystallographicPointGroup::Rotationp4010, CrystallographicPointGroup::Rotationm4010,
+      CrystallographicPointGroup::Rotationp4100, CrystallographicPointGroup::Rotationm4100,
+      CrystallographicPointGroup::Rotation2p1p10, CrystallographicPointGroup::Rotation2p1m10,
+      CrystallographicPointGroup::Rotation2p10p1, CrystallographicPointGroup::Rotation2p10m1,
+      CrystallographicPointGroup::Rotation20p1p1, CrystallographicPointGroup::Rotation20p1m1}
+  );
+}
+
+TEST(TestCrystallographicPointGroups,Td)
+{
+  testCrystallographicPointGroup<Td>(
+    Hexatetrahedron,
+    Cubic,
+    { CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Rotationp3p1p1p1,
+      CrystallographicPointGroup::Reflectionp1m10 },
+    { CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotation2100,
+      CrystallographicPointGroup::Rotation2010, CrystallographicPointGroup::Rotation2001,
+      CrystallographicPointGroup::Rotationp3p1p1p1, CrystallographicPointGroup::Rotationp3p1m1m1,
+      CrystallographicPointGroup::Rotationp3m1p1m1, CrystallographicPointGroup::Rotationp3m1m1p1,
+      CrystallographicPointGroup::Rotationm3p1p1p1, CrystallographicPointGroup::Rotationm3p1m1m1,
+      CrystallographicPointGroup::Rotationm3m1p1m1, CrystallographicPointGroup::Rotationm3m1m1p1,
+      CrystallographicPointGroup::ImproperRotationp4001, CrystallographicPointGroup::ImproperRotationp4010,
+      CrystallographicPointGroup::ImproperRotationp4100,
+      CrystallographicPointGroup::ImproperRotationm4001, CrystallographicPointGroup::ImproperRotationm4010,
+      CrystallographicPointGroup::ImproperRotationm4100,
+      CrystallographicPointGroup::Reflectionp1p10, CrystallographicPointGroup::Reflectionp10p1,
+      CrystallographicPointGroup::Reflection0p1p1,
+      CrystallographicPointGroup::Reflectionp1m10, CrystallographicPointGroup::Reflectionp10m1,
+      CrystallographicPointGroup::Reflection0p1m1 }
+  );
+}
+
+TEST(TestCrystallographicPointGroups,Oh)
+{
+  testCrystallographicPointGroup<Oh>(
+    Hexaoctahedron,
+    Cubic,
+    { CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Rotationp3p1p1p1, CrystallographicPointGroup::Rotation2p1p10, CrystallographicPointGroup::Inversion },
+    {
+      CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotation2100,
+      CrystallographicPointGroup::Rotation2010, CrystallographicPointGroup::Rotation2001,
+      CrystallographicPointGroup::Rotationp3p1p1p1, CrystallographicPointGroup::Rotationp3p1m1m1,
+      CrystallographicPointGroup::Rotationp3m1p1m1, CrystallographicPointGroup::Rotationp3m1m1p1,
+      CrystallographicPointGroup::Rotationm3p1p1p1, CrystallographicPointGroup::Rotationm3p1m1m1,
+      CrystallographicPointGroup::Rotationm3m1p1m1, CrystallographicPointGroup::Rotationm3m1m1p1,
+      CrystallographicPointGroup::Rotation2p1p10, CrystallographicPointGroup::Rotation2p1m10,
+      CrystallographicPointGroup::Rotation2p10p1,
+      CrystallographicPointGroup::Rotation2p10m1, CrystallographicPointGroup::Rotation20p1p1,
+      CrystallographicPointGroup::Rotation20p1m1,
+      CrystallographicPointGroup::Rotationp4001, CrystallographicPointGroup::Rotationp4010,
+      CrystallographicPointGroup::Rotationp4100,
+      CrystallographicPointGroup::Rotationm4001, CrystallographicPointGroup::Rotationm4010,
+      CrystallographicPointGroup::Rotationm4100,
+      CrystallographicPointGroup::Inversion, CrystallographicPointGroup::Reflection001,
+      CrystallographicPointGroup::Reflection010, CrystallographicPointGroup::Reflection100,
+      CrystallographicPointGroup::ImproperRotationp6p1p1p1, CrystallographicPointGroup::ImproperRotationp6p1m1m1,
+      CrystallographicPointGroup::ImproperRotationp6m1p1m1, CrystallographicPointGroup::ImproperRotationp6m1m1p1,
+      CrystallographicPointGroup::ImproperRotationm6p1p1p1, CrystallographicPointGroup::ImproperRotationm6p1m1m1,
+      CrystallographicPointGroup::ImproperRotationm6m1p1m1, CrystallographicPointGroup::ImproperRotationm6m1m1p1,
+      CrystallographicPointGroup::Reflectionp1p10, CrystallographicPointGroup::Reflectionp10p1,
+      CrystallographicPointGroup::Reflection0p1p1,
+      CrystallographicPointGroup::Reflectionp1m10, CrystallographicPointGroup::Reflectionp10m1,
+      CrystallographicPointGroup::Reflection0p1m1,
+      CrystallographicPointGroup::ImproperRotationp4001, CrystallographicPointGroup::ImproperRotationp4010,
+      CrystallographicPointGroup::ImproperRotationp4100,
+      CrystallographicPointGroup::ImproperRotationm4001, CrystallographicPointGroup::ImproperRotationm4010,
+      CrystallographicPointGroup::ImproperRotationm4100 }
+  );
+}
+
