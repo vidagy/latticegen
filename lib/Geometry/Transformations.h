@@ -45,7 +45,7 @@ namespace Geometry
   }
   inline bool operator==(const Transformation& lhs, const Transformation& rhs)
   {
-    return lhs.transformation_matrix == rhs.transformation_matrix;
+    return lhs.type == rhs.type && lhs.transformation_matrix == rhs.transformation_matrix;
   }
 
   class Identity : public Transformation
