@@ -191,7 +191,7 @@ namespace Geometry
                           Rotationp3001, Rotationm3001, Rotation2001);
 
   POPULATE_GROUP_CLASS(C3h, Trigonal_Dipyramid);
-  POPULATE_GROUP_GENERATORS(C3h, Rotationp3001, Reflection001);
+  POPULATE_GROUP_GENERATORS(C3h, ImproperRotationp3001);
   POPULATE_GROUP_ELEMENTS(C3h,
                           Identity, Rotationp3001, Rotationm3001,
                           Reflection001, ImproperRotationp3001, ImproperRotationm3001);
