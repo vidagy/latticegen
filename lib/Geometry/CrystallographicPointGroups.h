@@ -24,12 +24,12 @@ namespace Geometry
     Monoclinic_Dome,
     Monoclinic_Prism,
 
-    Orthorhombic_Didphenoid,
+    Orthorhombic_Disphenoid,
     Orthorhombic_Pyramid,
     Orthorhombic_Dipyramid,
 
     Tetragonal_Pyramid,
-    Tetragonal_Didphenoid,
+    Tetragonal_Disphenoid,
     Tetragonal_Dipyramid,
     Tetragonal_Trapezohedron,
     Ditetragonal_Pyramid,

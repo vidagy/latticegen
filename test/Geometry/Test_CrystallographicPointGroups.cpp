@@ -3,11 +3,6 @@
 
 #include <Geometry/CrystallographicPointGroups.h>
 
-namespace
-{
-  static const double pi = 3.14159265358979323846;
-}
-
 using namespace Geometry;
 typedef CrystallographicPointGroup::Elements Elements;
 
@@ -100,7 +95,7 @@ TEST(TestCrystallographicPointGroups,C2h)
 TEST(TestCrystallographicPointGroups,D2)
 {
   testCrystallographicPointGroup<D2>(
-    Orthorhombic_Didphenoid,
+    Orthorhombic_Disphenoid,
     Orthorhombic,
     { CrystallographicPointGroup::Rotation2100,
       CrystallographicPointGroup::Rotation2010 },
@@ -152,7 +147,7 @@ TEST(TestCrystallographicPointGroups,C4)
 TEST(TestCrystallographicPointGroups,S4)
 {
   testCrystallographicPointGroup<S4>(
-    Tetragonal_Didphenoid,
+    Tetragonal_Disphenoid,
     Tetragonal,
     { CrystallographicPointGroup::ImproperRotationp4001 },
     { CrystallographicPointGroup::Identity, CrystallographicPointGroup::ImproperRotationp4001,

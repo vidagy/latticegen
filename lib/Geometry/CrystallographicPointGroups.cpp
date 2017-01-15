@@ -17,13 +17,13 @@ namespace Geometry
       case Monoclinic_Prism:
         return Monoclinic;
 
-      case Orthorhombic_Didphenoid:
+      case Orthorhombic_Disphenoid:
       case Orthorhombic_Pyramid:
       case Orthorhombic_Dipyramid:
         return Orthorhombic;
 
       case Tetragonal_Pyramid:
-      case Tetragonal_Didphenoid:
+      case Tetragonal_Disphenoid:
       case Tetragonal_Dipyramid:
       case Tetragonal_Trapezohedron:
       case Ditetragonal_Pyramid:
@@ -94,7 +94,7 @@ namespace Geometry
 
   //////////////// Orthorhombic ////////////////
 
-  POPULATE_GROUP_CLASS(D2, Orthorhombic_Didphenoid);
+  POPULATE_GROUP_CLASS(D2, Orthorhombic_Disphenoid);
   POPULATE_GROUP_GENERATORS(D2, Rotation2100, Rotation2010);
   POPULATE_GROUP_ELEMENTS(D2, Identity, Rotation2100, Rotation2010, Rotation2001);
 
@@ -114,7 +114,7 @@ namespace Geometry
   POPULATE_GROUP_GENERATORS(C4, Rotationp4001);
   POPULATE_GROUP_ELEMENTS(C4, Identity, Rotationp4001, Rotation2001, Rotationm4001);
 
-  POPULATE_GROUP_CLASS(S4, Tetragonal_Didphenoid);
+  POPULATE_GROUP_CLASS(S4, Tetragonal_Disphenoid);
   POPULATE_GROUP_GENERATORS(S4, ImproperRotationp4001);
   POPULATE_GROUP_ELEMENTS(S4, Identity, ImproperRotationp4001, Rotation2001, ImproperRotationm4001);
 
