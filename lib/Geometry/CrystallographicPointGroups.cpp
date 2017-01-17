@@ -103,9 +103,9 @@ namespace Geometry
   POPULATE_GROUP_ELEMENTS(C2v, Identity, Reflection100, Reflection010, Rotation2001);
 
   POPULATE_GROUP_CLASS(D2h, Orthorhombic_Dipyramid);
-  POPULATE_GROUP_GENERATORS(D2h, Reflection100, Reflection010, Reflection100);
+  POPULATE_GROUP_GENERATORS(D2h, Reflection001, Reflection010, Reflection100);
   POPULATE_GROUP_ELEMENTS(D2h,
-                          Identity, Reflection100, Reflection010, Reflection100,
+                          Identity, Reflection001, Reflection010, Reflection100,
                           Rotation2001, Rotation2010, Rotation2100, Inversion);
 
   ////////////////  Tetragonal  ////////////////
@@ -134,7 +134,7 @@ namespace Geometry
   POPULATE_GROUP_GENERATORS(C4v, Reflection100, Reflectionp1m10);
   POPULATE_GROUP_ELEMENTS(C4v,
                           Identity, Rotationp4001, Rotation2001, Rotationm4001,
-                          Reflectionp1m10, Reflectionp1m10, Reflection010, Reflectionp1p10 );
+                          Reflection100, Reflectionp1m10, Reflection010, Reflectionp1p10 );
 
   POPULATE_GROUP_CLASS(D2d, Tetragonal_Scalenohedron);
   POPULATE_GROUP_GENERATORS(D2d, Rotation2100, Reflectionp1m10);
@@ -163,23 +163,23 @@ namespace Geometry
                           Rotationp3001, Rotationm3001, Inversion);
 
   POPULATE_GROUP_CLASS(D3, Trigonal_Trapezohedron);
-  POPULATE_GROUP_GENERATORS(D3, Rotation2p300, Rotation2m300);
+  POPULATE_GROUP_GENERATORS(D3, Rotation2100, Rotation2p600);
   POPULATE_GROUP_ELEMENTS(D3,
                           Identity, Rotationp3001, Rotationm3001,
                           Rotation2100, Rotation2p600, Rotation2m600);
 
   POPULATE_GROUP_CLASS(C3v, Ditrigonal_Pyramid);
-  POPULATE_GROUP_GENERATORS(C3v, Reflection100, Reflectionp600);
+  POPULATE_GROUP_GENERATORS(C3v, Reflection010, Reflectionm300);
   POPULATE_GROUP_ELEMENTS(C3v,
                           Identity, Rotationp3001, Rotationm3001,
-                          Reflection100, Reflectionp600, Reflectionm600);
+                          Reflection010, Reflectionm300, Reflectionp300);
 
   POPULATE_GROUP_CLASS(D3d, Ditrigonal_Scalenohedron);
-  POPULATE_GROUP_GENERATORS(D3d, Rotation2100, Reflectionp300);
+  POPULATE_GROUP_GENERATORS(D3d, Rotation2100, Reflectionm600);
   POPULATE_GROUP_ELEMENTS(D3d,
                           Identity, Rotationp3001, Rotationm3001,
                           Rotation2100, Rotation2p600, Rotation2m600,
-                          Reflectionp300, Reflectionm300, Reflection010,
+                          Reflectionm600, Reflectionp600, Reflection100,
                           ImproperRotationp6001, ImproperRotationm6001, Inversion);
 
   ////////////////   Hexagonal  ////////////////
@@ -213,24 +213,24 @@ namespace Geometry
                           Rotation2p600, Rotation2m600, Rotation2010);
 
   POPULATE_GROUP_CLASS(C6v, Dihexagonal_Pyramid);
-  POPULATE_GROUP_GENERATORS(C6v, Reflection100, Reflectionp300);
+  POPULATE_GROUP_GENERATORS(C6v, Reflection010, Reflectionm600);
   POPULATE_GROUP_ELEMENTS(C6v,
                           Identity, Rotationp6001, Rotationm6001,
                           Rotationp3001, Rotationm3001, Rotation2001,
-                          Reflection100, Reflection010,
+                          Reflection010, Reflection100,
                           Reflectionp300, Reflectionm300,
                           Reflectionp600, Reflectionm600);
 
   POPULATE_GROUP_CLASS(D3h, Ditrigonal_Dipyramid);
-  POPULATE_GROUP_GENERATORS(D3h, Reflection001, Reflection100, Reflectionp600);
+  POPULATE_GROUP_GENERATORS(D3h, Reflection001, Reflection010, Reflectionm300);
   POPULATE_GROUP_ELEMENTS(D3h,
                           Identity, Rotationp3001, Rotationm3001,
-                          Reflection010, Reflectionp600, Reflectionm600,
+                          Reflection010, Reflectionm300, Reflectionp300,
                           Reflection001, ImproperRotationp3001, ImproperRotationm3001,
-                          Inversion, ImproperRotationp6001, ImproperRotationm6001);
+                          Rotation2100, Rotation2p600, Rotation2m600);
 
   POPULATE_GROUP_CLASS(D6h, Dihexagonal_Dipyramid);
-  POPULATE_GROUP_GENERATORS(D6h, Reflection001, Reflection100, Reflectionp300);
+  POPULATE_GROUP_GENERATORS(D6h, Reflection001, Reflection010, Reflectionm600);
   POPULATE_GROUP_ELEMENTS(D6h,
                           Identity, Rotationp6001, Rotationm6001,
                           Rotationp3001, Rotationm3001, Rotation2001,
@@ -238,8 +238,8 @@ namespace Geometry
                           Inversion, ImproperRotationp6001, ImproperRotationm6001,
                           Rotation2100, Rotation2p300, Rotation2m300,
                           Rotation2p600, Rotation2m600, Rotation2010,
-                          Reflection100, Reflectionp600, Reflectionm600,
-                          Reflectionp300, Reflectionm300, Reflection010);
+                          Reflection010, Reflectionp600, Reflectionm600,
+                          Reflectionp300, Reflectionm300, Reflection100);
 
   ////////////////     Cubic    ////////////////
 
@@ -267,7 +267,8 @@ namespace Geometry
                           Rotationp3p1p1p1, Rotationp3p1m1m1, Rotationp3m1p1m1, Rotationp3m1m1p1,
                           Rotationm3p1p1p1, Rotationm3p1m1m1, Rotationm3m1p1m1, Rotationm3m1m1p1,
                           Rotationp4001, Rotationm4001, Rotationp4010, Rotationm4010, Rotationp4100, Rotationm4100,
-                          Rotation2p1p10, Rotation2p1m10, Rotation2p10p1, Rotation2p10m1, Rotation20p1p1, Rotation20p1m1);
+                          Rotation2p1p10, Rotation2p1m10, Rotation2p10p1,
+                          Rotation2p10m1, Rotation20p1p1, Rotation20p1m1);
 
   POPULATE_GROUP_CLASS(Td, Hexatetrahedron);
   POPULATE_GROUP_GENERATORS(Td, Rotation2100, Rotationp3p1p1p1, Reflectionp1m10);

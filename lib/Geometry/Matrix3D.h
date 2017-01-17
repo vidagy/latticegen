@@ -83,6 +83,15 @@ namespace Geometry
       equalsWithTolerance(lhs[2][1], rhs[2][1]) &&
       equalsWithTolerance(lhs[2][2], rhs[2][2]);
   }
+
+  inline double determinant(const Matrix3D& matrix)
+  {
+    const Vector3D x{matrix[0][0], matrix[0][1], matrix[0][2]};
+    const Vector3D y{matrix[1][0], matrix[1][1], matrix[1][2]};
+    const Vector3D z{matrix[2][0], matrix[2][1], matrix[2][2]};
+
+    return x * (cross_product(y,z));
+  }
 }
 
 namespace std

@@ -23,7 +23,7 @@ namespace
     const Range& generators,
     const Range& elements)
   {
-    const static Group group = Group();
+    const Group group = Group();
     EXPECT_EQ(crystal_class, group.get_crystal_class());
     EXPECT_EQ(crystal_system, get_crystal_system(group.get_crystal_class()));
     EXPECT_THAT(generators, ::testing::UnorderedElementsAreArray(group.get_generators()) );
@@ -124,9 +124,9 @@ TEST(TestCrystallographicPointGroups,D2h)
   testCrystallographicPointGroup<D2h>(
     Orthorhombic_Dipyramid,
     Orthorhombic,
-    { CrystallographicPointGroup::Reflection100,
+    { CrystallographicPointGroup::Reflection001,
       CrystallographicPointGroup::Reflection010, CrystallographicPointGroup::Reflection100 },
-    { CrystallographicPointGroup::Identity, CrystallographicPointGroup::Reflection100,
+    { CrystallographicPointGroup::Identity, CrystallographicPointGroup::Reflection001,
       CrystallographicPointGroup::Reflection010, CrystallographicPointGroup::Reflection100,
       CrystallographicPointGroup::Rotation2001, CrystallographicPointGroup::Rotation2010,
       CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Inversion }
@@ -191,7 +191,7 @@ TEST(TestCrystallographicPointGroups,C4v)
     { CrystallographicPointGroup::Reflection100, CrystallographicPointGroup::Reflectionp1m10  },
     { CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotationp4001,
       CrystallographicPointGroup::Rotation2001, CrystallographicPointGroup::Rotationm4001,
-      CrystallographicPointGroup::Reflectionp1m10, CrystallographicPointGroup::Reflectionp1m10,
+      CrystallographicPointGroup::Reflection100, CrystallographicPointGroup::Reflectionp1m10,
       CrystallographicPointGroup::Reflection010, CrystallographicPointGroup::Reflectionp1p10  }
   );
 }
@@ -257,7 +257,7 @@ TEST(TestCrystallographicPointGroups,D3)
   testCrystallographicPointGroup<D3>(
     Trigonal_Trapezohedron,
     Trigonal,
-    { CrystallographicPointGroup::Rotation2p300, CrystallographicPointGroup::Rotation2m300  },
+    { CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Rotation2p600  },
     { CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotationp3001,
       CrystallographicPointGroup::Rotationm3001, CrystallographicPointGroup::Rotation2100,
       CrystallographicPointGroup::Rotation2p600, CrystallographicPointGroup::Rotation2m600 }
@@ -269,10 +269,10 @@ TEST(TestCrystallographicPointGroups,C3v)
   testCrystallographicPointGroup<C3v>(
     Ditrigonal_Pyramid,
     Trigonal,
-    { CrystallographicPointGroup::Reflection100, CrystallographicPointGroup::Reflectionp600 },
+    { CrystallographicPointGroup::Reflection010, CrystallographicPointGroup::Reflectionm300 },
     { CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotationp3001,
-      CrystallographicPointGroup::Rotationm3001, CrystallographicPointGroup::Reflection100,
-      CrystallographicPointGroup::Reflectionp600, CrystallographicPointGroup::Reflectionm600 }
+      CrystallographicPointGroup::Rotationm3001, CrystallographicPointGroup::Reflection010,
+      CrystallographicPointGroup::Reflectionm300, CrystallographicPointGroup::Reflectionp300 }
   );
 }
 
@@ -281,12 +281,12 @@ TEST(TestCrystallographicPointGroups,D3d)
   testCrystallographicPointGroup<D3d>(
     Ditrigonal_Scalenohedron,
     Trigonal,
-    { CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Reflectionp300},
+    { CrystallographicPointGroup::Rotation2100, CrystallographicPointGroup::Reflectionm600},
     { CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotationp3001,
       CrystallographicPointGroup::Rotationm3001,CrystallographicPointGroup::Rotation2100,
       CrystallographicPointGroup::Rotation2p600, CrystallographicPointGroup::Rotation2m600,
-      CrystallographicPointGroup::Reflectionp300, CrystallographicPointGroup::Reflectionm300,
-      CrystallographicPointGroup::Reflection010, CrystallographicPointGroup::ImproperRotationp6001,
+      CrystallographicPointGroup::Reflectionm600, CrystallographicPointGroup::Reflectionp600,
+      CrystallographicPointGroup::Reflection100, CrystallographicPointGroup::ImproperRotationp6001,
       CrystallographicPointGroup::ImproperRotationm6001, CrystallographicPointGroup::Inversion }
   );
 }
@@ -352,7 +352,7 @@ TEST(TestCrystallographicPointGroups,C6v)
   testCrystallographicPointGroup<C6v>(
     Dihexagonal_Pyramid,
     Hexagonal,
-    { CrystallographicPointGroup::Reflection100, CrystallographicPointGroup::Reflectionp300  },
+    { CrystallographicPointGroup::Reflection010, CrystallographicPointGroup::Reflectionm600  },
     {
       CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotationp6001,
       CrystallographicPointGroup::Rotationm6001, CrystallographicPointGroup::Rotationp3001,
@@ -368,15 +368,15 @@ TEST(TestCrystallographicPointGroups,D3h)
   testCrystallographicPointGroup<D3h>(
     Ditrigonal_Dipyramid,
     Hexagonal,
-    { CrystallographicPointGroup::Reflection001, CrystallographicPointGroup::Reflection100,
-      CrystallographicPointGroup::Reflectionp600 },
+    { CrystallographicPointGroup::Reflection001, CrystallographicPointGroup::Reflection010,
+      CrystallographicPointGroup::Reflectionm300 },
     {
       CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotationp3001,
       CrystallographicPointGroup::Rotationm3001, CrystallographicPointGroup::Reflection010,
-      CrystallographicPointGroup::Reflectionp600, CrystallographicPointGroup::Reflectionm600,
+      CrystallographicPointGroup::Reflectionm300, CrystallographicPointGroup::Reflectionp300,
       CrystallographicPointGroup::Reflection001, CrystallographicPointGroup::ImproperRotationp3001,
-      CrystallographicPointGroup::ImproperRotationm3001, CrystallographicPointGroup::Inversion,
-      CrystallographicPointGroup::ImproperRotationp6001, CrystallographicPointGroup::ImproperRotationm6001 }
+      CrystallographicPointGroup::ImproperRotationm3001, CrystallographicPointGroup::Rotation2100,
+      CrystallographicPointGroup::Rotation2p600, CrystallographicPointGroup::Rotation2m600 }
   );
 }
 
@@ -385,8 +385,8 @@ TEST(TestCrystallographicPointGroups,D6h)
   testCrystallographicPointGroup<D6h>(
     Dihexagonal_Dipyramid,
     Hexagonal,
-    { CrystallographicPointGroup::Reflection001, CrystallographicPointGroup::Reflection100,
-      CrystallographicPointGroup::Reflectionp300 },
+    { CrystallographicPointGroup::Reflection001, CrystallographicPointGroup::Reflection010,
+      CrystallographicPointGroup::Reflectionm600 },
     {
       CrystallographicPointGroup::Identity, CrystallographicPointGroup::Rotationp6001,
       CrystallographicPointGroup::Rotationm6001, CrystallographicPointGroup::Rotationp3001,
