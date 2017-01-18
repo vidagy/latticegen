@@ -2,12 +2,6 @@
 #include <gmock/gmock.h>
 
 #include <Geometry/UnitCell3D.h>
-#include <Core/ComparisonHelpers.h>
-
-#include <stdexcept>
-#include <iostream>
-#include <tuple>
-#include <math.h>
 
 using namespace Core;
 using namespace Geometry;

@@ -17,7 +17,7 @@ namespace Core
       return false;
     
     double sum = (lhs + rhs) / 2.0;
-    return sum < abs_tolerance ? true : diff / sum <= rel_tolerance;
+    return sum < abs_tolerance || diff / sum <= rel_tolerance;
       
   }
 
