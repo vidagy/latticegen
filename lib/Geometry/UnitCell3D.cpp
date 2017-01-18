@@ -218,7 +218,7 @@ UnitCell3D UnitCell3D::create_cubic_face(const double a_)
 
 namespace
 {
-  long get_steps(const Point3D& unit_vector, const Point3D& perp1, const Point3D& perp2, const Point3D to_digest)
+  long get_steps(const Point3D& unit_vector, const Point3D& perp1, const Point3D& perp2, const Point3D& to_digest)
   {
     Point3D parallel = cross_product(perp1, perp2);
     const double parallel_length = parallel.length();

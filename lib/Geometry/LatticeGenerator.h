@@ -13,7 +13,7 @@ namespace Geometry
   class Cutoff
   {
   public:
-    Cutoff(const UnitCell3D& unit_cell_)
+    explicit Cutoff(const UnitCell3D& unit_cell_)
       : unit_cell(unit_cell_)
     {}
 

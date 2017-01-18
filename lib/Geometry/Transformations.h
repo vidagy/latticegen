@@ -63,21 +63,21 @@ namespace Geometry
   class Rotation : public Transformation
   {
   public:
-    Rotation(const Vector3D& rotation_vector);
+    explicit Rotation(const Vector3D& rotation_vector);
   };
 
 
   class Reflection : public Transformation
   {
   public:
-    Reflection(const Vector3D& reflection_plane);
+    explicit Reflection(const Vector3D& reflection_plane);
   };
 
 
   class ImproperRotation : public Transformation
   {
   public:
-    ImproperRotation(const Vector3D& rotation_vector);
+    explicit ImproperRotation(const Vector3D& rotation_vector);
   };
 
   class Inversion : public Transformation

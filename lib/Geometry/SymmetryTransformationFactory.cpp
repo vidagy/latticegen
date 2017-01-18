@@ -174,7 +174,7 @@ namespace Geometry
   }
 
   SymmetryTransformationFactory::Transformations SymmetryTransformationFactory::get(
-    const CrystallographicPointGroup::Elements elements)
+    const CrystallographicPointGroup::Elements& elements)
   {
     Transformations transformations;
     transformations.reserve(elements.size());
