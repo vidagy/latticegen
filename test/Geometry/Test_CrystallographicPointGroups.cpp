@@ -525,4 +525,3 @@ TEST(TestCrystallographicPointGroups,Oh)
       CrystallographicPointGroup::ImproperRotationm4100 }
   );
 }
-

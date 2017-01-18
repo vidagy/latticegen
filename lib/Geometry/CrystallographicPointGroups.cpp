@@ -298,5 +298,4 @@ namespace Geometry
                           Reflectionp1m10, Reflectionp10m1, Reflection0p1m1,
                           ImproperRotationp4001, ImproperRotationp4010, ImproperRotationp4100,
                           ImproperRotationm4001, ImproperRotationm4010, ImproperRotationm4100);
-
 }

@@ -67,4 +67,3 @@ ImproperRotation::ImproperRotation(const Vector3D& rotation_vector)
       Geometry::Rotation(rotation_vector).transformation_matrix
     )
 {}
-

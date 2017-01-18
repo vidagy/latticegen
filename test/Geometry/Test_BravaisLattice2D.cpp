@@ -230,4 +230,3 @@ TEST(BravaisLattice2D,inverseLattice)
   EXPECT_TRUE( Core::nearlyZero(unit_cell.b*ka) );
   EXPECT_THAT( 2*pi, unit_cell.b*kb );
 }
-

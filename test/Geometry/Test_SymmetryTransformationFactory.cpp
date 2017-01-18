@@ -215,4 +215,3 @@ TEST(TestSymmetryTransformationFactory,GeneratorsOh)
 {
   testCrystallographicPointGroup<Oh>();
 }
-
