@@ -84,6 +84,13 @@ namespace Geometry
     lhs -= rhs;
     return lhs;
   }
+  inline Point3D operator-(Point3D lhs)
+  {
+    lhs.x *= -1.0;
+    lhs.y *= -1.0;
+    lhs.z *= -1.0;
+    return lhs;
+  }
   inline Point3D operator*(Point3D lhs, const double num)
   {
     lhs *= num;
