@@ -171,7 +171,8 @@ UnitCell3D UnitCell3D::create_rhombohedral_centered(const double a_, const doubl
 
   const Vector3D v1 = x;
   const Vector3D v2 = Vector3D(cos(alpha_), sin(alpha_), 0.0);
-  const Vector3D v3 = Vector3D(cos(alpha_)*cos(alpha_/2.0), cos(alpha_)*sin(alpha_/2.0) , sin(alpha_) );
+  const double cosBeta = cos(alpha_) / cos(alpha_/2.0);
+  const Vector3D v3 = Vector3D(cosBeta*cos(alpha_/2.0), cosBeta*sin(alpha_/2.0) , sqrt(1.0 - pow(cosBeta,2)) );
 
   return UnitCell3D(Rhombohedral_Centered, a_*v1, a_*v2, a_*v3);
 }
