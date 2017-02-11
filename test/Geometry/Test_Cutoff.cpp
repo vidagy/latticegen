@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <Geometry/LatticeGenerator.h>
+#include <Geometry/Cutoff.h>
 
 using namespace Core;
 using namespace Geometry;
@@ -13,15 +13,13 @@ namespace
 
 TEST(TestCutoff,CubeCtorThrows)
 {
-  UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-  EXPECT_THROW(CutoffCube(unit_cell,  0.0), std::invalid_argument);
-  EXPECT_THROW(CutoffCube(unit_cell, -1.5), std::invalid_argument);
+  EXPECT_THROW(CutoffCube(0.0), std::invalid_argument);
+  EXPECT_THROW(CutoffCube(-1.5), std::invalid_argument);
 }
 
 TEST(TestCutoff,CubeCutoffTrue)
 {
-  UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-  CutoffCube cutoff = CutoffCube(unit_cell, 1.0);
+  CutoffCube cutoff = CutoffCube(1.0);
   EXPECT_TRUE(cutoff.is_included( Point3D( 1.0, 1.0, 1.0) ) );
   EXPECT_TRUE(cutoff.is_included( Point3D( 0.0, 1.0, 1.0) ) );
   EXPECT_TRUE(cutoff.is_included( Point3D( 1.0, 0.0, 1.0) ) );
@@ -42,8 +40,7 @@ TEST(TestCutoff,CubeCutoffTrue)
 
 TEST(TestCutoff,CubeCutoffFalse)
 {
-  UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-  CutoffCube cutoff = CutoffCube(unit_cell, 1.0);
+  CutoffCube cutoff = CutoffCube(1.0);
   EXPECT_FALSE(cutoff.is_included( Point3D( 1.1, 1.1, 1.1) ) );
   EXPECT_FALSE(cutoff.is_included( Point3D( 1.0, 1.1, 1.1) ) );
   EXPECT_FALSE(cutoff.is_included( Point3D( 1.1, 1.0, 1.1) ) );
@@ -63,15 +60,13 @@ TEST(TestCutoff,CubeCutoffFalse)
 
 TEST(TestCutoff,SphereCtorThrows)
 {
-  UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-  EXPECT_THROW(CutoffSphere(unit_cell,  0.0), std::invalid_argument);
-  EXPECT_THROW(CutoffSphere(unit_cell, -1.5), std::invalid_argument);
+  EXPECT_THROW(CutoffSphere(0.0), std::invalid_argument);
+  EXPECT_THROW(CutoffSphere(-1.5), std::invalid_argument);
 }
 
 TEST(TestCutoff,SphereCutoffTrue)
 {
-  UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(0.5);
-  CutoffSphere cutoff = CutoffSphere(unit_cell, 1.0);
+  CutoffSphere cutoff = CutoffSphere(1.0);
   EXPECT_TRUE(cutoff.is_included( Point3D( 0.0, 0.0, 0.0) ) );
   EXPECT_TRUE(cutoff.is_included( Point3D( 1.0, 0.0, 0.0) ) );
   EXPECT_TRUE(cutoff.is_included( Point3D( 0.0, 1.0, 0.0) ) );
@@ -107,8 +102,7 @@ TEST(TestCutoff,SphereCutoffTrue)
 
 TEST(TestCutoff,SphereCutoffFalse)
 {
-  UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(0.25);
-  CutoffSphere cutoff = CutoffSphere(unit_cell, 1.0);
+  CutoffSphere cutoff = CutoffSphere(1.0);
   EXPECT_FALSE(cutoff.is_included( Point3D( 1.1, 0.0, 0.0) ) );
   EXPECT_FALSE(cutoff.is_included( Point3D( 0.0, 1.1, 0.0) ) );
   EXPECT_FALSE(cutoff.is_included( Point3D( 0.0, 0.0, 1.1) ) );
@@ -213,55 +207,4 @@ TEST(TestCutoff,UnitVectorsCutoffFalse)
   EXPECT_FALSE(cutoff.is_included(-1.0 * a + 2.0 * b + 4.0 * c ) );
   EXPECT_FALSE(cutoff.is_included( 1.0 * a - 2.0 * b + 4.0 * c ) );
   EXPECT_FALSE(cutoff.is_included( 1.0 * a + 2.0 * b - 4.0 * c ) );
-}
-
-
-TEST(TestLatticeGenerator,LatticeGeneratorContainsOrigin)
-{
-  UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-  CutoffCube cutoff = CutoffCube(unit_cell, 0.1);
-
-  const static std::vector< Point3D > reference = { {0.0,0.0,0.0} };
-
-  EXPECT_THAT( LatticeGenerator::generate(cutoff), ::testing::ContainerEq(reference) );
-  EXPECT_THAT( LatticeGenerator::generate(cutoff, true), ::testing::ContainerEq(reference) );
-}
-
-TEST(TestLatticeGenerator,LatticeGeneratorContainsCube)
-{
-  UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-  CutoffCube cutoff = CutoffCube(unit_cell, 1.0);
-
-  const static std::vector< Point3D > reference =
-  {
-    {-1.0,-1.0,-1.0},{ 0.0,-1.0,-1.0},{ 1.0,-1.0,-1.0},
-    {-1.0, 0.0,-1.0},{ 0.0, 0.0,-1.0},{ 1.0, 0.0,-1.0},
-    {-1.0, 1.0,-1.0},{ 0.0, 1.0,-1.0},{ 1.0, 1.0,-1.0},
-
-    {-1.0,-1.0, 0.0},{ 0.0,-1.0, 0.0},{ 1.0,-1.0, 0.0},
-    {-1.0, 0.0, 0.0},{ 0.0, 0.0, 0.0},{ 1.0, 0.0, 0.0},
-    {-1.0, 1.0, 0.0},{ 0.0, 1.0, 0.0},{ 1.0, 1.0, 0.0},
-
-    {-1.0,-1.0, 1.0},{ 0.0,-1.0, 1.0},{ 1.0,-1.0, 1.0},
-    {-1.0, 0.0, 1.0},{ 0.0, 0.0, 1.0},{ 1.0, 0.0, 1.0},
-    {-1.0, 1.0, 1.0},{ 0.0, 1.0, 1.0},{ 1.0, 1.0, 1.0}
-  };
-
-  EXPECT_THAT( LatticeGenerator::generate(cutoff), ::testing::ContainerEq(reference) );
-}
-
-TEST(TestLatticeGenerator,LatticeGeneratorContainsCubePositive)
-{
-  UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-  CutoffCube cutoff = CutoffCube(unit_cell, 1.0);
-
-  const static std::vector< Point3D > reference =
-  {
-    { 0.0, 0.0, 0.0},{ 1.0, 0.0, 0.0},
-    { 0.0, 1.0, 0.0},{ 1.0, 1.0, 0.0},
-    { 0.0, 0.0, 1.0},{ 1.0, 0.0, 1.0},
-    { 0.0, 1.0, 1.0},{ 1.0, 1.0, 1.0}
-  };
-
-  EXPECT_THAT( LatticeGenerator::generate(cutoff, true), ::testing::ContainerEq(reference) );
 }
