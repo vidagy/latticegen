@@ -66,7 +66,18 @@ namespace Geometry
     bool positive_only;
   };
 
-  // class CutoffWSCell{...}
+  class CutoffWSCell : public Cutoff
+  {
+  public:
+    CutoffWSCell(const UnitCell3D& unit_cell_);
+
+    bool is_included(const Point3D& point) const final override;
+    StepsToCover steps_to_cover(const UnitCell3D& unit_cell_) const final override;
+
+  private:
+    UnitCell3D unit_cell;
+    std::vector<Point3D> neighbors;
+  };
 }
 
 #endif //LATTICEGEN_CUTOFF_H

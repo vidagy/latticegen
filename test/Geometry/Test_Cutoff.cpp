@@ -208,3 +208,78 @@ TEST(TestCutoff,UnitVectorsCutoffFalse)
   EXPECT_FALSE(cutoff.is_included( 1.0 * a - 2.0 * b + 4.0 * c ) );
   EXPECT_FALSE(cutoff.is_included( 1.0 * a + 2.0 * b - 4.0 * c ) );
 }
+
+TEST(TestCutoff,WSCellCutoffTrue)
+{
+  UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
+  const Vector3D& a = unit_cell.a;
+  const Vector3D& b = unit_cell.b;
+  const Vector3D& c = unit_cell.c;
+
+  CutoffWSCell cutoff = CutoffWSCell(UnitCell3D::create_cubic_primitive(3.0));
+
+  EXPECT_TRUE(cutoff.is_included( {0,0,0} ));
+  EXPECT_TRUE(cutoff.is_included( a ));
+  EXPECT_TRUE(cutoff.is_included(-a ));
+  EXPECT_TRUE(cutoff.is_included( b ));
+  EXPECT_TRUE(cutoff.is_included(-b ));
+  EXPECT_TRUE(cutoff.is_included( c ));
+  EXPECT_TRUE(cutoff.is_included(-c ));
+  EXPECT_TRUE(cutoff.is_included( a +b ));
+  EXPECT_TRUE(cutoff.is_included(-a +b ));
+  EXPECT_TRUE(cutoff.is_included( a -b ));
+  EXPECT_TRUE(cutoff.is_included(-a -b ));
+  EXPECT_TRUE(cutoff.is_included( a +c ));
+  EXPECT_TRUE(cutoff.is_included(-a +c ));
+  EXPECT_TRUE(cutoff.is_included( a -c ));
+  EXPECT_TRUE(cutoff.is_included(-a -c ));
+  EXPECT_TRUE(cutoff.is_included( b +c ));
+  EXPECT_TRUE(cutoff.is_included(-b +c ));
+  EXPECT_TRUE(cutoff.is_included( b -c ));
+  EXPECT_TRUE(cutoff.is_included(-b -c ));
+  EXPECT_TRUE(cutoff.is_included( a +b +c ));
+  EXPECT_TRUE(cutoff.is_included( a -b +c ));
+  EXPECT_TRUE(cutoff.is_included( a +b -c ));
+  EXPECT_TRUE(cutoff.is_included( a -b -c ));
+  EXPECT_TRUE(cutoff.is_included(-a +b +c ));
+  EXPECT_TRUE(cutoff.is_included(-a -b +c ));
+  EXPECT_TRUE(cutoff.is_included(-a +b -c ));
+  EXPECT_TRUE(cutoff.is_included(-a -b -c ));
+}
+
+TEST(TestCutoff,WSCellCutoffFalse)
+{
+  UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
+  const Vector3D& a = 2.0 * unit_cell.a;
+  const Vector3D& b = 2.0 * unit_cell.b;
+  const Vector3D& c = 2.0 * unit_cell.c;
+
+  CutoffWSCell cutoff = CutoffWSCell(UnitCell3D::create_cubic_primitive(3.0));
+
+  EXPECT_FALSE(cutoff.is_included( a ));
+  EXPECT_FALSE(cutoff.is_included(-a ));
+  EXPECT_FALSE(cutoff.is_included( b ));
+  EXPECT_FALSE(cutoff.is_included(-b ));
+  EXPECT_FALSE(cutoff.is_included( c ));
+  EXPECT_FALSE(cutoff.is_included(-c ));
+  EXPECT_FALSE(cutoff.is_included( a +b ));
+  EXPECT_FALSE(cutoff.is_included(-a +b ));
+  EXPECT_FALSE(cutoff.is_included( a -b ));
+  EXPECT_FALSE(cutoff.is_included(-a -b ));
+  EXPECT_FALSE(cutoff.is_included( a +c ));
+  EXPECT_FALSE(cutoff.is_included(-a +c ));
+  EXPECT_FALSE(cutoff.is_included( a -c ));
+  EXPECT_FALSE(cutoff.is_included(-a -c ));
+  EXPECT_FALSE(cutoff.is_included( b +c ));
+  EXPECT_FALSE(cutoff.is_included(-b +c ));
+  EXPECT_FALSE(cutoff.is_included( b -c ));
+  EXPECT_FALSE(cutoff.is_included(-b -c ));
+  EXPECT_FALSE(cutoff.is_included( a +b +c ));
+  EXPECT_FALSE(cutoff.is_included( a -b +c ));
+  EXPECT_FALSE(cutoff.is_included( a +b -c ));
+  EXPECT_FALSE(cutoff.is_included( a -b -c ));
+  EXPECT_FALSE(cutoff.is_included(-a +b +c ));
+  EXPECT_FALSE(cutoff.is_included(-a -b +c ));
+  EXPECT_FALSE(cutoff.is_included(-a +b -c ));
+  EXPECT_FALSE(cutoff.is_included(-a -b -c ));
+}

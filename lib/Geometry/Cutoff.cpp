@@ -100,4 +100,46 @@ namespace Geometry
     else
       return {-(long)a_max, -(long)b_max, -(long)c_max, (long)a_max, (long)b_max, (long)c_max};
   }
+
+  CutoffWSCell::CutoffWSCell(const UnitCell3D& unit_cell_)
+  : unit_cell(unit_cell_)
+  {
+    const Point3D& a = unit_cell_.a;
+    const Point3D& b = unit_cell_.b;
+    const Point3D& c = unit_cell_.c;
+
+    neighbors = {
+      a,-a,b,-b,c,-c,
+
+      a+b,a-b,-a+b,-a-b,
+      a+c,a-c,-a+c,-a-c,
+      b+c,b-c,-b+c,-b-c,
+
+      a+b+c,a-b+c,a+b-c,-a+b+c,
+      a-b-c,-a-b+c,-a+b-c,-a-b-c,
+    };
+  }
+
+  bool CutoffWSCell::is_included(const Point3D& point) const
+  {
+    auto length = point.length();
+    for (auto neighbor: neighbors)
+    {
+      if (length > (point-neighbor).length())
+        return false;
+    }
+    return true;
+  }
+
+  Cutoff::StepsToCover CutoffWSCell::steps_to_cover(const UnitCell3D& unit_cell_) const
+  {
+    double r = 0.0;
+    for (auto neighbor: neighbors)
+    {
+      auto length = neighbor.length();
+      if (length > r)
+        r = length;
+    }
+    return get_steps_to_cover(unit_cell_, r);
+  }
 }
