@@ -10,6 +10,6 @@ BravaisLattice3D::BravaisLattice3D(const UnitCell3D& unit_cell_, const size_t x_
   , x_width(x_width_)
   , y_width(y_width_)
   , z_width(z_width_)
-  , lattice(LatticeMesh(unit_cell, true).generate(CutoffUnitVectors(unit_cell, x_width, y_width, z_width)))
+  , lattice(LatticeMesh(unit_cell).generate(CutoffUnitVectors(unit_cell, x_width, y_width, z_width, true)))
 {
 }

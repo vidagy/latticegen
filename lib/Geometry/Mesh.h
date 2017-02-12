@@ -17,15 +17,12 @@ namespace Geometry
   class LatticeMesh : public Mesh
   {
   public:
-    LatticeMesh(const UnitCell3D& unit_cell_, const bool positive_only_ = false)
-      : unit_cell(unit_cell_)
-      , positive_only(positive_only_)
+    LatticeMesh(const UnitCell3D& unit_cell_) : unit_cell(unit_cell_)
     {}
 
     std::vector<Point3D> generate(const Cutoff& cutoff) const final override;
 
     UnitCell3D unit_cell;
-    bool positive_only;
   };
 
   // class TetrahedronMesh : public Mesh

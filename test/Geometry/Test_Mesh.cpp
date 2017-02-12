@@ -13,16 +13,14 @@ namespace
 
 TEST(TestMesh,MeshContainsOrigin)
 {
-  CutoffCube cutoff = CutoffCube(0.1);
   UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-
   LatticeMesh mesh = LatticeMesh(unit_cell);
-  LatticeMesh mesh_pos = LatticeMesh(unit_cell, true);
+
+  CutoffCube cutoff = CutoffCube(0.1);
 
   const static std::vector< Point3D > reference = { {0.0,0.0,0.0} };
 
   EXPECT_THAT( mesh.generate(cutoff), ::testing::ContainerEq(reference) );
-  EXPECT_THAT( mesh_pos.generate(cutoff), ::testing::ContainerEq(reference) );
 }
 
 TEST(TestMesh,MeshContainsCube)
@@ -49,20 +47,31 @@ TEST(TestMesh,MeshContainsCube)
   EXPECT_THAT( mesh.generate(cutoff), ::testing::ContainerEq(reference) );
 }
 
-TEST(TestMesh,MeshContainsCubePositive)
+namespace
 {
-  UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-  CutoffCube cutoff = CutoffCube(1.0);
-  LatticeMesh mesh = LatticeMesh(unit_cell, true);
+  const static double a = 0.5;
+  const static double b = sqrt(3.0) / 2.0;
+
+  const static double c = sqrt(3.0) / 6.0;
+  const static double d = 1.0 / sqrt(3.0);
+  const static double h = sqrt(2.0 / 3.0);
+}
+
+TEST(TestMesh,TetrahedronMeshContainsSphere)
+{
+  CutoffSphere cutoff = CutoffSphere(1.0);
+  UnitCell3D unit_cell = UnitCell3D::create_rhombohedral_centered(1.0, pi / 3.0);
+  LatticeMesh mesh = LatticeMesh(unit_cell);
 
   const static std::vector< Point3D > reference =
     {
-      { 0.0, 0.0, 0.0},{ 1.0, 0.0, 0.0},
-      { 0.0, 1.0, 0.0},{ 1.0, 1.0, 0.0},
-      { 0.0, 0.0, 1.0},{ 1.0, 0.0, 1.0},
-      { 0.0, 1.0, 1.0},{ 1.0, 1.0, 1.0}
+      { 0.0, 0.0, 0.0},
+      { 1.0, 0.0, 0.0}, { a, b, 0.0}, { a,-b, 0.0},
+      {-1.0, 0.0, 0.0}, {-a, b, 0.0}, {-a,-b, 0.0},
+
+      {0.0,-d, h}, { a, c, h}, {-a, c, h},
+      {0.0, d,-h}, { a,-c,-h}, {-a,-c,-h}
     };
 
-  EXPECT_THAT( mesh.generate(cutoff), ::testing::ContainerEq(reference) );
+  EXPECT_THAT( mesh.generate(cutoff), ::testing::UnorderedElementsAreArray(reference) );
 }
-
