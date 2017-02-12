@@ -51,13 +51,7 @@ namespace Geometry
   class Identity : public Transformation
   {
   public:
-    Identity()
-      : Transformation(Transformation::Identity, Matrix3D{
-        1.0, 0.0, 0.0,
-        0.0, 1.0, 0.0,
-        0.0, 0.0, 1.0
-      })
-    {}
+    Identity();
   };
 
   class Rotation : public Transformation
@@ -83,15 +77,8 @@ namespace Geometry
   class Inversion : public Transformation
   {
   public:
-    Inversion()
-      : Transformation(Transformation::Inversion, Matrix3D{
-        -1.0, 0.0, 0.0,
-        0.0, -1.0, 0.0,
-        0.0, 0.0, -1.0
-      })
-    {}
+    Inversion();
   };
-
 }
  
 #endif // LATTICEGEN_TRANSFORMATIONS_H_

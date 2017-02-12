@@ -5,6 +5,19 @@ using namespace Geometry;
 
 namespace
 {
+  static const Matrix3D identity_matrix = {
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0
+  };
+}
+
+Identity::Identity()
+  : Transformation(Transformation::Identity, identity_matrix)
+{}
+
+namespace
+{
   Matrix3D get_rotation_matrix(const Vector3D& rotation_vector)
   {
     const double angle = rotation_vector.length();
@@ -66,4 +79,17 @@ ImproperRotation::ImproperRotation(const Vector3D& rotation_vector)
       Geometry::Reflection(rotation_vector/rotation_vector.length()).transformation_matrix *
       Geometry::Rotation(rotation_vector).transformation_matrix
     )
+{}
+
+namespace
+{
+  static const Matrix3D inversion_matrix = {
+    -1.0, 0.0, 0.0,
+    0.0, -1.0, 0.0,
+    0.0, 0.0, -1.0
+  };
+}
+
+Inversion::Inversion()
+  : Transformation(Transformation::Inversion, inversion_matrix)
 {}
