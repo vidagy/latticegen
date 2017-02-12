@@ -1,6 +1,11 @@
 #include <algorithm>
 #include "Mesh.h"
 
+namespace
+{
+  static const double pi = 3.14159265358979323846;
+}
+
 namespace Geometry
 {
   std::vector<Point3D> LatticeMesh::generate(const Cutoff& cutoff) const
@@ -31,5 +36,17 @@ namespace Geometry
     }
     lattice.shrink_to_fit();
     return lattice;
+  }
+
+  std::vector<Point3D> TetrahedronMesh::generate(const Cutoff& cutoff) const
+  {
+    LatticeMesh lattice_mesh = LatticeMesh(UnitCell3D::create_rhombohedral_centered(a, pi / 3.0));
+    return lattice_mesh.generate(cutoff);
+  }
+
+  std::vector<Point3D> CubicMesh::generate(const Cutoff& cutoff) const
+  {
+    LatticeMesh lattice_mesh = LatticeMesh(UnitCell3D::create_cubic_primitive(a));
+    return lattice_mesh.generate(cutoff);
   }
 }

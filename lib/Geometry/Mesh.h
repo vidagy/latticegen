@@ -25,8 +25,30 @@ namespace Geometry
     UnitCell3D unit_cell;
   };
 
-  // class TetrahedronMesh : public Mesh
 
-  // class CubicMesh : public Mesh
+
+  class TetrahedronMesh : public Mesh
+  {
+  public:
+    TetrahedronMesh(const double a_)
+      : a(a_)
+    {}
+
+    std::vector<Point3D> generate(const Cutoff& cutoff) const final override;
+
+    double a;
+  };
+
+  class CubicMesh : public Mesh
+  {
+  public:
+    CubicMesh(const double a_, const bool positive_only_ = false)
+      : a(a_)
+    {}
+
+    std::vector<Point3D> generate(const Cutoff& cutoff) const final override;
+
+    double a;
+  };
 }
 #endif //LATTICEGEN_MESH_H
