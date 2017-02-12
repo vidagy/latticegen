@@ -25,8 +25,6 @@ namespace Geometry
     UnitCell3D unit_cell;
   };
 
-
-
   class TetrahedronMesh : public Mesh
   {
   public:
