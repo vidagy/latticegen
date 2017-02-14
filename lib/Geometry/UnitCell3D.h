@@ -2,6 +2,7 @@
 #define LATTICEGEN_UNITCELL3D_H_
 
 #include "Point3D.h"
+#include "CrystallographicPointGroups.h"
 #include <vector>
 
 namespace Geometry
@@ -43,6 +44,8 @@ namespace Geometry
     static UnitCell3D create_cubic_primitive(const double a_);
     static UnitCell3D create_cubic_body(const double a_);
     static UnitCell3D create_cubic_face(const double a_);
+
+    CrystalClass get_point_group() const;
 
     std::tuple<long, long, long> get_offsets(const Point3D& point) const;
 

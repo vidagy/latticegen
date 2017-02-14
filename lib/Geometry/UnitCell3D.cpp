@@ -251,3 +251,33 @@ std::tuple<long, long, long> UnitCell3D::get_offsets(const Point3D& point) const
 
   return std::make_tuple(lna, lnb, lnc);
 }
+
+CrystalClass UnitCell3D::get_point_group() const
+{
+  switch (type)
+  {
+    case Triclinic_Primitive:
+      return CrystalClass::Triclinic_Pinacoid;
+    case Monoclinic_Primitive:
+    case Monoclinic_Base:
+      return CrystalClass::Monoclinic_Prism;
+    case Orthorhombic_Primitive:
+    case Orthorhombic_Base:
+    case Orthorhombic_Body:
+    case Orthorhombic_Face:
+      return CrystalClass::Orthorhombic_Dipyramid;
+    case Tetragonal_Primitive:
+    case Tetragonal_Body:
+      return CrystalClass::Ditetragonal_Dipyramid;
+    case Rhombohedral_Centered:
+      return CrystalClass::Ditrigonal_Scalenohedron;
+    case Hexagonal_Primitive:
+      return CrystalClass::Dihexagonal_Dipyramid;
+    case Cubic_Primitive:
+    case Cubic_Body:
+    case Cubic_Face:
+      return CrystalClass::Hexaoctahedron;
+    default:
+      throw std::invalid_argument("Unhandled BravaisLattice3DType in UnitCell3D::get_crystal_class");
+  }
+}
