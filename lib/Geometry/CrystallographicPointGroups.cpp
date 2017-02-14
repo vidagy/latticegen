@@ -1,7 +1,5 @@
 #include "CrystallographicPointGroups.h"
 
-#include <stdexcept>
-
 namespace Geometry
 {
   CrystalSystem get_crystal_system(const CrystalClass& crystal_class)
@@ -56,6 +54,80 @@ namespace Geometry
 
       default:
         throw std::invalid_argument("Unrecognised crystal class on the input of get_crystal_system");
+    }
+  }
+
+  std::unique_ptr<CrystallographicPointGroup> CrystallographicPointGroup::create(const CrystalClass crystal_class)
+  {
+    switch (crystal_class)
+    {
+      case Triclinic_Pedion:
+        return std::make_unique<C1>();
+      case Triclinic_Pinacoid:
+        return std::make_unique<Ci>();
+      case Monoclinic_Sphenoid:
+        return std::make_unique<C2 >();
+      case Monoclinic_Dome:
+        return std::make_unique<Cs >();
+      case Monoclinic_Prism:
+        return std::make_unique<C2h>();
+      case Orthorhombic_Disphenoid:
+        return std::make_unique<D2 >();
+      case Orthorhombic_Pyramid:
+        return std::make_unique<C2v>();
+      case Orthorhombic_Dipyramid:
+        return std::make_unique<D2h>();
+      case Tetragonal_Pyramid:
+        return std::make_unique<C4 >();
+      case Tetragonal_Disphenoid:
+        return std::make_unique<S4 >();
+      case Tetragonal_Dipyramid:
+        return std::make_unique<C4h>();
+      case Tetragonal_Trapezohedron:
+        return std::make_unique<D4 >();
+      case Ditetragonal_Pyramid:
+        return std::make_unique<C4v>();
+      case Tetragonal_Scalenohedron:
+        return std::make_unique<D2d>();
+      case Ditetragonal_Dipyramid:
+        return std::make_unique<D4h>();
+      case Trigonal_Pyramid:
+        return std::make_unique<C3 >();
+      case Rombohedron:
+        return std::make_unique<S6 >();
+      case Trigonal_Trapezohedron:
+        return std::make_unique<D3 >();
+      case Ditrigonal_Pyramid:
+        return std::make_unique<C3v>();
+      case Ditrigonal_Scalenohedron:
+        return std::make_unique<D3d>();
+      case Hexagonal_Pyramid:
+        return std::make_unique<C6>();
+      case Trigonal_Dipyramid:
+        return std::make_unique<C3h>();
+      case Hexagonal_Dipyramid:
+        return std::make_unique<C6h>();
+      case Hexagonal_Trapezohedron:
+        return std::make_unique<D6>();
+      case Dihexagonal_Pyramid:
+        return std::make_unique<C6v>();
+      case Ditrigonal_Dipyramid:
+        return std::make_unique<D3h>();
+      case Dihexagonal_Dipyramid:
+        return std::make_unique<D6h>();
+      case Tetatroid:
+        return std::make_unique<T>();
+      case Diploid:
+        return std::make_unique<Th>();
+      case Gyroid:
+        return std::make_unique<O>();
+      case Hexatetrahedron:
+        return std::make_unique<Td>();
+      case Hexaoctahedron:
+        return std::make_unique<Oh>();
+
+      default:
+        throw std::invalid_argument("Unrecognised crystal class in CrystallographicPointGroup::create");
     }
   }
 
@@ -298,4 +370,5 @@ namespace Geometry
                           Reflectionp1m10, Reflectionp10m1, Reflection0p1m1,
                           ImproperRotationp4001, ImproperRotationp4010, ImproperRotationp4100,
                           ImproperRotationm4001, ImproperRotationm4010, ImproperRotationm4100);
+
 }

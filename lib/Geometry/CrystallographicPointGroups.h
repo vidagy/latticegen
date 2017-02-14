@@ -2,6 +2,7 @@
 #define LATTICEGEN_CRYSTALLOGRAPHICPOINTGROUPS_H
 
 #include <vector>
+#include <memory>
 
 namespace Geometry
 {
@@ -135,6 +136,8 @@ namespace Geometry
     virtual CrystalClass get_crystal_class() const = 0;
     virtual Elements get_generators() const = 0;
     virtual Elements get_elements() const = 0;
+
+    static std::unique_ptr<CrystallographicPointGroup> create(const CrystalClass crystal_class);
 
     bool operator==(const CrystallographicPointGroup& other) const
     {
