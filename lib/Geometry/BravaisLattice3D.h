@@ -12,7 +12,7 @@ namespace Geometry
   public:
     typedef std::vector<Point3D> Point3DVec;
 
-    BravaisLattice3D(const UnitCell3D& unit_cell_, const size_t x_width, const size_t y_width, const size_t z_width);
+    BravaisLattice3D(const UnitCell3D &unit_cell_, size_t x_width, size_t y_width, size_t z_width);
 
     UnitCell3D get_unit_cell() const { return unit_cell; };
     size_t     get_x_width()   const { return x_width; }

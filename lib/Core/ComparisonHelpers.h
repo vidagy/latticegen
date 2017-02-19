@@ -9,8 +9,8 @@ namespace Core
   static const double REL_TOLERANCE = 1e-10;
 
   inline bool equalsWithTolerance(
-    const double lhs, const double rhs, 
-    const double abs_tolerance = ABS_TOLERANCE, const double rel_tolerance = REL_TOLERANCE)
+    double lhs, double rhs,
+    double abs_tolerance = ABS_TOLERANCE, double rel_tolerance = REL_TOLERANCE)
   {
     double diff = fabs(lhs - rhs);
     if (diff > abs_tolerance)
@@ -21,43 +21,47 @@ namespace Core
       
   }
 
-  inline bool nearlyZero(const double x, const double abs_tolerance = ABS_TOLERANCE)
+  inline bool nearlyZero(double x, double abs_tolerance = ABS_TOLERANCE)
   {
     return x < abs_tolerance && x > -1.0 * abs_tolerance;
   }
 
-  inline bool strictlyGreater(const double x, const double y, const double abs_tolerance = ABS_TOLERANCE)
+  inline bool strictlyGreater(double x, double y, double abs_tolerance = ABS_TOLERANCE)
   {
     return x > y + abs_tolerance;
   }
-  inline bool strictlyLess(const double x, const double y, const double abs_tolerance = ABS_TOLERANCE)
+
+  inline bool strictlyLess(double x, double y, double abs_tolerance = ABS_TOLERANCE)
   {
     return strictlyGreater(y, x, abs_tolerance);
   }
 
-  inline bool greaterEqualsWithTolerance(const double x, const double y, const double abs_tolerance = ABS_TOLERANCE)
+  inline bool greaterEqualsWithTolerance(double x, double y, double abs_tolerance = ABS_TOLERANCE)
   {
     return x > y - abs_tolerance;
   }
-  inline bool lessEqualsWithTolerance(const double x, const double y, const double abs_tolerance = ABS_TOLERANCE)
+
+  inline bool lessEqualsWithTolerance(double x, double y, double abs_tolerance = ABS_TOLERANCE)
   {
     return greaterEqualsWithTolerance(y, x, abs_tolerance);
   }
 
-  inline bool strictlyPositive(const double x, const double abs_tolerance = ABS_TOLERANCE)
+  inline bool strictlyPositive(double x, double abs_tolerance = ABS_TOLERANCE)
   {
     return x > abs_tolerance;
   }
-  inline bool strictlyNegative(const double x, const double abs_tolerance = ABS_TOLERANCE)
+
+  inline bool strictlyNegative(double x, double abs_tolerance = ABS_TOLERANCE)
   {
     return x < -abs_tolerance;
   }
 
-  inline bool positiveWithTolerance(const double x, const double abs_tolerance = ABS_TOLERANCE)
+  inline bool positiveWithTolerance(double x, double abs_tolerance = ABS_TOLERANCE)
   {
     return ! strictlyNegative(x, abs_tolerance);
   }
-  inline bool negativeWithTolerance(const double x, const double abs_tolerance = ABS_TOLERANCE)
+
+  inline bool negativeWithTolerance(double x, double abs_tolerance = ABS_TOLERANCE)
   {
     return ! strictlyPositive(x, abs_tolerance);
   }

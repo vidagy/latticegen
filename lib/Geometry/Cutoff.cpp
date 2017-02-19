@@ -5,7 +5,7 @@ namespace Geometry
   namespace
   {
     std::tuple< long, long, long > get_max_steps_and_offsets(
-      const Point3D& v, const Point3D& perpendicular1, const Point3D& perpendicular2, const double max_distance
+      const Point3D &v, const Point3D &perpendicular1, const Point3D &perpendicular2, double max_distance
     )
     {
       Point3D perpendicular = cross_product(perpendicular1, perpendicular2);
@@ -21,7 +21,7 @@ namespace Geometry
     }
 
     Cutoff::StepsToCover get_steps_to_cover(
-      const UnitCell3D& unit_cell, const double max_distance
+      const UnitCell3D &unit_cell, double max_distance
     )
     {
       long a_max_steps, a_offset1, a_offset2, b_max_steps, b_offset1, b_offset2, c_max_steps, c_offset1, c_offset2;
@@ -39,7 +39,7 @@ namespace Geometry
     }
   }
 
-  CutoffCube::CutoffCube(const double a_)
+  CutoffCube::CutoffCube(double a_)
     : a(a_)
   {
     if (! strictlyPositive(a))
@@ -58,7 +58,7 @@ namespace Geometry
     return get_steps_to_cover(unit_cell, a * sqrt(3));
   }
 
-  CutoffSphere::CutoffSphere(const double r_)
+  CutoffSphere::CutoffSphere(double r_)
     : r(r_)
   {
     if (! strictlyPositive(r))
@@ -77,7 +77,7 @@ namespace Geometry
 
   CutoffUnitVectors::CutoffUnitVectors(
     const UnitCell3D& unit_cell_,
-    const size_t a_max_, const size_t b_max_, const size_t c_max_, const bool positive_only_)
+    size_t a_max_, size_t b_max_, size_t c_max_, bool positive_only_)
     : unit_cell(unit_cell_)
     , a_max(a_max_), b_max(b_max_), c_max(c_max_)
     , positive_only(positive_only_)

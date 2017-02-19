@@ -12,7 +12,7 @@ namespace Geometry
   public:
     typedef std::vector<Matrix3D> Transformations;
 
-    static Transformation get(const CrystallographicPointGroup::SymmetryElement symmetry_element);
+    static Transformation get(CrystallographicPointGroup::SymmetryElement symmetry_element);
     static Transformations get(const CrystallographicPointGroup::Elements& elements);
 
     static Transformations generate(const CrystallographicPointGroup::Elements& generators);

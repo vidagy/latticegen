@@ -38,7 +38,7 @@ IrreducibleWedge::reduce_by_symmetries(const std::vector<Point3D> &points,
 }
 
 std::vector<Point3D>
-IrreducibleWedge::get_irreducible_wedge(const UnitCell3D &unit_cell, const size_t sample)
+IrreducibleWedge::get_irreducible_wedge(const UnitCell3D &unit_cell, size_t sample)
 {
   if (sample == 0)
     throw std::invalid_argument("sample is zero in IrreducibleWedge::get_irreducible_wedge");

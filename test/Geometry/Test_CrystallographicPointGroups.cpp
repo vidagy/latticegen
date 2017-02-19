@@ -18,8 +18,8 @@ namespace
 {
   template<class Group, class Range = Elements>
   void testCrystallographicPointGroup(
-    const CrystalClass& crystal_class,
-    const CrystalSystem& crystal_system,
+    CrystalClass crystal_class,
+    CrystalSystem crystal_system,
     const Range& generators,
     const Range& elements)
   {

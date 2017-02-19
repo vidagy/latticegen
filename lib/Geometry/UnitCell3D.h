@@ -29,21 +29,34 @@ namespace Geometry
   {
   public: 
     static UnitCell3D create_triclinic_primitive(
-      const double a_, const double b_, const double c_,
-      const double alpha_, const double beta_, const double gamma_);
-    static UnitCell3D create_monoclinic_primitive(const double a_, const double b_, const double c_, const double beta_);
-    static UnitCell3D create_monoclinic_base(const double a_, const double b_, const double c_, const double beta_);
-    static UnitCell3D create_orthorhombic_primitive(const double a_, const double b_, const double c_);
-    static UnitCell3D create_orthorhombic_base(const double a_, const double b_, const double c_);
-    static UnitCell3D create_orthorhombic_body(const double a_, const double b_, const double c_);
-    static UnitCell3D create_orthorhombic_face(const double a_, const double b_, const double c_);
-    static UnitCell3D create_tetragonal_primitive(const double a_, const double c_);
-    static UnitCell3D create_tetragonal_body(const double a_, const double c_);
-    static UnitCell3D create_rhombohedral_centered(const double a_, const double alpha_);
-    static UnitCell3D create_hexagonal_primitive(const double a_, const double c_);
-    static UnitCell3D create_cubic_primitive(const double a_);
-    static UnitCell3D create_cubic_body(const double a_);
-    static UnitCell3D create_cubic_face(const double a_);
+      double a_, double b_, double c_,
+      double alpha_, double beta_, double gamma_);
+
+    static UnitCell3D create_monoclinic_primitive(double a_, double b_, double c_, double beta_);
+
+    static UnitCell3D create_monoclinic_base(double a_, double b_, double c_, double beta_);
+
+    static UnitCell3D create_orthorhombic_primitive(double a_, double b_, double c_);
+
+    static UnitCell3D create_orthorhombic_base(double a_, double b_, double c_);
+
+    static UnitCell3D create_orthorhombic_body(double a_, double b_, double c_);
+
+    static UnitCell3D create_orthorhombic_face(double a_, double b_, double c_);
+
+    static UnitCell3D create_tetragonal_primitive(double a_, double c_);
+
+    static UnitCell3D create_tetragonal_body(double a_, double c_);
+
+    static UnitCell3D create_rhombohedral_centered(double a_, double alpha_);
+
+    static UnitCell3D create_hexagonal_primitive(double a_, double c_);
+
+    static UnitCell3D create_cubic_primitive(double a_);
+
+    static UnitCell3D create_cubic_body(double a_);
+
+    static UnitCell3D create_cubic_face(double a_);
 
     CrystalClass get_point_group() const;
 
@@ -55,8 +68,8 @@ namespace Geometry
     const Point3D b;
     const Point3D c;
 
-  private: 
-    UnitCell3D(const BravaisLattice3DType& type_, const Point3D& a_, const Point3D& b_, const Point3D& c_);
+  private:
+    UnitCell3D(BravaisLattice3DType type_, const Point3D &a_, const Point3D &b_, const Point3D &c_);
   };
 }
 

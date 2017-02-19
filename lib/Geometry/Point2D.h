@@ -14,7 +14,7 @@ using namespace Core;
 
 namespace Geometry {
     struct Point2D {
-        Point2D(const double x_ = 0.0, const double y_ = 0.0)
+      Point2D(double x_ = 0.0, double y_ = 0.0)
           : x(x_), y(y_) {}
 
         // operators
@@ -36,7 +36,8 @@ namespace Geometry {
           return *this;
         }
 
-        Point2D &operator*=(const double num) {
+      Point2D &operator*=(double num)
+      {
           this->x *= num;
           this->y *= num;
           return *this;
@@ -64,12 +65,14 @@ namespace Geometry {
       return lhs;
     }
 
-    inline Point2D operator*(Point2D lhs, const double num) {
+  inline Point2D operator*(Point2D lhs, double num)
+  {
       lhs *= num;
       return lhs;
     }
 
-    inline Point2D operator*(const double num, Point2D rhs) {
+  inline Point2D operator*(double num, Point2D rhs)
+  {
       rhs *= num;
       return rhs;
     }

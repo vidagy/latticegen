@@ -30,7 +30,7 @@ namespace Geometry
   class CutoffCube : public Cutoff
   {
   public:
-    CutoffCube(const double a_);
+    CutoffCube(double a_);
 
     bool is_included(const Point3D& point) const final override;
     StepsToCover steps_to_cover(const UnitCell3D& unit_cell_) const final override;
@@ -41,7 +41,7 @@ namespace Geometry
   class CutoffSphere : public Cutoff
   {
   public:
-    CutoffSphere(const double r_);
+    CutoffSphere(double r_);
 
     bool is_included(const Point3D& point) const final override;
     StepsToCover steps_to_cover(const UnitCell3D& unit_cell_) const final override;
@@ -54,7 +54,7 @@ namespace Geometry
   public:
     CutoffUnitVectors(
       const UnitCell3D& unit_cell_,
-      const size_t a_max_, const size_t b_max_, const size_t c_max_, const bool positive_only_ = false);
+      size_t a_max_, size_t b_max_, size_t c_max_, bool positive_only_ = false);
 
     bool is_included(const Point3D& point) const final override;
     StepsToCover steps_to_cover(const UnitCell3D& unit_cell_) const final override;

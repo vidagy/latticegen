@@ -110,7 +110,8 @@ BravaisLattice2D::BravaisLattice2DType BravaisLattice2D::find_lattice_type(const
 
 namespace
 {
-  BravaisLattice2D::Point2DVec sample_between(const Point2D& a, const Point2D& b, const unsigned int xsample, const unsigned int ysample)
+  BravaisLattice2D::Point2DVec
+  sample_between(const Point2D &a, const Point2D &b, unsigned int xsample, unsigned int ysample)
   {
     // x is in [0.0, a.x], y > 0.0 and < line (0,b) and y < line(a,b)
 
@@ -142,7 +143,8 @@ namespace
   }
 }
 
-BravaisLattice2D::Point2DVec BravaisLattice2D::get_irreducible_wedge(const UnitCell& unit_cell_, const unsigned int xsample, const unsigned int ysample)
+BravaisLattice2D::Point2DVec
+BravaisLattice2D::get_irreducible_wedge(const UnitCell &unit_cell_, unsigned int xsample, unsigned int ysample)
 {
   // we will sample the convex combination of (0,0), x and y, where x and y is determined by the lattice type and unit_cell_.a.
   BravaisLattice2DType type = find_lattice_type(unit_cell_);
@@ -191,7 +193,7 @@ std::pair<Point2D,Point2D> BravaisLattice2D::get_inverse_unit_cell(const UnitCel
   return std::make_pair(k1,k2);
 }
 
-BravaisLattice2D::BravaisLattice2D(const Point2D& a, const Point2D& b, const size_t x_width_, const size_t y_width_)
+BravaisLattice2D::BravaisLattice2D(const Point2D &a, const Point2D &b, size_t x_width_, size_t y_width_)
 : unit_cell(get_unit_cell(a, b)), x_width(x_width_), y_width(y_width_)
 {
   lattice.reserve(x_width * y_width);

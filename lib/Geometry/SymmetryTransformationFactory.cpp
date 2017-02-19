@@ -33,7 +33,7 @@ namespace Geometry
 
 
   Transformation SymmetryTransformationFactory::get(
-    const CrystallographicPointGroup::SymmetryElement symmetry_element)
+    CrystallographicPointGroup::SymmetryElement symmetry_element)
   {
     switch (symmetry_element)
     {

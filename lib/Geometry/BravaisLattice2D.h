@@ -35,11 +35,12 @@ namespace Geometry
 
     static UnitCell get_unit_cell(Point2D x, Point2D y);
     static BravaisLattice2DType find_lattice_type(const UnitCell& unit_cell);
-    static Point2DVec get_irreducible_wedge(const UnitCell& unit_cell, const unsigned int xsample, const unsigned int ysample);
+
+    static Point2DVec get_irreducible_wedge(const UnitCell &unit_cell, unsigned int xsample, unsigned int ysample);
     
     static std::pair<Point2D,Point2D> get_inverse_unit_cell(const UnitCell& unitCell);
-    
-    BravaisLattice2D(const Point2D& a, const Point2D& b, const size_t x_width, const size_t y_width);
+
+    BravaisLattice2D(const Point2D &a, const Point2D &b, size_t x_width, size_t y_width);
 
     UnitCell   get_unit_cell() const { return unit_cell; };
     size_t     get_x_width()   const { return x_width; }

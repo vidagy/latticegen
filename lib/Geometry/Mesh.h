@@ -28,7 +28,7 @@ namespace Geometry
   class TrigonalMesh : public Mesh
   {
   public:
-    TrigonalMesh(const double a_, const double c_)
+    TrigonalMesh(double a_, double c_)
       : a(a_), c(c_)
     {}
 
@@ -41,7 +41,7 @@ namespace Geometry
   class TetrahedronMesh : public Mesh
   {
   public:
-    TetrahedronMesh(const double a_)
+    TetrahedronMesh(double a_)
       : a(a_)
     {}
 
@@ -53,7 +53,7 @@ namespace Geometry
   class CubicMesh : public Mesh
   {
   public:
-    CubicMesh(const double a_, const bool positive_only_ = false)
+    CubicMesh(double a_, bool positive_only_ = false)
       : a(a_)
     {}
 

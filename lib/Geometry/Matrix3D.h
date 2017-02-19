@@ -17,7 +17,7 @@ namespace Geometry
 {
   typedef std::array< std::array<double,3>, 3> Matrix3D;
 
-  inline Matrix3D operator*(const double alpha, const Matrix3D& matrix)
+  inline Matrix3D operator*(double alpha, const Matrix3D &matrix)
   {
     return Matrix3D {
       matrix[0][0] * alpha, matrix[0][1] * alpha, matrix[0][2] * alpha,

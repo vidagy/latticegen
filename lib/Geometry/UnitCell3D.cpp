@@ -52,7 +52,7 @@ namespace
   static const Vector3D z = Vector3D(0.0,0.0,1.0);
 }
 
-UnitCell3D::UnitCell3D(const BravaisLattice3DType& type_, const Point3D& a_, const Point3D& b_, const Point3D& c_)
+UnitCell3D::UnitCell3D(BravaisLattice3DType type_, const Point3D &a_, const Point3D &b_, const Point3D &c_)
   : type(type_), a(a_), b(b_), c(c_)
 {
   if (a_.length() <= 0.0)
@@ -64,7 +64,7 @@ UnitCell3D::UnitCell3D(const BravaisLattice3DType& type_, const Point3D& a_, con
 }
 
 UnitCell3D UnitCell3D::create_triclinic_primitive(
-  const double a_, const double b_, const double c_, const double alpha_, const double beta_, const double gamma_)
+  double a_, double b_, double c_, double alpha_, double beta_, double gamma_)
 {
   CHECK_LENGTH(a_, b_, c_);
   CHECK_ANGLE(alpha_, beta_, gamma_);
@@ -81,7 +81,7 @@ UnitCell3D UnitCell3D::create_triclinic_primitive(
   return UnitCell3D(Triclinic_Primitive, a_ * v1, b_ * v2, c_ * v3);
 }
 UnitCell3D UnitCell3D::create_monoclinic_primitive(
-  const double a_, const double b_, const double c_, const double beta_)
+  double a_, double b_, double c_, double beta_)
 {
   CHECK_LENGTH(a_, b_, c_);
   CHECK_ANGLE_ACUTE(beta_);
@@ -93,7 +93,7 @@ UnitCell3D UnitCell3D::create_monoclinic_primitive(
   return UnitCell3D(Monoclinic_Primitive, v1, v2, v3);
 }
 UnitCell3D UnitCell3D::create_monoclinic_base(
-  const double a_, const double b_, const double c_, const double beta_)
+  double a_, double b_, double c_, double beta_)
 {
   CHECK_LENGTH(a_, b_, c_);
   CHECK_ANGLE_ACUTE(beta_);
@@ -104,7 +104,8 @@ UnitCell3D UnitCell3D::create_monoclinic_base(
 
   return UnitCell3D(Monoclinic_Base, v1, v2, v3);
 }
-UnitCell3D UnitCell3D::create_orthorhombic_primitive(const double a_, const double b_, const double c_)
+
+UnitCell3D UnitCell3D::create_orthorhombic_primitive(double a_, double b_, double c_)
 {
   CHECK_LENGTH(a_, b_, c_);
 
@@ -114,7 +115,8 @@ UnitCell3D UnitCell3D::create_orthorhombic_primitive(const double a_, const doub
 
   return UnitCell3D(Orthorhombic_Primitive, v1, v2, v3);
 }
-UnitCell3D UnitCell3D::create_orthorhombic_base(const double a_, const double b_, const double c_)
+
+UnitCell3D UnitCell3D::create_orthorhombic_base(double a_, double b_, double c_)
 {
   CHECK_LENGTH(a_, b_, c_);
 
@@ -124,7 +126,8 @@ UnitCell3D UnitCell3D::create_orthorhombic_base(const double a_, const double b_
 
   return UnitCell3D(Orthorhombic_Base, v1, v2, v3);
 }
-UnitCell3D UnitCell3D::create_orthorhombic_body(const double a_, const double b_, const double c_)
+
+UnitCell3D UnitCell3D::create_orthorhombic_body(double a_, double b_, double c_)
 {
   CHECK_LENGTH(a_, b_, c_);
 
@@ -134,7 +137,8 @@ UnitCell3D UnitCell3D::create_orthorhombic_body(const double a_, const double b_
 
   return UnitCell3D(Orthorhombic_Body, v1, v2, v3);
 }
-UnitCell3D UnitCell3D::create_orthorhombic_face(const double a_, const double b_, const double c_)
+
+UnitCell3D UnitCell3D::create_orthorhombic_face(double a_, double b_, double c_)
 {
   CHECK_LENGTH(a_, b_, c_);
 
@@ -144,7 +148,8 @@ UnitCell3D UnitCell3D::create_orthorhombic_face(const double a_, const double b_
 
   return UnitCell3D(Orthorhombic_Face, v1, v2, v3);
 }
-UnitCell3D UnitCell3D::create_tetragonal_primitive(const double a_, const double c_)
+
+UnitCell3D UnitCell3D::create_tetragonal_primitive(double a_, double c_)
 {
   CHECK_LENGTH2(a_, c_);
 
@@ -154,7 +159,8 @@ UnitCell3D UnitCell3D::create_tetragonal_primitive(const double a_, const double
 
   return UnitCell3D(Tetragonal_Primitive, v1, v2, v3);
 }
-UnitCell3D UnitCell3D::create_tetragonal_body(const double a_, const double c_)
+
+UnitCell3D UnitCell3D::create_tetragonal_body(double a_, double c_)
 {
   CHECK_LENGTH2(a_, c_);
 
@@ -164,7 +170,8 @@ UnitCell3D UnitCell3D::create_tetragonal_body(const double a_, const double c_)
 
   return UnitCell3D(Tetragonal_Body, v1, v2, v3);
 }
-UnitCell3D UnitCell3D::create_rhombohedral_centered(const double a_, const double alpha_)
+
+UnitCell3D UnitCell3D::create_rhombohedral_centered(double a_, double alpha_)
 {
   CHECK_LENGTH_POSITIVE(a_);
   CHECK_ANGLE_ACUTE(alpha_);
@@ -176,7 +183,8 @@ UnitCell3D UnitCell3D::create_rhombohedral_centered(const double a_, const doubl
 
   return UnitCell3D(Rhombohedral_Centered, a_*v1, a_*v2, a_*v3);
 }
-UnitCell3D UnitCell3D::create_hexagonal_primitive(const double a_, const double c_)
+
+UnitCell3D UnitCell3D::create_hexagonal_primitive(double a_, double c_)
 {
   CHECK_LENGTH2(a_, c_);
 
@@ -186,7 +194,8 @@ UnitCell3D UnitCell3D::create_hexagonal_primitive(const double a_, const double 
 
   return UnitCell3D(Hexagonal_Primitive, a_*v1, a_*v2, c_*v3);
 }
-UnitCell3D UnitCell3D::create_cubic_primitive(const double a_)
+
+UnitCell3D UnitCell3D::create_cubic_primitive(double a_)
 {
   CHECK_LENGTH_POSITIVE(a_);
 
@@ -196,7 +205,8 @@ UnitCell3D UnitCell3D::create_cubic_primitive(const double a_)
 
   return UnitCell3D(Cubic_Primitive, v1, v2, v3);
 }
-UnitCell3D UnitCell3D::create_cubic_body(const double a_)
+
+UnitCell3D UnitCell3D::create_cubic_body(double a_)
 {
   CHECK_LENGTH_POSITIVE(a_);
 
@@ -206,7 +216,8 @@ UnitCell3D UnitCell3D::create_cubic_body(const double a_)
 
   return UnitCell3D(Cubic_Body, v1, v2, v3);
 }
-UnitCell3D UnitCell3D::create_cubic_face(const double a_)
+
+UnitCell3D UnitCell3D::create_cubic_face(double a_)
 {
   CHECK_LENGTH_POSITIVE(a_);
 

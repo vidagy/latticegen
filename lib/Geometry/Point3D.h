@@ -15,7 +15,7 @@ namespace Geometry
 {
   struct Point3D
   {
-    Point3D(const double x_ = 0.0, const double y_ = 0.0, const double z_ = 0.0) 
+    Point3D(double x_ = 0.0, double y_ = 0.0, double z_ = 0.0)
       : x(x_), y(y_), z(z_)
     {}
     
@@ -41,14 +41,16 @@ namespace Geometry
       this->z -= rhs.z;
       return *this;
     }
-    Point3D& operator*=(const double num)
+
+    Point3D &operator*=(double num)
     {
       this->x *= num;
       this->y *= num;
       this->z *= num;
       return *this;
     }
-    Point3D& operator/=(const double num)
+
+    Point3D &operator/=(double num)
     {
       this->x /= num;
       this->y /= num;
@@ -91,17 +93,20 @@ namespace Geometry
     lhs.z *= -1.0;
     return lhs;
   }
-  inline Point3D operator*(Point3D lhs, const double num)
+
+  inline Point3D operator*(Point3D lhs, double num)
   {
     lhs *= num;
     return lhs;
   }
-  inline Point3D operator*(const double num, Point3D rhs)
+
+  inline Point3D operator*(double num, Point3D rhs)
   {
     rhs *= num;
     return rhs;
   }
-  inline Point3D operator/(Point3D lhs, const double num)
+
+  inline Point3D operator/(Point3D lhs, double num)
   {
     lhs /= num;
     return lhs;

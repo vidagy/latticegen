@@ -15,7 +15,7 @@ namespace Geometry
       const std::vector<Point3D>& points,
       const SymmetryTransformationFactory::Transformations& transformations);
 
-    static std::vector<Point3D> get_irreducible_wedge(const UnitCell3D& unit_cell, const size_t sample);
+    static std::vector<Point3D> get_irreducible_wedge(const UnitCell3D &unit_cell, size_t sample);
   };
 }
 

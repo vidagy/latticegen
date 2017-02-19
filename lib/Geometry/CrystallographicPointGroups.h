@@ -58,7 +58,7 @@ namespace Geometry
     Hexaoctahedron
   };
 
-  CrystalSystem get_crystal_system(const CrystalClass& crystal_class);
+  CrystalSystem get_crystal_system(CrystalClass crystal_class);
 
   class CrystallographicPointGroup
   {
@@ -137,7 +137,7 @@ namespace Geometry
     virtual Elements get_generators() const = 0;
     virtual Elements get_elements() const = 0;
 
-    static std::unique_ptr<CrystallographicPointGroup> create(const CrystalClass crystal_class);
+    static std::unique_ptr<CrystallographicPointGroup> create(CrystalClass crystal_class);
 
     bool operator==(const CrystallographicPointGroup& other) const
     {

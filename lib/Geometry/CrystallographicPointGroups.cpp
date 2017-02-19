@@ -2,7 +2,7 @@
 
 namespace Geometry
 {
-  CrystalSystem get_crystal_system(const CrystalClass& crystal_class)
+  CrystalSystem get_crystal_system(CrystalClass crystal_class)
   {
     switch (crystal_class)
     {
@@ -57,7 +57,7 @@ namespace Geometry
     }
   }
 
-  std::unique_ptr<CrystallographicPointGroup> CrystallographicPointGroup::create(const CrystalClass crystal_class)
+  std::unique_ptr<CrystallographicPointGroup> CrystallographicPointGroup::create(CrystalClass crystal_class)
   {
     switch (crystal_class)
     {
