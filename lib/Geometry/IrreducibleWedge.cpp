@@ -1,4 +1,6 @@
+#include <algorithm>
 #include "IrreducibleWedge.h"
+#include "Mesh.h"
 
 using namespace Geometry;
 
@@ -35,8 +37,34 @@ IrreducibleWedge::reduce_by_symmetries(const std::vector<Point3D> &points,
   return result;
 }
 
-//std::vector<Point3D>
-//IrreducibleWedge::get_irreducible_wedge(const UnitCell3D &unit_cell, const double sample_width)
-//{
-//  return std::vector<Point3D>{};
-//}
+std::vector<Point3D>
+IrreducibleWedge::get_irreducible_wedge(const UnitCell3D &unit_cell, const size_t sample)
+{
+  if (sample == 0)
+    throw std::invalid_argument("sample is zero in IrreducibleWedge::get_irreducible_wedge");
+
+  std::unique_ptr<CrystallographicPointGroup> group = CrystallographicPointGroup::create(unit_cell.get_point_group());
+  SymmetryTransformationFactory::Transformations transformations
+    = SymmetryTransformationFactory::get(group->get_elements());
+
+  std::unique_ptr<Mesh> mesh;
+  CrystalSystem crystal_system = get_crystal_system(unit_cell.get_point_group());
+  if (crystal_system == CrystalSystem::Hexagonal)
+  {
+    double sample_width = unit_cell.a.length() / sample;
+    mesh = std::make_unique<TetrahedronMesh>(sample_width);
+  }
+  else if (crystal_system == CrystalSystem::Trigonal)
+  {
+    double sample_width_a = unit_cell.a.length() / sample;
+    double sample_width_c = unit_cell.c.length() / sample;
+    mesh = std::make_unique<TrigonalMesh>(sample_width_a, sample_width_c);
+  }
+  else
+  {
+    double sample_width = unit_cell.a.length() / sample;
+    mesh = std::make_unique<CubicMesh>(sample_width);
+  }
+
+  return reduce_by_symmetries(mesh->generate(CutoffWSCell(unit_cell)), transformations);
+}
