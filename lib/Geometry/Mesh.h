@@ -25,6 +25,19 @@ namespace Geometry
     UnitCell3D unit_cell;
   };
 
+  class TrigonalMesh : public Mesh
+  {
+  public:
+    TrigonalMesh(const double a_, const double c_)
+      : a(a_), c(c_)
+    {}
+
+    std::vector<Point3D> generate(const Cutoff& cutoff) const final override;
+
+    double a;
+    double c;
+  };
+
   class TetrahedronMesh : public Mesh
   {
   public:

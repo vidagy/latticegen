@@ -38,6 +38,12 @@ namespace Geometry
     return lattice;
   }
 
+  std::vector<Point3D> TrigonalMesh::generate(const Cutoff& cutoff) const
+  {
+    LatticeMesh lattice_mesh = LatticeMesh(UnitCell3D::create_hexagonal_primitive(a, c));
+    return lattice_mesh.generate(cutoff);
+  }
+
   std::vector<Point3D> TetrahedronMesh::generate(const Cutoff& cutoff) const
   {
     LatticeMesh lattice_mesh = LatticeMesh(UnitCell3D::create_rhombohedral_centered(a, pi / 3.0));
