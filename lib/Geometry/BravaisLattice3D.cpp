@@ -3,7 +3,6 @@
 #include "Mesh.h"
 
 using namespace Geometry;
-using namespace Core;
 
 BravaisLattice3D::BravaisLattice3D(const UnitCell3D &unit_cell_, size_t x_width_, size_t y_width_, size_t z_width_)
   : unit_cell(unit_cell_)

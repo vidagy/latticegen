@@ -21,8 +21,8 @@ namespace
   Matrix3D get_rotation_matrix(const Vector3D& rotation_vector)
   {
     const double angle = rotation_vector.length();
-    
-    if (Core::nearlyZero(angle))
+
+    if (nearlyZero(angle))
       throw std::invalid_argument("Rotation can not be created from null vector");
 
     const Vector3D axis = rotation_vector * (1.0 / angle);
