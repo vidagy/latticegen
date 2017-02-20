@@ -11,7 +11,7 @@ namespace Geometry
   class Mesh
   {
   public:
-    virtual std::vector<Point3D> generate(const Cutoff& cutoff) const = 0;
+    virtual std::vector<Point3D> generate(const Cutoff &cutoff, bool shift = false) const = 0;
   };
 
   class LatticeMesh : public Mesh
@@ -20,7 +20,7 @@ namespace Geometry
     LatticeMesh(const UnitCell3D& unit_cell_) : unit_cell(unit_cell_)
     {}
 
-    std::vector<Point3D> generate(const Cutoff& cutoff) const final override;
+    std::vector<Point3D> generate(const Cutoff &cutoff, bool shift = false) const final override;
 
     UnitCell3D unit_cell;
   };
@@ -32,7 +32,7 @@ namespace Geometry
       : a(a_), c(c_)
     {}
 
-    std::vector<Point3D> generate(const Cutoff& cutoff) const final override;
+    std::vector<Point3D> generate(const Cutoff &cutoff, bool shift = false) const final override;
 
     double a;
     double c;
@@ -45,7 +45,7 @@ namespace Geometry
       : a(a_)
     {}
 
-    std::vector<Point3D> generate(const Cutoff& cutoff) const final override;
+    std::vector<Point3D> generate(const Cutoff &cutoff, bool shift = false) const final override;
 
     double a;
   };
@@ -53,11 +53,11 @@ namespace Geometry
   class CubicMesh : public Mesh
   {
   public:
-    CubicMesh(double a_, bool positive_only_ = false)
+    CubicMesh(double a_)
       : a(a_)
     {}
 
-    std::vector<Point3D> generate(const Cutoff& cutoff) const final override;
+    std::vector<Point3D> generate(const Cutoff &cutoff, bool shift = false) const final override;
 
     double a;
   };

@@ -99,6 +99,26 @@ TEST(TestMesh,CubicMeshContainsSphere)
   EXPECT_THAT( mesh.generate(cutoff), ::testing::UnorderedElementsAreArray(reference) );
 }
 
+TEST(TestMesh, CubicMeshWithOffsetContainsSphere)
+{
+  CutoffSphere cutoff = CutoffSphere(sqrt(2.0));
+  CubicMesh mesh = CubicMesh(1.0);
+
+  const static std::vector<Point3D> reference =
+    {
+      {-0.5, -0.5, -0.5},
+      {0.5,  -0.5, -0.5},
+      {-0.5, 0.5,  -0.5},
+      {0.5,  0.5,  -0.5},
+      {-0.5, -0.5, 0.5},
+      {0.5,  -0.5, 0.5},
+      {-0.5, 0.5,  0.5},
+      {0.5,  0.5,  0.5}
+    };
+
+  EXPECT_THAT(mesh.generate(cutoff, true), ::testing::UnorderedElementsAreArray(reference));
+}
+
 TEST(TestMesh,TetrahedronMeshContainsSphere)
 {
   CutoffSphere cutoff = CutoffSphere(1.0);
