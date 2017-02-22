@@ -21,7 +21,7 @@ namespace Core
   // l = 1
   double spherical_harmonic_1m1(const Vector3D &v)
   {
-    return sqrt(3.0 / (4.0 * pi)) * v.y / v.length();
+    return -sqrt(3.0 / (4.0 * pi)) * v.y / v.length();
   }
 
   double spherical_harmonic_10(const Vector3D &v)
@@ -44,7 +44,7 @@ namespace Core
   double spherical_harmonic_2m1(const Vector3D &v)
   {
     double length = v.length();
-    return sqrt(15.0 / pi) / 2.0 * v.y * v.z / (length * length);
+    return -sqrt(15.0 / pi) / 2.0 * v.y * v.z / (length * length);
   }
 
   double spherical_harmonic_20(const Vector3D &v)
@@ -68,7 +68,7 @@ namespace Core
   // l = 3
   double spherical_harmonic_3m3(const Vector3D &v)
   {
-    return sqrt(35.0 / (2.0 * pi)) / 4.0 * v.y * (3.0 * v.x * v.x - v.y * v.y) / pow(v.length(), 3);
+    return -sqrt(35.0 / (2.0 * pi)) / 4.0 * v.y * (3.0 * v.x * v.x - v.y * v.y) / pow(v.length(), 3);
   }
 
   double spherical_harmonic_3m2(const Vector3D &v)
@@ -78,7 +78,7 @@ namespace Core
 
   double spherical_harmonic_3m1(const Vector3D &v)
   {
-    return sqrt(21.0 / (2.0 * pi)) / 4.0 * v.y * (4.0 * v.z * v.z - v.x * v.x - v.y * v.y) / pow(v.length(), 3);
+    return -sqrt(21.0 / (2.0 * pi)) / 4.0 * v.y * (4.0 * v.z * v.z - v.x * v.x - v.y * v.y) / pow(v.length(), 3);
   }
 
   double spherical_harmonic_30(const Vector3D &v)
@@ -104,12 +104,12 @@ namespace Core
   // l = 4
   double spherical_harmonic_4m4(const Vector3D &v)
   {
-    return sqrt(35.0 / (2.0 * pi)) * 0.75 * v.x * v.y * (v.x * v.x - v.y * v.y) / pow(v.length(), 4);
+    return sqrt(35.0 / pi) * 0.75 * v.x * v.y * (v.x * v.x - v.y * v.y) / pow(v.length(), 4);
   }
 
   double spherical_harmonic_4m3(const Vector3D &v)
   {
-    return sqrt(35.0 / (2.0 * pi)) * 0.75 * v.y * v.z * (3.0 * v.x * v.x - v.y * v.y) / pow(v.length(), 4);
+    return -sqrt(35.0 / (2.0 * pi)) * 0.75 * v.y * v.z * (3.0 * v.x * v.x - v.y * v.y) / pow(v.length(), 4);
   }
 
   double spherical_harmonic_4m2(const Vector3D &v)
@@ -121,7 +121,7 @@ namespace Core
   double spherical_harmonic_4m1(const Vector3D &v)
   {
     double length2 = pow(v.length(), 2);
-    return sqrt(5.0 / (2.0 * pi)) * 0.75 * v.y * v.z * (7.0 * v.z * v.z - 3.0 * length2) / pow(length2, 2);
+    return -sqrt(5.0 / (2.0 * pi)) * 0.75 * v.y * v.z * (7.0 * v.z * v.z - 3.0 * length2) / pow(length2, 2);
   }
 
   double spherical_harmonic_40(const Vector3D &v)
@@ -158,10 +158,7 @@ namespace Core
 
   double spherical_harmonic_slow(unsigned int l, int m, const Vector3D &v);
 
-  std::function<double( const Vector3D
-  &)>
-
-  spherical_harmonic(unsigned int l, int m);
+  std::function<double(const Core::Vector3D &)> spherical_harmonic(unsigned int l, int m);
 }
 
 #endif //LATTICEGEN_SPHERICALHARMONICS_H

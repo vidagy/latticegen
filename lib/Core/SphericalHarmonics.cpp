@@ -5,7 +5,7 @@ using namespace Core;
 
 double Core::spherical_harmonic_slow(unsigned int l, int m, const Vector3D &v)
 {
-  double cos_theta = v.y / v.length();
+  double cos_theta = v.z / v.length();
   double phi = atan2(v.y, v.x);
 
   if (m < 0) {
@@ -21,7 +21,7 @@ double Core::spherical_harmonic_slow(unsigned int l, int m, const Vector3D &v)
   }
 }
 
-std::function<double(const Vector3D &)> Core::spherical_harmonic(unsigned int l, int m)
+std::function<double(const Core::Vector3D &)> Core::spherical_harmonic(unsigned int l, int m)
 {
   if ((unsigned int) abs(m) > l)
     throw std::invalid_argument("m is not valid: " + std::to_string(m) + " while l is " + std::to_string(l));

@@ -8,22 +8,26 @@ using namespace Core;
 
 namespace
 {
-  void
-  compare_equals(const std::function<double(double)> &lhs, const std::function<double(double)> &rhs, unsigned int l,
-                 int m)
+  void compare_equals(
+    const std::function<double(const Vector3D &)> &lhs,
+    const std::function<double(const Vector3D &)> &rhs, unsigned int l, int m)
   {
-    for (double x = -0.95; x < 1.0; x += 0.05) {
-      double lhs_res = lhs(x);
-      double rhs_res = rhs(x);
+    for (double x = -1.95; x < 2.0; x += 0.5) {
+      for (double y = -1.95; y < 2.0; y += 0.5) {
+        for (double z = -1.95; z < 2.0; z += 0.5) {
+          double lhs_res = lhs({x, y, z});
+          double rhs_res = rhs({x, y, z});
 
-      EXPECT_NEAR(lhs_res, rhs_res, 32 * std::numeric_limits<double>::epsilon()) << "l: " << l << " m: " << m;
+          EXPECT_NEAR(lhs_res, rhs_res, 32 * std::numeric_limits<double>::epsilon()) << "l: " << l << " m: " << m;
+        }
+      }
     }
   }
 
   void compare_fast_vs_slow(unsigned int l, int m)
   {
     auto fast = Core::spherical_harmonic(l, m);
-    auto slow = [l, m](double x)
+    auto slow = [l, m](const Vector3D &x)
     {
       return spherical_harmonic_slow(l, m, x);
     };
