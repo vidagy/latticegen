@@ -1,10 +1,9 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <Geometry/Point2D.h>
+#include <Core/Point2D.h>
 
 using namespace Core;
-using namespace Geometry;
 
 TEST(TestPoint2D,Ctor)
 {

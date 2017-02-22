@@ -9,9 +9,8 @@
 #include <math.h>
 
 #include <Core/ComparisonHelpers.h>
-using namespace Core;
 
-namespace Geometry
+namespace Core
 {
   struct Point3D
   {
@@ -141,7 +140,7 @@ namespace Geometry
 
 namespace std
 {
-  using namespace Geometry;
+  using namespace Core;
   inline std::string to_string(const Point3D& point)
   {
     std::stringstream ss;
@@ -150,7 +149,7 @@ namespace std
     return ss.str();
   }
 
-  inline ostream& operator<<(ostream& o, const Geometry::Point3D& p)
+  inline ostream &operator<<(ostream &o, const Core::Point3D &p)
   {
     o << to_string(p);
     return o;

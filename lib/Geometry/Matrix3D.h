@@ -2,8 +2,7 @@
 #define LATTICEGEN_MATRIX3D_H
 
 #include <Core/ComparisonHelpers.h>
-
-#include "Point3D.h"
+#include <Core/Point3D.h>
 
 using namespace Core;
 

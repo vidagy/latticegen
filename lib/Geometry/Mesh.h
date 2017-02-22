@@ -1,10 +1,12 @@
 #ifndef LATTICEGEN_MESH_H
 #define LATTICEGEN_MESH_H
 
-#include <Geometry/Point3D.h>
+#include <Core/Point3D.h>
 #include <Geometry/UnitCell3D.h>
 #include <Geometry/Cutoff.h>
 #include <vector>
+
+using namespace Core;
 
 namespace Geometry
 {

@@ -2,9 +2,11 @@
 #define LATTICEGEN_IRREDUCIBLEWEDGE_H
 
 #include <vector>
-#include "Point3D.h"
+#include <Core/Point3D.h>
 #include "SymmetryTransformationFactory.h"
 #include "UnitCell3D.h"
+
+using namespace Core;
 
 namespace Geometry
 {

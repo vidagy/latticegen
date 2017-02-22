@@ -1,9 +1,11 @@
 #ifndef LATTICEGEN_UNITCELL3D_H_
 #define LATTICEGEN_UNITCELL3D_H_
 
-#include "Point3D.h"
+#include <Core/Point3D.h>
 #include "CrystallographicPointGroups.h"
 #include <vector>
+
+using namespace Core;
 
 namespace Geometry
 {

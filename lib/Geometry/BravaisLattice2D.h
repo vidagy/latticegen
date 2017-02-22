@@ -1,9 +1,11 @@
 #ifndef LATTICEGEN_BRAVAISLATTICE2D_H_
 #define LATTICEGEN_BRAVAISLATTICE2D_H_
 
-#include "Point2D.h"
+#include <Core/Point2D.h>
 #include <utility>
 #include <vector>
+
+using namespace Core;
 
 namespace Geometry
 {

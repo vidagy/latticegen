@@ -1,9 +1,11 @@
 #ifndef LATTICEGEN_BRAVAISLATTICE3D_H_
 #define LATTICEGEN_BRAVAISLATTICE3D_H_
 
-#include "Point3D.h"
+#include <Core/Point3D.h>
 #include "UnitCell3D.h"
 #include <vector>
+
+using namespace Core;
 
 namespace Geometry
 {

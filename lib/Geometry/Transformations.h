@@ -1,11 +1,12 @@
 #ifndef LATTICEGEN_TRANSFORMATIONS_H_
 #define LATTICEGEN_TRANSFORMATIONS_H_
 
-#include "Point3D.h"
+#include <Core/ComparisonHelpers.h>
+#include <Core/Point3D.h>
 #include "Matrix3D.h"
 #include <array>
 
-#include <Core/ComparisonHelpers.h>
+using namespace Core;
 
 namespace Geometry
 {
