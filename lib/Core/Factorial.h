@@ -3,7 +3,7 @@
 
 namespace Core
 {
-  double factorial(int n)
+  inline double factorial(int n)
   {
     static const double factorial_cache[16] =
       {1, 1, 2, 6, 24, 120, 720, 5040,
@@ -21,7 +21,7 @@ namespace Core
     }
   }
 
-  double double_factorial(int n)
+  inline double double_factorial(int n)
   {
     static const double double_factorial_cache[16] =
       {1, 1, 2, 3, 8, 15, 48, 105, 384, 945, 3840, 10395, 46080, 135135, 645120, 2027025};
