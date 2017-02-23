@@ -20,7 +20,7 @@ namespace
       double lhs_res = lhs(x);
       double rhs_res = rhs(x);
 
-      EXPECT_NEAR(lhs_res, rhs_res, 32 * std::numeric_limits<double>::epsilon());
+      EXPECT_NEAR(lhs_res, rhs_res, 64 * std::numeric_limits<double>::epsilon());
     }
   }
 
@@ -87,3 +87,65 @@ TEST(TestLegendre, CompareL4)
   compare_fast_vs_slow(4, -3);
   compare_fast_vs_slow(4, -4);
 }
+
+/*
+ * For performance profiling
+const int n = 1e7;
+
+TEST(TestPerformance, inlined)
+{
+  double a = 0.0;
+  for (double x = -1.0; x < 1.0; x += 2.0 / n)
+  {
+    a += legendre_polynomial_43(x);
+  }
+}
+
+TEST(TestPerformance, intoAuto)
+{
+  auto f = &legendre_polynomial_43;
+  double a = 0.0;
+  for (double x = -1.0; x < 1.0; x += 2.0 / n)
+  {
+    a += f(x);
+  }
+}
+
+TEST(TestPerformance, functionPointer)
+{
+  double (*f)(double) = legendre_polynomial_43;
+  double a = 0.0;
+  for (double x = -1.0; x < 1.0; x += 2.0 / n)
+  {
+    a += f(x);
+  }
+}
+
+TEST(TestPerformance, slow)
+{
+  double a = 0.0;
+  for (double x = -1.0; x < 1.0; x += 2.0 / n)
+  {
+    a += legendre_polynomial_slow(4,3,x);
+  }
+}
+
+TEST(TestPerformance, trueInline)
+{
+  double a = 0.0;
+  for (double x = -1.0; x < 1.0; x += 2.0 / n)
+  {
+    a += -105.0 * x * sqrt(1.0 - x * x) * (1.0 - x * x);
+  }
+}
+
+TEST(TestPerformance, stdFunction)
+{
+  std::function<double(double)> f(legendre_polynomial_43);
+  double a = 0.0;
+  for (double x = -1.0; x < 1.0; x += 2.0 / n)
+  {
+    a += f(x);
+  }
+}
+*/

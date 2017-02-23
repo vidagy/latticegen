@@ -63,7 +63,7 @@ namespace Core
   // l = 3
   inline double legendre_polynomial_3m3(double x)
   {
-    return pow(1 - x * x, 1.5) / 48.0;
+    return (1.0 - x * x) * sqrt(1.0 - x * x) / 48.0;
   };
 
   inline double legendre_polynomial_3m2(double x)
@@ -95,18 +95,18 @@ namespace Core
 
   inline double legendre_polynomial_33(double x)
   {
-    return -15.0 * pow(1 - x * x, 1.5);
+    return -15.0 * (1.0 - x * x) * sqrt(1.0 - x * x);
   };
 
   // l = 4
   inline double legendre_polynomial_4m4(double x)
   {
-    return pow(1 - x * x, 2) / 384.0;
+    return (1.0 - x * x) * (1.0 - x * x) / 384.0;
   };
 
   inline double legendre_polynomial_4m3(double x)
   {
-    return x * pow(1 - x * x, 1.5) / 48.0;
+    return x * (1.0 - x * x) * sqrt(1.0 - x * x) / 48.0;
   };
 
   inline double legendre_polynomial_4m2(double x)
@@ -141,12 +141,12 @@ namespace Core
 
   inline double legendre_polynomial_43(double x)
   {
-    return -105.0 * x * pow(1 - x * x, 1.5);
+    return -105.0 * x * (1.0 - x * x) * sqrt(1.0 - x * x);
   };
 
   inline double legendre_polynomial_44(double x)
   {
-    return 105.0 * pow(1 - x * x, 2);
+    return 105.0 * (1.0 - x * x) * (1.0 - x * x);
   };
 
   double legendre_polynomial_slow(int l, int m, double x);

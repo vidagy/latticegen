@@ -13,6 +13,7 @@ double Core::legendre_polynomial_slow(int l, int m, double x)
   }
 
   if (m > 0) {
+    // todo (performance) replace this pow
     pmm *= sign * double_factorial(2 * m - 1) * pow(1 - x * x, m / 2.0);
   }
   if (l == m) {
