@@ -2,6 +2,23 @@
 
 using namespace Core;
 
+namespace
+{
+  double pow(double base, int exponent)
+  {
+    double result = 1.0;
+
+    while (exponent) {
+      if (exponent & 1)
+        result *= base;
+      exponent >>= 1;
+      base *= base;
+    }
+
+    return result;
+  }
+}
+
 double Core::legendre_polynomial_slow(int l, int m, double x)
 {
   // l >= 0, -l <= m <= l, , -1 <= x <= 1
@@ -13,8 +30,7 @@ double Core::legendre_polynomial_slow(int l, int m, double x)
   }
 
   if (m > 0) {
-    // todo (performance) replace this pow
-    pmm *= sign * double_factorial(2 * m - 1) * pow(1 - x * x, m / 2.0);
+    pmm *= sign * double_factorial(2 * m - 1) * pow(1.0 - x * x, m / 2) * (m & 1 ? sqrt(1.0 - x * x) : 1.0);
   }
   if (l == m) {
     return pmm;
