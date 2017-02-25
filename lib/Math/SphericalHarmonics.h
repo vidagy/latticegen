@@ -4,12 +4,14 @@
 #include <functional>
 #include <Core/Point3D.h>
 
+using namespace Core;
+
 namespace
 {
   static const double pi = 3.14159265358979323846;
 }
 
-namespace Core
+namespace Math
 {
   // https://en.wikipedia.org/wiki/Table_of_spherical_harmonics#Real_spherical_harmonics
   // l = 0

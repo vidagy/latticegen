@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <Core/Legendre.h>
+#include <Math/Legendre.h>
 
-using namespace Core;
+using namespace Math;
 
 TEST(TestLegendre, L0M0)
 {
@@ -26,7 +26,7 @@ namespace
 
   void compare_fast_vs_slow(int l, int m)
   {
-    auto fast = Core::legendre_polynomial(l, m);
+    auto fast = legendre_polynomial(l, m);
     auto slow = [l, m](double x)
     {
       return legendre_polynomial_slow(l, m, x);

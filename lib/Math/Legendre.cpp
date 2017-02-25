@@ -1,6 +1,6 @@
-#include <Core/Legendre.h>
+#include <Math/Legendre.h>
 
-using namespace Core;
+using namespace Math;
 
 namespace
 {
@@ -19,7 +19,7 @@ namespace
   }
 }
 
-double Core::legendre_polynomial_slow(int l, int m, double x)
+double Math::legendre_polynomial_slow(int l, int m, double x)
 {
   // l >= 0, -l <= m <= l, , -1 <= x <= 1
   double pmm = 1.0;
@@ -51,10 +51,10 @@ double Core::legendre_polynomial_slow(int l, int m, double x)
   return next;
 }
 
-std::function<double(double)> Core::legendre_polynomial(int l, int m)
+std::function<double(double)> Math::legendre_polynomial(int l, int m)
 {
   if (l < 0)
-    return Core::legendre_polynomial(-l - 1, m);
+    return legendre_polynomial(-l - 1, m);
 
   if (abs(m) > l)
     return zero;
@@ -125,5 +125,5 @@ std::function<double(double)> Core::legendre_polynomial(int l, int m)
   }
 
   using std::placeholders::_1;
-  return std::bind(Core::legendre_polynomial_slow, l, m, _1);
+  return std::bind(legendre_polynomial_slow, l, m, _1);
 }

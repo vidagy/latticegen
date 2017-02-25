@@ -1,7 +1,7 @@
 #ifndef LATTICEGEN_FACTORIAL_H
 #define LATTICEGEN_FACTORIAL_H
 
-namespace Core
+namespace Math
 {
   inline double factorial(int n)
   {

@@ -3,9 +3,9 @@
 
 #include <cmath>
 #include <functional>
-#include <Core/Factorial.h>
+#include <Math/Factorial.h>
 
-namespace Core
+namespace Math
 {
   inline double zero(double x)
   {

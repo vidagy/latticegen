@@ -2,9 +2,9 @@
 #include <gmock/gmock.h>
 
 #include <Core/Point3D.h>
-#include <Core/SphericalHarmonics.h>
+#include <Math/SphericalHarmonics.h>
 
-using namespace Core;
+using namespace Math;
 
 namespace
 {
@@ -26,7 +26,7 @@ namespace
 
   void compare_fast_vs_slow(unsigned int l, int m)
   {
-    auto fast = Core::spherical_harmonic(l, m);
+    auto fast = spherical_harmonic(l, m);
     auto slow = [l, m](const Vector3D &x)
     {
       return spherical_harmonic_slow(l, m, x);
