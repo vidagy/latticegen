@@ -2,6 +2,7 @@
 #define LATTICEGEN_INTEGRATOR_H
 
 #include <vector>
+#include <Core/ExponentialMesh.h>
 
 namespace Math
 {
@@ -11,6 +12,14 @@ namespace Math
     static double simpson(const std::vector<double> &f, double dx);
     static double simpson_3_8(const std::vector<double> &f, double dx);
     static double simpson_alt(const std::vector<double> &f, double dx);
+  };
+
+  class IntegratorExponential
+  {
+  public:
+    static double simpson(const std::vector<double> &f, const Core::ExponentialMesh &x);
+
+    static double simpson_alt(const std::vector<double> &f, const Core::ExponentialMesh &x);
   };
 
   class IntegratorGeneric

@@ -2,7 +2,6 @@
 #include <gmock/gmock.h>
 
 #include <Math/Integrator.h>
-#include <Core/ExponentialMesh.h>
 
 using namespace Core;
 using namespace Math;
@@ -103,27 +102,62 @@ TEST(TestIntegratorEquidistant, SimpsonAltPolinom)
 
 TEST(TestIntegratorGeneric, Constant)
 {
-  auto const_n_f = std::vector<double>(501, 1.0);
-  auto points = ExponentialMesh(1.0, 0.1, 501).points;
-  EXPECT_NEAR(IntegratorGeneric::integrate(const_n_f, points), 1.0, epsilon);
+  const auto n = 100u;
+  auto const_n_f = std::vector<double>(n, 1.0);
+  auto points = ExponentialMesh(0.01, 1.0, n).points;
+  EXPECT_NEAR(IntegratorGeneric::integrate(const_n_f, points), 1.0 - 0.01, 2.0 * epsilon);
 }
 
 TEST(TestIntegratorGeneric, Exponential)
 {
-  auto n = 10000u;
+  auto n = 500u;
+  auto a = 0.00001;
   auto b = 20.0;
 
-  std::vector<double> points;
-  points.reserve(n);
-  for (auto i = 0u; i < n; ++i) {
-    points.push_back((b) / (n - 1) * i);
-  }
+  std::vector<double> points = ExponentialMesh(a, b, n).points;
 
   std::vector<double> polynomial;
   polynomial.reserve(points.size());
   for (auto x: points) {
-    polynomial.push_back(exp(-x));
+    polynomial.push_back(x * exp(-x));
   }
 
-  EXPECT_NEAR(IntegratorGeneric::integrate(polynomial, points), 1.0 - exp(-b), 4e-7);
+  EXPECT_NEAR(IntegratorGeneric::integrate(polynomial, points), (a + 1.0) * exp(-a) - (b + 1.0) * exp(-b), 1.5e-4);
+}
+
+TEST(TestIntegratorExponential, SimpsonExponential)
+{
+  auto n = 500u;
+  auto a = 0.000001;
+  auto b = 20.0;
+
+  const auto mesh = ExponentialMesh(a, b, n);
+  const auto &points = mesh.points;
+
+  std::vector<double> polynomial;
+  polynomial.reserve(points.size());
+  for (auto x: points) {
+    polynomial.push_back(x * exp(-x));
+  }
+
+  EXPECT_NEAR(IntegratorExponential::simpson(polynomial, mesh), /*(a+1.0)*exp(-a)*/ 1.0 - (b + 1.0) * exp(-b), 1e-9);
+}
+
+TEST(TestIntegratorExponential, SimpsonAltExponential)
+{
+  auto n = 500u;
+  auto a = 0.000001;
+  auto b = 20.0;
+
+  const auto mesh = ExponentialMesh(a, b, n);
+  const auto &points = mesh.points;
+
+  std::vector<double> polynomial;
+  polynomial.reserve(points.size());
+  for (auto x: points) {
+    polynomial.push_back(x * exp(-x));
+  }
+
+  EXPECT_NEAR(IntegratorExponential::simpson_alt(polynomial, mesh), /*(a+1.0)*exp(-a)*/ 1.0 - (b + 1.0) * exp(-b),
+              2.1e-11);
 }
