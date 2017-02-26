@@ -4,33 +4,40 @@
 #include <vector>
 #include <cmath>
 #include <cstdlib>
+#include <stdexcept>
+#include <Core/ComparisonHelpers.h>
 
 namespace Core
 {
   struct ExponentialMesh
   {
-    // Exponential mesh in the range of [r0 dx, b]
-    // dx is the logarithmic increment: (p[i+1]-p[i])/p[i] = dx
+    // Exponential mesh in the range of [a, b] having N points (endpoints included)
+    // x_i = a * exp(dx * i) where dx = ln(b/a) / (N-1)
 
-    ExponentialMesh(double b_, double dx_, size_t num_of_points_)
-      : r0(get_r0(b_, dx_, num_of_points_)), dx(dx_), points(generate(r0, dx, num_of_points_)) {}
+    ExponentialMesh(double a_, double b_, size_t N_)
+      : a(a_), dx(get_dx(a_, b_, N_)), points(generate(a, dx, N_)) {}
 
-    const double r0;
+    const double a;
     const double dx;
     const std::vector<double> points;
 
   private:
-    static double get_r0(double b_, double dx_, size_t num_of_points_)
+    static double get_dx(double a_, double b_, size_t N_)
     {
-      return b_ / (exp(dx_ * (num_of_points_ - 1)) - 1.0);
+      if (nearlyZero(a_))
+        throw std::invalid_argument("in ExponentialMesh a is zero");
+      if (N_ < 2u)
+        throw std::invalid_argument("in ExponentialMesh N < 2");
+
+      return log(b_ / a_) / (N_ - 1);
     }
 
-    static std::vector<double> generate(double r0_, double dx_, size_t num_of_points_)
+    static std::vector<double> generate(double a_, double dx_, size_t N_)
     {
       std::vector<double> points;
-      points.reserve(num_of_points_);
-      for (auto i = 0u; i < num_of_points_; ++i) {
-        points.push_back(r0_ * (exp(dx_ * i) - 1.0));
+      points.reserve(N_);
+      for (auto i = 0u; i < N_; ++i) {
+        points.push_back(a_ * exp(dx_ * i));
       }
       return points;
     }
