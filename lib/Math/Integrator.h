@@ -10,8 +10,13 @@ namespace Math
   public:
     static double simpson(const std::vector<double> &f, double dx);
     static double simpson_3_8(const std::vector<double> &f, double dx);
-
     static double simpson_alt(const std::vector<double> &f, double dx);
+  };
+
+  class IntegratorGeneric
+  {
+  public:
+    static double integrate(const std::vector<double> &f, const std::vector<double> &x);
   };
 }
 

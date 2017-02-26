@@ -2,7 +2,9 @@
 #include <gmock/gmock.h>
 
 #include <Math/Integrator.h>
+#include <Core/ExponentialMesh.h>
 
+using namespace Core;
 using namespace Math;
 
 namespace
@@ -20,7 +22,7 @@ namespace
   }
 }
 
-TEST(TestIntegrator, SimpsonConstant)
+TEST(TestIntegratorEquidistant, SimpsonConstant)
 {
   test_const_up_to(IntegratorEquidistant::simpson, 8.4, 15, 8);
 
@@ -28,7 +30,7 @@ TEST(TestIntegrator, SimpsonConstant)
   EXPECT_NEAR(IntegratorEquidistant::simpson(const_1_100, 1.0 / 500.0), 1.0, 4 * epsilon);
 }
 
-TEST(TestIntegrator, Simpson38Constant)
+TEST(TestIntegratorEquidistant, Simpson38Constant)
 {
   test_const_up_to(IntegratorEquidistant::simpson_3_8, 4.76, 15, 4);
 
@@ -36,7 +38,7 @@ TEST(TestIntegrator, Simpson38Constant)
   EXPECT_NEAR(IntegratorEquidistant::simpson_3_8(const_1_100, 1.0 / 500.0), 1.0, 64 * epsilon);
 }
 
-TEST(TestIntegrator, SimpsonAltConstant)
+TEST(TestIntegratorEquidistant, SimpsonAltConstant)
 {
   test_const_up_to(IntegratorEquidistant::simpson_alt, 1.73, 15);
 
@@ -81,20 +83,47 @@ static const double a = -2.0;
 static const double b = 4.0;
 static const double dx = get_dx(n, a, b);
 
-TEST(TestIntegrator, SimpsonPolinom)
+TEST(TestIntegratorEquidistant, SimpsonPolinom)
 {
   auto polynomial = get_polynomial(n, a, b);
   EXPECT_NEAR(IntegratorEquidistant::simpson(polynomial, dx), P(b) - P(a), epsilon);
 }
 
-TEST(TestIntegrator, Simpson38Polinom)
+TEST(TestIntegratorEquidistant, Simpson38Polinom)
 {
   auto polynomial = get_polynomial(n, a, b);
   EXPECT_NEAR(IntegratorEquidistant::simpson_3_8(polynomial, dx), P(b) - P(a), 32 * epsilon);
 }
 
-TEST(TestIntegrator, SimpsonAltPolinom)
+TEST(TestIntegratorEquidistant, SimpsonAltPolinom)
 {
   auto polynomial = get_polynomial(n, a, b);
   EXPECT_NEAR(IntegratorEquidistant::simpson_alt(polynomial, dx), P(b) - P(a), epsilon);
+}
+
+TEST(TestIntegratorGeneric, Constant)
+{
+  auto const_n_f = std::vector<double>(501, 1.0);
+  auto points = ExponentialMesh(1.0, 0.1, 501).points;
+  EXPECT_NEAR(IntegratorGeneric::integrate(const_n_f, points), 1.0, epsilon);
+}
+
+TEST(TestIntegratorGeneric, Exponential)
+{
+  auto n = 10000u;
+  auto b = 20.0;
+
+  std::vector<double> points;
+  points.reserve(n);
+  for (auto i = 0u; i < n; ++i) {
+    points.push_back((b) / (n - 1) * i);
+  }
+
+  std::vector<double> polynomial;
+  polynomial.reserve(points.size());
+  for (auto x: points) {
+    polynomial.push_back(exp(-x));
+  }
+
+  EXPECT_NEAR(IntegratorGeneric::integrate(polynomial, points), 1.0 - exp(-b), 4e-7);
 }

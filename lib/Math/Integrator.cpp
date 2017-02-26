@@ -1,6 +1,7 @@
 #include <Math/Integrator.h>
 
 #include <stdexcept>
+#include <cmath>
 
 using namespace Math;
 
@@ -9,7 +10,7 @@ double IntegratorEquidistant::simpson(const std::vector<double> &f, double dx)
   auto f_size = f.size();
 
   if (f_size < 2)
-    throw std::invalid_argument("in Integrator::simpson, vector size is < 2");
+    throw std::invalid_argument("in IntegratorEquidistant::simpson, vector size is < 2");
   else if (f_size == 2)
     return dx * (f[0] + f[1]) / 2.0;
   else {
@@ -105,5 +106,30 @@ double IntegratorEquidistant::simpson_alt(const std::vector<double> &f, double d
     post += dx_17_p_48 * f[i + 3];
 
     return pre + result + post;
+  }
+}
+
+double IntegratorGeneric::integrate(const std::vector<double> &f, const std::vector<double> &x)
+{
+  auto f_size = f.size();
+
+  if (f_size != x.size())
+    throw std::invalid_argument(
+      "in IntegratorExponential::simpson, vector sizes are unequal f=" + std::to_string(f_size) +
+      " x=" + std::to_string(x.size()));
+  else if (f_size < 2)
+    throw std::invalid_argument("in IntegratorEquidistant::simpson, vector size is < 2");
+  else {
+    double result = 0.0;
+
+    result += f[0] * (x[1] - x[0]);
+    auto i = 1u;
+    while (i < f_size - 1) {
+      result += f[i] * (x[i + 1] - x[i - 1]);
+      i += 1;
+    }
+    result += f[i] * (x[i] - x[i - 1]);
+
+    return result / 2.0;
   }
 }
