@@ -2,6 +2,8 @@
 #define LATTICEGEN_EXPONENTIALMESH_H
 
 #include <vector>
+#include <cmath>
+#include <cstdlib>
 
 namespace Core
 {
@@ -20,14 +22,14 @@ namespace Core
   private:
     static double get_r0(double b_, double dx_, size_t num_of_points_)
     {
-      return b_ / (exp(dx_ * num_of_points_) - 1.0);
+      return b_ / (exp(dx_ * (num_of_points_ - 1)) - 1.0);
     }
 
     static std::vector<double> generate(double r0_, double dx_, size_t num_of_points_)
     {
       std::vector<double> points;
       points.reserve(num_of_points_);
-      for (auto i = 1u; i <= num_of_points_; ++i) {
+      for (auto i = 0u; i < num_of_points_; ++i) {
         points.push_back(r0_ * (exp(dx_ * i) - 1.0));
       }
       return points;
