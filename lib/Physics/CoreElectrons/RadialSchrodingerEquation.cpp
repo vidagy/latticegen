@@ -1,6 +1,7 @@
 #include <Math/Integrator.h>
 #include "RadialSchrodingerEquation.h"
 #include "EnergyUpdate.h"
+#include "AdamsIntegrator.h"
 
 using namespace Physics::CoreElectrons;
 
@@ -24,18 +25,8 @@ RadialSolution Physics::CoreElectrons::RadialSchrodingerEquation::solve(
     /// classical_turning_point is the boundary between the inward and the outward integration
     auto classical_turning_point = get_classical_turning_point(r, z, energy, practical_infinity);
 
-    /// integrating the Schrodinger Equation from r_max to classical_turning_point
-    /// this function will overwrite the corresponding region of R and dR_dr
-    integrate_inward(r, z, energy, l, practical_infinity, classical_turning_point, R, dR_dr);
-    auto old_R_at_ctp = R[classical_turning_point];
-    auto old_dR_dr_at_ctp = dR_dr[classical_turning_point];
-
-    /// integrating the Schrodinger Equation from 0 to classical_turning_point
-    /// this function will overwrite the corresponding region of R and dR_dr
-    integrate_outward(r, z, energy, l, classical_turning_point, R, dR_dr);
-
-    /// make R and dR_dr continuous
-    match_solutions(classical_turning_point, practical_infinity, old_R_at_ctp, old_dR_dr_at_ctp, R, dR_dr);
+    auto integrator = AdamsIntegrator(r, z, energy, l, practical_infinity, classical_turning_point);
+    integrator.integrate(R, dR_dr);
 
     /// get the number of R = 0 (not counting the origin).
     auto number_of_nodes = get_number_of_nodes(R, practical_infinity);
@@ -47,12 +38,12 @@ RadialSolution Physics::CoreElectrons::RadialSchrodingerEquation::solve(
       /// if the node number is OK, then we fine-tune the energy so that the dR_dr
       /// becomes continuous as well
       auto norm = get_norm(r, dx, R, practical_infinity);
-      auto old_dR_dr_scaled = R[classical_turning_point] / old_R_at_ctp * old_dR_dr_at_ctp;
       auto new_R = R[classical_turning_point];
       auto new_dR_dr = dR_dr[classical_turning_point];
 
       bool finished;
-      std::tie(energy, finished) = update_energy.fine(energy, norm, new_R, new_dR_dr, old_dR_dr_scaled);
+      std::tie(energy, finished) =
+        update_energy.fine(energy, norm, new_R, new_dR_dr, integrator.get_old_dR_dr_scaled());
       if (finished) {
         /// if energy diff is small
         normalize_solution(R, dR_dr, norm, practical_infinity);
@@ -109,37 +100,6 @@ RadialSchrodingerEquation::get_classical_turning_point(
   return classical_turning_point;
 }
 
-void RadialSchrodingerEquation::integrate_inward(
-  const std::vector<double> &r, const std::vector<double> &z, double energy, unsigned int l,
-  unsigned long practical_infinity, unsigned long classical_turning_point,
-  std::vector<double> &R, std::vector<double> &dR_dr)
-{
-
-}
-
-void
-RadialSchrodingerEquation::integrate_outward(
-  const std::vector<double> &r, const std::vector<double> &z, double energy, unsigned int l,
-  unsigned long classical_turning_point,
-  std::vector<double> &R, std::vector<double> &dR_dr)
-{
-
-}
-
-void RadialSchrodingerEquation::match_solutions(
-  unsigned long classical_turning_point, unsigned long practical_infinity,
-  double old_R_at_ctp, double old_dR_dr_at_ctp,
-  std::vector<double> &R, std::vector<double> &dR_dr
-)
-{
-  auto R_ratio = R[classical_turning_point] / old_R_at_ctp;
-  auto dR_dr_ratio = R_ratio * old_dR_dr_at_ctp;
-
-  for (auto i = classical_turning_point; i < practical_infinity; ++i) {
-    R[i] *= R_ratio;
-    dR_dr[i] *= dR_dr_ratio;
-  }
-}
 
 unsigned int RadialSchrodingerEquation::get_number_of_nodes(
   const std::vector<double> &R, unsigned long practical_infinity)

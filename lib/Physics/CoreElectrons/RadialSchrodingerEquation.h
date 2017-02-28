@@ -78,26 +78,11 @@ namespace Physics
       const unsigned int max_iter;
 
     private:
-      static unsigned long
-      get_practical_infinity(const std::vector<double> &r, const std::vector<double> &z, double energy);
+      static unsigned long get_practical_infinity(
+        const std::vector<double> &r, const std::vector<double> &z, double energy);
 
       static unsigned long get_classical_turning_point(
         const std::vector<double> &r, const std::vector<double> &z, double energy, unsigned long practical_infinity);
-
-      static void integrate_inward(
-        const std::vector<double> &r, const std::vector<double> &z, double energy, unsigned int l,
-        unsigned long practical_infinity, unsigned long classical_turning_point,
-        std::vector<double> &R, std::vector<double> &dR_dr);
-
-      static void integrate_outward(
-        const std::vector<double> &r, const std::vector<double> &z, double energy, unsigned int l,
-        unsigned long classical_turning_point,
-        std::vector<double> &R, std::vector<double> &dR_dr);
-
-      static void match_solutions(
-        unsigned long classical_turning_point, unsigned long practical_infinity,
-        double old_R_at_ctp, double old_dR_dr_at_ctp,
-        std::vector<double> &R, std::vector<double> &dR_dr);
 
       static unsigned int get_number_of_nodes(const std::vector<double> &R, unsigned long practical_infinity);
 
