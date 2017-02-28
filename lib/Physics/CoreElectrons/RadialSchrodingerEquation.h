@@ -66,39 +66,46 @@ namespace Physics
     class RadialSchrodingerEquation
     {
     public:
-      RadialSchrodingerEquation(const EffectiveCharge &effective_charge_, unsigned int max_iter_ = 50)
-        : effective_charge(effective_charge_), max_iter(max_iter_) {}
+      RadialSchrodingerEquation(
+        const EffectiveCharge &effective_charge_, double energy_tolerance_ = 1e-11, unsigned int max_iter_ = 50
+      )
+        : effective_charge(effective_charge_), energy_tolerance(energy_tolerance_), max_iter(max_iter_) {}
 
       RadialSolution solve(unsigned int n, unsigned int l, double energy_guess);
 
-    private:
       const EffectiveCharge effective_charge;
+      const double energy_tolerance;
       const unsigned int max_iter;
 
-      unsigned long get_practical_infinity(const std::vector<double> &r, const std::vector<double> &z, double energy);
+    private:
+      static unsigned long
+      get_practical_infinity(const std::vector<double> &r, const std::vector<double> &z, double energy);
 
-      unsigned long get_classical_turning_point(
+      static unsigned long get_classical_turning_point(
         const std::vector<double> &r, const std::vector<double> &z, double energy, unsigned long practical_infinity);
 
-      void integrate_inward(const std::vector<double> &r, const std::vector<double> &z, double energy,
-                            unsigned int l, unsigned long r_max, unsigned long classical_turning_point,
-                            std::vector<double> &R, std::vector<double> &dR_dr);
+      static void integrate_inward(
+        const std::vector<double> &r, const std::vector<double> &z, double energy, unsigned int l,
+        unsigned long practical_infinity, unsigned long classical_turning_point,
+        std::vector<double> &R, std::vector<double> &dR_dr);
 
-      void integrate_outward(const std::vector<double> &r, const std::vector<double> &z, double energy,
-                             unsigned int l, unsigned long classical_turning_point,
-                             std::vector<double> &R, std::vector<double> &dR_dr);
+      static void integrate_outward(
+        const std::vector<double> &r, const std::vector<double> &z, double energy, unsigned int l,
+        unsigned long classical_turning_point,
+        std::vector<double> &R, std::vector<double> &dR_dr);
 
-      void match_solutions(unsigned long classical_turning_point, std::vector<double> &R, std::vector<double> &dr);
+      static void match_solutions(
+        unsigned long classical_turning_point, unsigned long practical_infinity,
+        double old_R_at_ctp, double old_dR_dr_at_ctp,
+        std::vector<double> &R, std::vector<double> &dR_dr);
 
-      unsigned int get_number_of_nodes(const std::vector<double> &R);
+      static unsigned int get_number_of_nodes(const std::vector<double> &R, unsigned long practical_infinity);
 
-      void update_energy_coarse(double &energy, double &lower, double &upper);
+      static double get_norm(
+        const std::vector<double> &r, double dx, const std::vector<double> &R, unsigned long practical_infinity);
 
-      double get_norm(const std::vector<double> &r, const std::vector<double> &R);
-
-      bool update_energy_fine(double &energy, double &lower, double &upper, double norm);
-
-      void normalize_solution(std::vector<double> &R, std::vector<double> &dr, double norm);
+      static void normalize_solution(
+        std::vector<double> &R, std::vector<double> &dR_dr, double norm, unsigned long practical_infinity);
 
       friend class Accessor;
     };

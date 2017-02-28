@@ -1,18 +1,88 @@
+#include <Math/Integrator.h>
 #include "RadialSchrodingerEquation.h"
 
 using namespace Physics::CoreElectrons;
+
+namespace
+{
+  struct UpdateEnergy
+  {
+    UpdateEnergy(unsigned int required_number_of_nodes_, double energy_tolerance_)
+      : required_number_of_nodes(required_number_of_nodes_), energy_tolerance(energy_tolerance_), lower(0.0),
+        upper(0.0), lower_set(false), upper_set(false) {}
+
+    double coarse(unsigned int number_of_nodes, double energy_)
+    {
+      double energy = energy_;
+      if (number_of_nodes > required_number_of_nodes) {
+        // energy is too large
+        // set or update upper energy bound
+        if (!upper_set) {
+          upper_set = true;
+          upper = energy;
+        }
+        if (energy < upper)
+          upper = energy;
+        if (lower_set)
+          // if we have a lower bound then bisect
+          energy = (upper + lower) / 2.0;
+        else
+          // else guess 10% less energy (energy is negative, less is more :) )
+          energy = 1.1 * upper;
+      } else {
+        // energy is too small
+        // set or update lower energy bound
+        if (!lower_set) {
+          lower_set = true;
+          lower = energy;
+        }
+        if (energy > lower)
+          lower = energy;
+        if (upper_set)
+          // if we have an upper bound then bisect
+          energy = (upper + lower) / 2.0;
+        else
+          // else guess 10% more energy
+          energy = 0.9 * lower;
+      }
+      return energy;
+    }
+
+    std::pair<double, bool> fine(double energy, double norm, double new_R, double new_dR_dr, double old_dR_dr_scaled)
+    {
+      double energy_diff = new_R * (new_dR_dr - old_dR_dr_scaled) / (2.0 * norm);
+
+      if (lower_set && (energy + energy_diff < lower))
+        return std::make_pair((energy + lower) / 2.0, false);
+      else if (energy + energy_diff > upper)
+        return std::make_pair((energy + upper) / 2.0, false);
+      else if (fabs(energy_diff / energy) > energy_tolerance)
+        return std::make_pair(energy + energy_diff, false);
+      else
+        return std::make_pair(energy, true);
+    }
+
+    // TODO if C++17 is available rework this to optional
+    unsigned int required_number_of_nodes;
+    double energy_tolerance;
+    double lower;
+    double upper;
+    bool lower_set;
+    bool upper_set;
+  };
+}
 
 RadialSolution Physics::CoreElectrons::RadialSchrodingerEquation::solve(
   unsigned int n, unsigned int l, double energy)
 {
   const auto &r = effective_charge.r->points; // safe because class always has a strong reference on it
+  const auto dx = effective_charge.r->dx;
   const auto &z = effective_charge.z;
   const auto required_number_of_nodes = n - l - 1;
+  auto update_energy = UpdateEnergy(required_number_of_nodes, energy_tolerance);
 
   std::vector<double> R(r.size(), 0.0);
   std::vector<double> dR_dr(r.size(), 0.0);
-  auto e_lower = 0.0;
-  auto e_upper = 0.0;
   auto practical_infinity = r.size() - 1;
 
   auto number_of_iteration = 0u;
@@ -25,26 +95,37 @@ RadialSolution Physics::CoreElectrons::RadialSchrodingerEquation::solve(
     /// integrating the Schrodinger Equation from r_max to classical_turning_point
     /// this function will overwrite the corresponding region of R and dR_dr
     integrate_inward(r, z, energy, l, practical_infinity, classical_turning_point, R, dR_dr);
+    auto old_R_at_ctp = R[classical_turning_point];
+    auto old_dR_dr_at_ctp = dR_dr[classical_turning_point];
+
     /// integrating the Schrodinger Equation from 0 to classical_turning_point
     /// this function will overwrite the corresponding region of R and dR_dr
     integrate_outward(r, z, energy, l, classical_turning_point, R, dR_dr);
+
     /// make R and dR_dr continuous
-    match_solutions(classical_turning_point, R, dR_dr);
+    match_solutions(classical_turning_point, practical_infinity, old_R_at_ctp, old_dR_dr_at_ctp, R, dR_dr);
 
     /// get the number of R = 0 (not counting the origin).
-    auto number_of_nodes = get_number_of_nodes(R);
+    auto number_of_nodes = get_number_of_nodes(R, practical_infinity);
+
     if (required_number_of_nodes != number_of_nodes) {
       /// if it is not the required then we need a bigger energy step.
-      update_energy_coarse(energy, e_lower, e_upper);
+      energy = update_energy.coarse(number_of_nodes, energy);
     } else {
       /// if the node number is OK, then we fine-tune the energy so that the dR_dr
       /// becomes continuous as well
-      auto norm = get_norm(r, R);
-      bool is_ready = update_energy_fine(energy, e_lower, e_upper, norm);
-      if (is_ready)
-        /// if dR_dr is continuous we normalize and exit
-        normalize_solution(R, dR_dr, norm);
-      break;
+      auto norm = get_norm(r, dx, R, practical_infinity);
+      auto old_dR_dr_scaled = R[classical_turning_point] / old_R_at_ctp * old_dR_dr_at_ctp;
+      auto new_R = R[classical_turning_point];
+      auto new_dR_dr = dR_dr[classical_turning_point];
+
+      bool finished;
+      std::tie(energy, finished) = update_energy.fine(energy, norm, new_R, new_dR_dr, old_dR_dr_scaled);
+      if (finished) {
+        /// if energy diff is small
+        normalize_solution(R, dR_dr, norm, practical_infinity);
+        break;
+      }
       /// if not then let's iterate again
     }
   }
@@ -97,8 +178,8 @@ RadialSchrodingerEquation::get_classical_turning_point(
 }
 
 void RadialSchrodingerEquation::integrate_inward(
-  const std::vector<double> &r, const std::vector<double> &z, double energy,
-  unsigned int l, unsigned long r_max, unsigned long classical_turning_point,
+  const std::vector<double> &r, const std::vector<double> &z, double energy, unsigned int l,
+  unsigned long practical_infinity, unsigned long classical_turning_point,
   std::vector<double> &R, std::vector<double> &dR_dr)
 {
 
@@ -106,41 +187,64 @@ void RadialSchrodingerEquation::integrate_inward(
 
 void
 RadialSchrodingerEquation::integrate_outward(
-  const std::vector<double> &r, const std::vector<double> &z, double energy,
-  unsigned int l, unsigned long classical_turning_point,
+  const std::vector<double> &r, const std::vector<double> &z, double energy, unsigned int l,
+  unsigned long classical_turning_point,
   std::vector<double> &R, std::vector<double> &dR_dr)
 {
 
 }
 
 void RadialSchrodingerEquation::match_solutions(
-  unsigned long classical_turning_point, std::vector<double> &R, std::vector<double> &dr
+  unsigned long classical_turning_point, unsigned long practical_infinity,
+  double old_R_at_ctp, double old_dR_dr_at_ctp,
+  std::vector<double> &R, std::vector<double> &dR_dr
 )
 {
+  auto R_ratio = R[classical_turning_point] / old_R_at_ctp;
+  auto dR_dr_ratio = R_ratio * old_dR_dr_at_ctp;
 
+  for (auto i = classical_turning_point; i < practical_infinity; ++i) {
+    R[i] *= R_ratio;
+    dR_dr[i] *= dR_dr_ratio;
+  }
 }
 
-unsigned int RadialSchrodingerEquation::get_number_of_nodes(const std::vector<double> &R)
+unsigned int RadialSchrodingerEquation::get_number_of_nodes(
+  const std::vector<double> &R, unsigned long practical_infinity)
 {
-  return 0;
+  auto number_of_nodes = 0u;
+  auto sign = R[2] > 0.0;
+
+  for (auto i = 3; i < practical_infinity; ++i) {
+    auto new_sign = R[i] > 0.0;
+    if (sign != new_sign) {
+      ++number_of_nodes;
+      sign = new_sign;
+    }
+  }
+  return number_of_nodes;
 }
 
-void RadialSchrodingerEquation::update_energy_coarse(double &energy, double &lower, double &upper)
+double RadialSchrodingerEquation::get_norm(
+  const std::vector<double> &r, double dx, const std::vector<double> &R, unsigned long practical_infinity)
 {
+  std::vector<double> f;
+  f.reserve(practical_infinity);
+  for (auto i = 0; i < practical_infinity; ++i) {
+    f.push_back(R[i] * R[i] * r[i]);
+  }
 
+  return Math::IntegratorEquidistant::simpson_alt(f, dx);
 }
 
-double RadialSchrodingerEquation::get_norm(const std::vector<double> &r, const std::vector<double> &R)
+void RadialSchrodingerEquation::normalize_solution(
+  std::vector<double> &R, std::vector<double> &dR_dr, double norm, unsigned long practical_infinity)
 {
-  return 0;
-}
-
-bool RadialSchrodingerEquation::update_energy_fine(double &energy, double &lower, double &upper, double norm)
-{
-  return false;
-}
-
-void RadialSchrodingerEquation::normalize_solution(std::vector<double> &R, std::vector<double> &dr, double norm)
-{
-
+  auto factor = 1.0 / sqrt(norm);
+  for (auto i = 0; i < practical_infinity; ++i) {
+    R[i] *= factor;
+  }
+  for (auto i = 0; i < practical_infinity; ++i) {
+    dR_dr[i] *= factor;
+  }
 }
