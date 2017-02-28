@@ -71,7 +71,7 @@ namespace Physics
       )
         : effective_charge(effective_charge_), energy_tolerance(energy_tolerance_), max_iter(max_iter_) {}
 
-      RadialSolution solve(unsigned int n, unsigned int l, double energy_guess);
+      RadialSolution solve(unsigned int n, unsigned int l, double energy_guess) const;
 
       const EffectiveCharge effective_charge;
       const double energy_tolerance;

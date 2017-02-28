@@ -62,9 +62,9 @@ namespace
         return std::make_pair(energy, true);
     }
 
-    // TODO if C++17 is available rework this to optional
     unsigned int required_number_of_nodes;
     double energy_tolerance;
+    // TODO if C++17 is available rework this to optional
     double lower;
     double upper;
     bool lower_set;
@@ -73,7 +73,7 @@ namespace
 }
 
 RadialSolution Physics::CoreElectrons::RadialSchrodingerEquation::solve(
-  unsigned int n, unsigned int l, double energy)
+  unsigned int n, unsigned int l, double energy) const
 {
   const auto &r = effective_charge.r->points; // safe because class always has a strong reference on it
   const auto dx = effective_charge.r->dx;
@@ -215,7 +215,7 @@ unsigned int RadialSchrodingerEquation::get_number_of_nodes(
   auto number_of_nodes = 0u;
   auto sign = R[2] > 0.0;
 
-  for (auto i = 3; i < practical_infinity; ++i) {
+  for (auto i = 3u; i < practical_infinity; ++i) {
     auto new_sign = R[i] > 0.0;
     if (sign != new_sign) {
       ++number_of_nodes;
@@ -230,7 +230,7 @@ double RadialSchrodingerEquation::get_norm(
 {
   std::vector<double> f;
   f.reserve(practical_infinity);
-  for (auto i = 0; i < practical_infinity; ++i) {
+  for (auto i = 0u; i < practical_infinity; ++i) {
     f.push_back(R[i] * R[i] * r[i]);
   }
 
@@ -241,10 +241,10 @@ void RadialSchrodingerEquation::normalize_solution(
   std::vector<double> &R, std::vector<double> &dR_dr, double norm, unsigned long practical_infinity)
 {
   auto factor = 1.0 / sqrt(norm);
-  for (auto i = 0; i < practical_infinity; ++i) {
+  for (auto i = 0u; i < practical_infinity; ++i) {
     R[i] *= factor;
   }
-  for (auto i = 0; i < practical_infinity; ++i) {
+  for (auto i = 0u; i < practical_infinity; ++i) {
     dR_dr[i] *= factor;
   }
 }
