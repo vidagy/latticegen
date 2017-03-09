@@ -45,6 +45,39 @@ TEST(TestIntegratorEquidistant, SimpsonAltConstant)
   EXPECT_NEAR(IntegratorEquidistant::simpson_alt(const_1_100, 1.0 / 500.0), 1.0, 4 * epsilon);
 }
 
+TEST(TestIntegratorEquidistant, TrapezoidalConstant)
+{
+  auto trapezoid_integrator_1 = [](const std::vector<double> &v, const double dx)
+  {
+    return IntegratorEquidistant::trapezoidal(v, dx, 1u);
+  };
+  test_const_up_to(trapezoid_integrator_1, 1.73, 15);
+
+  auto trapezoid_integrator_3 = [](const std::vector<double> &v, const double dx)
+  {
+    return IntegratorEquidistant::trapezoidal(v, dx, 3u);
+  };
+  test_const_up_to(trapezoid_integrator_3, 1.73, 15);
+
+  auto trapezoid_integrator_5 = [](const std::vector<double> &v, const double dx)
+  {
+    return IntegratorEquidistant::trapezoidal(v, dx, 5u);
+  };
+  test_const_up_to(trapezoid_integrator_5, 1.73, 15, 2);
+
+  auto trapezoid_integrator_7 = [](const std::vector<double> &v, const double dx)
+  {
+    return IntegratorEquidistant::trapezoidal(v, dx, 7u);
+  };
+  test_const_up_to(trapezoid_integrator_7, 1.73, 15, 2);
+
+  auto const_1_100 = std::vector<double>(501, 1.0);
+  EXPECT_NEAR(trapezoid_integrator_1(const_1_100, 1.0 / 500.0), 1.0, epsilon);
+  EXPECT_NEAR(trapezoid_integrator_3(const_1_100, 1.0 / 500.0), 1.0, epsilon);
+  EXPECT_NEAR(trapezoid_integrator_5(const_1_100, 1.0 / 500.0), 1.0, epsilon);
+  EXPECT_NEAR(trapezoid_integrator_7(const_1_100, 1.0 / 500.0), 1.0, epsilon);
+}
+
 namespace
 {
   static const auto p = [](double x)
