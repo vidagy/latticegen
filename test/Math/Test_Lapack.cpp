@@ -5,7 +5,7 @@
 
 using namespace Math;
 
-TEST(TestLapack, InvertMatrix)
+TEST(TestLapack, InvertMatrixColumnMajor)
 {
   std::vector<double> matrix = {
     1, 4, 7,
@@ -20,6 +20,26 @@ TEST(TestLapack, InvertMatrix)
   };
 
   LapackWrapper::invert_matrix(matrix);
+  for (auto i = 0u; i < reference.size(); ++i) {
+    EXPECT_NEAR(matrix[i], reference[i], std::numeric_limits<double>::epsilon());
+  }
+}
+
+TEST(TestLapack, InvertMatrixRowMajor)
+{
+  std::vector<double> matrix = {
+    1, 2, 3,
+    4, 1, 6,
+    7, 8, 1
+  };
+
+  std::vector<double> reference = {
+    -47.0 / 104.0, 11.0 / 52.0, 9.0 / 104.0,
+    19.0 / 52.0, -5.0 / 26.0, 3.0 / 52.0,
+    25.0 / 104.0, 3.0 / 52.0, -7.0 / 104.0
+  };
+
+  LapackWrapper::invert_matrix(matrix, LAPACK_ROW_MAJOR);
   for (auto i = 0u; i < reference.size(); ++i) {
     EXPECT_NEAR(matrix[i], reference[i], std::numeric_limits<double>::epsilon());
   }
