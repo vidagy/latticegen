@@ -18,7 +18,8 @@ target_include_directories(Geometry PUBLIC .)
 file(GLOB all_math_src "Math/*.cpp")
 file(GLOB all_math_hdr "Math/*.h")
 add_library(Math SHARED ${all_math_src} ${all_math_hdr})
-# target_link_libraries(Math Core)
+# TODO something like find_package(LAPACKE REQUIRED) should be used instead just linking here
+target_link_libraries(Math ${BLAS_LIBRARIES} lapacke)
 target_include_directories(Math PUBLIC .)
 
 # Physics
