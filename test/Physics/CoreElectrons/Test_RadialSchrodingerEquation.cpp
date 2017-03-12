@@ -72,7 +72,7 @@ namespace
   };
 }
 
-TEST(TestRadialSchrodingerEquation, ReferenceSolution)
+TEST(DISABLED_TestRadialSchrodingerEquation, ReferenceSolution)
 {
   auto mesh = std::make_shared<const ExponentialMesh>(0.00001, 50, 100);
   auto reference = CoulombReferenceSolutions(mesh, 1.0);
@@ -104,23 +104,33 @@ namespace Physics
   }
 }
 
-TEST(AdamsIntegrator, AdamsMoultonMethod)
+TEST(TestAdamsIntegrator, AdamsMoultonMethod)
 {
   auto mesh = std::make_shared<const ExponentialMesh>(0.01, 50, 100);
   auto reference = CoulombReferenceSolutions(mesh, 1.0);
 
   auto R = reference.reference_R10;
   auto dR_dR = reference.reference_dR_dr_10;
-  Utils::log(mesh->points, "ReferenceSolution_r");
-  Utils::log(reference.reference_R10, "ReferenceSolution_reference_R10");
-  Utils::log(reference.reference_dR_dr_10, "ReferenceSolution_reference_dR_dr_10");
   auto z = std::vector<double>(mesh->points.size(), 1.0);
 
   auto ai = AdamsIntegrator(mesh, z, reference.energy(1), 0, 97, 77, 8, 0);
 
-  Physics::CoreElectrons::TestAccessor::adams_moulton_method(ai, R, dR_dR, 20, 70);
-  Utils::log(R, "adams_on_R10");
-  Utils::log(dR_dR, "adams_on_dR_dr_10");
+  auto from = 20;
+  auto to = 70;
+  Physics::CoreElectrons::TestAccessor::adams_moulton_method(ai, R, dR_dR, from, to);
+
+  for (auto i = 0; i < from; ++i) {
+    EXPECT_EQ(R[i], reference.reference_R10[i]);
+    EXPECT_EQ(dR_dR[i], reference.reference_dR_dr_10[i]);
+  }
+  for (auto i = from; i <= to; ++i) {
+    EXPECT_NEAR(R[i], reference.reference_R10[i], 1.6e-8);
+    EXPECT_NEAR(dR_dR[i], reference.reference_dR_dr_10[i], 1e-8);
+  }
+  for (auto i = to + 1u; i < R.size(); ++i) {
+    EXPECT_EQ(R[i], reference.reference_R10[i]);
+    EXPECT_EQ(dR_dR[i], reference.reference_dR_dr_10[i]);
+  }
 }
 
 TEST(DISABLED_TestRadialSchrodingerEquation, ctor)
