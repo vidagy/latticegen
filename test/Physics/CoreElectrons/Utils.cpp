@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 #include "Utils.h"
 
 namespace Utils
@@ -34,5 +35,14 @@ namespace Utils
       std::cout << '\n';
     }
     std::cout << '\n';
+  }
+
+  void log(const std::vector<double> &R, const std::string &filename)
+  {
+    std::ofstream out_R;
+    out_R.open(filename + ".dat");
+    for (auto r : R)
+      out_R << std::setw(20) << std::setprecision(17) << std::fixed << r << "\n";
+    out_R.close();
   }
 }

@@ -1,13 +1,25 @@
 #include <Math/Integrator.h>
+#include <iostream>
+#include <fstream>
+#include <iomanip>
 #include "RadialSchrodingerEquation.h"
 #include "EnergyUpdate.h"
 #include "AdamsIntegrator.h"
 
 using namespace Physics::CoreElectrons;
 
-RadialSolution Physics::CoreElectrons::RadialSchrodingerEquation::solve(
-  unsigned int n, unsigned int l, double energy) const
+RadialSolution RadialSchrodingerEquation::solve(
+  unsigned int n, unsigned int l, double energy, unsigned int quadrature) const
 {
+  if (n == 0)
+    throw std::invalid_argument("in RadialSchrodingerEquation::solve n must be positive");
+  if (l >= n)
+    throw std::invalid_argument("in RadialSchrodingerEquation::solve l must be less than n, now l = "
+                                + std::to_string(l) + " and n = " + std::to_string(n));
+  if (energy >= 0.0)
+    throw std::invalid_argument("in RadialSchrodingerEquation::solve energy guess must be negative energy = "
+                                + std::to_string(energy));
+
   const auto &r = effective_charge.r->points; // safe because class always has a strong reference on it
   const auto dx = effective_charge.r->dx;
   const auto &z = effective_charge.z;
@@ -20,32 +32,46 @@ RadialSolution Physics::CoreElectrons::RadialSchrodingerEquation::solve(
 
   auto number_of_iteration = 0u;
   while (number_of_iteration++ < max_iter) {
+    std::cout << "NEW ITERATION " + std::to_string(number_of_iteration) << std::endl;
     /// above r_max the wave function is practically zero. we don't calculate in this region
     practical_infinity = get_practical_infinity(r, z, energy);
+    std::cout << " -> practical_infinity = " + std::to_string(practical_infinity) << std::endl;
     /// classical_turning_point is the boundary between the inward and the outward integration
     auto classical_turning_point = get_classical_turning_point(r, z, energy, practical_infinity);
+    std::cout << " -> classical_turning_point = " + std::to_string(classical_turning_point) << std::endl;
 
-    auto integrator = AdamsIntegrator(r, z, energy, l, practical_infinity, classical_turning_point);
+    auto integrator =
+      AdamsIntegrator(effective_charge.r, z, energy, l, practical_infinity, classical_turning_point, quadrature,
+                      number_of_iteration);
     integrator.integrate(R, dR_dr);
 
     /// get the number of R = 0 (not counting the origin).
     auto number_of_nodes = get_number_of_nodes(R, practical_infinity);
+    std::cout << " -> number_of_nodes = " + std::to_string(number_of_nodes) << std::endl;
 
     if (required_number_of_nodes != number_of_nodes) {
       /// if it is not the required then we need a bigger energy step.
+      auto old_energy = energy;
       energy = update_energy.coarse(number_of_nodes, energy);
+      std::cout << " => update_energy.coarse = " + std::to_string(old_energy) + " -> " + std::to_string(energy)
+                << std::endl;
     } else {
       /// if the node number is OK, then we fine-tune the energy so that the dR_dr
       /// becomes continuous as well
       auto norm = get_norm(r, dx, R, practical_infinity);
+      std::cout << " -> norm = " + std::to_string(norm) << std::endl;
       auto new_R = R[classical_turning_point];
       auto new_dR_dr = dR_dr[classical_turning_point];
+      auto old_energy = energy;
 
       bool finished;
       std::tie(energy, finished) =
         update_energy.fine(energy, norm, new_R, new_dR_dr, integrator.get_old_dR_dr_scaled());
+      std::cout << " => update_energy.fine = " + std::to_string(old_energy) + " -> " + std::to_string(energy)
+                << std::endl;
       if (finished) {
         /// if energy diff is small
+        std::cout << " => finished!!!" << std::endl;
         normalize_solution(R, dR_dr, norm, practical_infinity);
         break;
       }
@@ -100,7 +126,6 @@ RadialSchrodingerEquation::get_classical_turning_point(
   return classical_turning_point;
 }
 
-
 unsigned int RadialSchrodingerEquation::get_number_of_nodes(
   const std::vector<double> &R, unsigned long practical_infinity)
 {
@@ -126,7 +151,7 @@ double RadialSchrodingerEquation::get_norm(
     f.push_back(R[i] * R[i] * r[i]);
   }
 
-  return Math::IntegratorEquidistant::simpson_alt(f, dx);
+  return Math::IntegratorEquidistant::trapezoidal(f, dx);
 }
 
 void RadialSchrodingerEquation::normalize_solution(

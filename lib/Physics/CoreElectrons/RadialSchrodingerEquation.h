@@ -13,6 +13,11 @@ namespace Physics
 {
   namespace CoreElectrons
   {
+    ///////////////////////////////////////////////////////////////////////////
+    // The numeric solution of the Schrodinger Equation is based on chapter  //
+    //          2.3 of Atomic Structure Theory by Walter R. Johnson          // 
+    ///////////////////////////////////////////////////////////////////////////
+
     /// @brief The generalized Coulomb potential in atomic units is V(r) = - Z(r)/r.
     /// @brief EffectiveCharge is this Z(r) function
     class EffectiveCharge
@@ -36,20 +41,20 @@ namespace Physics
       RadialSolution(
         const unsigned int n_, const unsigned int l_,
         const std::shared_ptr<const ExponentialMesh> &r_, std::vector<double> R_, std::vector<double> dR_dr_,
-        double E_, unsigned long r_max_, unsigned int number_of_iteration_
+        double E_, unsigned long practical_infinity_, unsigned int number_of_iteration_
       )
         : n(n_), l(l_),
           r(r_), R(R_), dR_dr(dR_dr_),
-          E(E_), r_max(r_max_), number_of_iteration(number_of_iteration_)
+          E(E_), practical_infinity(practical_infinity_), number_of_iteration(number_of_iteration_)
       {
         if (R.size() != r->points.size())
-          throw std::invalid_argument("in EffectiveCharge R.size()=" + std::to_string(R.size()) +
+          throw std::invalid_argument("in RadialSolution R.size()=" + std::to_string(R.size()) +
                                       " while r->points.size()=" + std::to_string(r->points.size()));
         if (R.size() != dR_dr.size())
-          throw std::invalid_argument("in EffectiveCharge R.size()=" + std::to_string(R.size()) +
+          throw std::invalid_argument("in RadialSolution R.size()=" + std::to_string(R.size()) +
                                       " while dR_dr.size()=" + std::to_string(dR_dr.size()));
-        if (r_max_ >= r->points.size())
-          throw std::invalid_argument("in EffectiveCharge r_max=" + std::to_string(r_max) +
+        if (practical_infinity_ >= r->points.size())
+          throw std::invalid_argument("in RadialSolution practical_infinity=" + std::to_string(practical_infinity) +
                                       " while r->points.size()=" + std::to_string(r->points.size()));
       }
 
@@ -59,7 +64,7 @@ namespace Physics
       const std::vector<double> R;                    /// radial component of the wavefunction
       const std::vector<double> dR_dr;                /// derivative of the radial component of the wavefunction
       const double E;                                 /// eigenvalue
-      const unsigned long r_max;                      /// practical infinity for the wavefunction (index in r)
+      const unsigned long practical_infinity;         /// practical infinity for the wavefunction (index in r)
       const unsigned int number_of_iteration;         /// number of iteration in the solver
     };
 
@@ -71,7 +76,7 @@ namespace Physics
       )
         : effective_charge(effective_charge_), energy_tolerance(energy_tolerance_), max_iter(max_iter_) {}
 
-      RadialSolution solve(unsigned int n, unsigned int l, double energy_guess) const;
+      RadialSolution solve(unsigned int n, unsigned int l, double energy_guess, unsigned int quadrature) const;
 
       const EffectiveCharge effective_charge;
       const double energy_tolerance;
