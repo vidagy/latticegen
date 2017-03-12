@@ -133,12 +133,13 @@ void AdamsIntegrator::adams_moulton_method(
 void AdamsIntegrator::start_inward(std::vector<double> &R, std::vector<double> &dR_dr) const
 {
 #define INWARD_ASYMPTOTIC_EXPANSION 15
+#define TOLERANCE 1e-14
 
   const auto &r_points = r->points;
 
-  auto alam = sqrt(-2.0 * energy);
-  auto sigma = z[practical_infinity] / alam;
-  auto ang = l * (l + 1);
+  double alam = sqrt(-2.0 * energy);
+  double sigma = z[practical_infinity] / alam;
+  double ang = l * (l + 1);
 
   /// set up coefficients
   double coeff_R[INWARD_ASYMPTOTIC_EXPANSION];
@@ -154,13 +155,16 @@ void AdamsIntegrator::start_inward(std::vector<double> &R, std::vector<double> &
   for (auto i = practical_infinity; i > practical_infinity - quadrature; --i) {
     auto rfac = pow(r_points[i], sigma) * exp(-alam * r_points[i]);
     auto sum_R = coeff_R[0];
-    auto sum_dR_dr = coeff_R[0];
+    auto sum_dR_dr = coeff_dR_dr[0];
     auto r_inverses = 1.0;
     for (auto k = 1; k < INWARD_ASYMPTOTIC_EXPANSION; ++k) {
       r_inverses /= r_points[i];
-      sum_R += coeff_R[k] * r_inverses;
-      sum_dR_dr += coeff_dR_dr[k] * r_inverses;
-      // TODO handle small corrections and check conversion
+      auto R_part = coeff_R[k] * r_inverses;
+      auto dR_dr_part = coeff_dR_dr[k] * r_inverses;
+      sum_R += R_part;
+      sum_dR_dr += dR_dr_part;
+      if (std::max(fabs(R_part), fabs(dR_dr_part)) < TOLERANCE)
+        break;
     }
 
     R[i] = rfac * sum_R;
