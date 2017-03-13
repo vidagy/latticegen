@@ -48,9 +48,9 @@ namespace Physics
         return energy;
       }
 
-      std::pair<double, bool> fine(double energy, double norm, double new_R, double new_dR_dr, double old_dR_dr_scaled)
+      std::pair<double, bool> fine(double energy, double norm, double new_R, double new_dR_dr, double old_dR_dr)
       {
-        double energy_diff = new_R * (new_dR_dr - old_dR_dr_scaled) / (2.0 * norm);
+        double energy_diff = new_R * (new_dR_dr - old_dR_dr) / (2.0 * norm);
 
         if (lower_set && (energy + energy_diff < lower))
           return std::make_pair((energy + lower) / 2.0, false);

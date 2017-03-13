@@ -49,9 +49,7 @@ namespace Physics
 
       void start_outward(std::vector<double> &R, std::vector<double> &dR_dr) const;
 
-      void match_solutions(
-        std::vector<double> &R, std::vector<double> &dR_dr, double old_R_at_ctp, double old_dR_dr_at_ctp
-      ) const;
+      void match_solutions(std::vector<double> &R, std::vector<double> &dR_dr, double old_R_at_ctp) const;
 
       const std::shared_ptr<const ExponentialMesh> &r;
       const std::vector<double> &z;

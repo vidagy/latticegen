@@ -104,7 +104,7 @@ namespace Physics
   }
 }
 
-TEST(TestAdamsIntegrator, AdamsMoultonMethod)
+TEST(DISABLED_TestAdamsIntegrator, AdamsMoultonMethod)
 {
   auto mesh = std::make_shared<const ExponentialMesh>(0.01, 50, 100);
   auto reference = CoulombReferenceSolutions(mesh, 1.0);
@@ -133,16 +133,21 @@ TEST(TestAdamsIntegrator, AdamsMoultonMethod)
   }
 }
 
-TEST(DISABLED_TestRadialSchrodingerEquation, ctor)
+TEST(TestRadialSchrodingerEquation, ctor)
 {
-  auto mesh = std::make_shared<const ExponentialMesh>(0.00001, 50, 100);
-  auto Z = 1.0;
-  auto n = 1;
-  auto energy = -Z * Z / 2.0 / n / n;
-  auto l = 0;
+  auto mesh = std::make_shared<const ExponentialMesh>(0.00001, 200, 500);
+  double Z = 1.0;
+  auto energy = [Z](double n) { return -Z * Z / 2.0 / n / n; };
+
+  Utils::log(mesh->points, "ReferenceSolution_r");
 
   auto sch = RadialSchrodingerEquation(EffectiveCharge(std::vector<double>(mesh->points.size(), Z), mesh));
-  auto res = sch.solve(n, l, energy, 8);
+  auto res10 = sch.solve(1, 0, energy(1), 8);
+  auto res20 = sch.solve(2, 0, energy(2), 8);
+  auto res21 = sch.solve(2, 1, energy(2), 8);
+  auto res30 = sch.solve(3, 0, energy(3), 8);
+  auto res31 = sch.solve(3, 1, energy(3), 8);
+  auto res32 = sch.solve(3, 2, energy(3), 8);
 }
 
 

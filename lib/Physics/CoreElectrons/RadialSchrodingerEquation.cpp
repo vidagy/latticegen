@@ -7,6 +7,22 @@
 #include "AdamsIntegrator.h"
 
 using namespace Physics::CoreElectrons;
+//
+//namespace
+//{
+//  void log(const std::vector<double> &R, const std::vector<double> &dR_dr, const std::string &ctxt, int number_of_iter)
+//  {
+//    std::ofstream out_R, out_dR_dr;
+//    out_R.open(std::to_string(number_of_iter) + ctxt + "_R" + ".dat");
+//    out_dR_dr.open(std::to_string(number_of_iter) + ctxt + "_dR_dr" + ".dat");
+//    for (auto r : R)
+//      out_R << std::setw(20) << std::setprecision(17) << std::fixed << r << "\n";
+//    for (auto r : dR_dr)
+//      out_dR_dr << std::setw(20) << std::setprecision(17) << std::fixed << r << "\n";
+//    out_R.close();
+//    out_dR_dr.close();
+//  }
+//}
 
 RadialSolution RadialSchrodingerEquation::solve(
   unsigned int n, unsigned int l, double energy, unsigned int quadrature) const
@@ -53,21 +69,28 @@ RadialSolution RadialSchrodingerEquation::solve(
       /// if it is not the required then we need a bigger energy step.
       auto old_energy = energy;
       energy = update_energy.coarse(number_of_nodes, energy);
-      std::cout << " => update_energy.coarse = " + std::to_string(old_energy) + " -> " + std::to_string(energy)
+      std::cout << std::setw(20) << std::setprecision(17) << std::fixed << " => update_energy.coarse = " << old_energy
+                << " -> " << energy
                 << std::endl;
     } else {
       /// if the node number is OK, then we fine-tune the energy so that the dR_dr
       /// becomes continuous as well
       auto norm = get_norm(r, dx, R, practical_infinity);
-      std::cout << " -> norm = " + std::to_string(norm) << std::endl;
+      std::cout << std::setw(20) << std::setprecision(17) << std::fixed << " -> norm = " << norm << std::endl;
       auto new_R = R[classical_turning_point];
       auto new_dR_dr = dR_dr[classical_turning_point];
       auto old_energy = energy;
 
+      std::cout << std::setw(20) << std::setprecision(17) << std::fixed << " -> new_R = " << new_R << std::endl;
+      std::cout << std::setw(20) << std::setprecision(17) << std::fixed << " -> new_dR_dr = " << new_dR_dr << std::endl;
+      std::cout << std::setw(20) << std::setprecision(17) << std::fixed << " -> integrator.get_old_dR_dr() = "
+                << integrator.get_old_dR_dr_scaled() << std::endl;
+
       bool finished;
       std::tie(energy, finished) =
         update_energy.fine(energy, norm, new_R, new_dR_dr, integrator.get_old_dR_dr_scaled());
-      std::cout << " => update_energy.fine = " + std::to_string(old_energy) + " -> " + std::to_string(energy)
+      std::cout << std::setw(20) << std::setprecision(17) << std::fixed << " => update_energy.fine = " << old_energy
+                << " -> " << energy
                 << std::endl;
       if (finished) {
         /// if energy diff is small
