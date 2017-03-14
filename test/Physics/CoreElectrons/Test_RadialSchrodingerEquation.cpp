@@ -2,7 +2,6 @@
 #include <gmock/gmock.h>
 
 #include <Physics/CoreElectrons/RadialSchrodingerEquation.h>
-#include <Physics/CoreElectrons/AdamsIntegrator.h>
 #include "Utils.h"
 
 using namespace Physics::CoreElectrons;
@@ -220,8 +219,7 @@ namespace Physics
     {
     public:
       static void adams_moulton_method(
-        const AdamsIntegrator &adamsIntegrator, std::vector<double> &R, std::vector<double> &dR_dr, unsigned long from,
-        unsigned long to)
+        const AdamsIntegrator &adamsIntegrator, std::vector<double> &R, std::vector<double> &dR_dr, int from, int to)
       {
         return adamsIntegrator.adams_moulton_method(R, dR_dr, from, to);
       }
@@ -238,7 +236,7 @@ TEST(TestAdamsIntegrator, AdamsMoultonMethod)
   auto dR_dR = reference.reference_dR_dr_10;
   auto z = std::vector<double>(mesh->points.size(), 1.0);
 
-  auto ai = AdamsIntegrator(mesh, z, reference.energy(1), 0, 97, 77, 8, 0);
+  auto ai = AdamsIntegrator(mesh, z, reference.energy(1), 0, 97, 77, AdamsIntegratorConfig());
 
   auto from = 20;
   auto to = 70;
@@ -262,24 +260,24 @@ namespace
 {
   void compare_to_reference(
     double Z, const std::shared_ptr<const ExponentialMesh> &mesh,
-    int n, int l, int quadrature, double tol = std::numeric_limits<double>::epsilon()
+    int n, int l, double tol = std::numeric_limits<double>::epsilon()
   )
   {
     auto reference = CoulombReferenceSolutions(mesh, Z);
     auto sch = RadialSchrodingerEquation(EffectiveCharge(std::vector<double>(mesh->points.size(), Z), mesh));
-    auto solution = sch.solve(n, l, reference.energy(n), quadrature);
+    auto solution = sch.solve(n, l, reference.energy(n));
     auto reference_R = reference.get_R(n, l);
     auto reference_dR_dr = reference.get_dR_dr(n, l);
 
-    EXPECT_LE(solution.number_of_iteration, 2u) << "for n = " << n << " l = " << l << " quadrature = " << quadrature;
+    EXPECT_LE(solution.number_of_iteration, 2) << "for n = " << n << " l = " << l;
     EXPECT_NEAR(solution.E, reference.energy(n), tol)
-            << "for n = " << n << " l = " << l << " quadrature = " << quadrature;
+            << "for n = " << n << " l = " << l;
 
     for (auto i = 0u; i < reference_R.size(); ++i) {
       EXPECT_NEAR(solution.R[i], reference_R[i], tol)
-              << "for n = " << n << " l = " << l << " quadrature = " << quadrature << " i = " << i;
+              << "for n = " << n << " l = " << l << " i = " << i;
       EXPECT_NEAR(solution.dR_dr[i], reference_dR_dr[i], tol)
-              << "for n = " << n << " l = " << l << " quadrature = " << quadrature << " i = " << i;
+              << "for n = " << n << " l = " << l << " i = " << i;
     }
   }
 }
@@ -288,12 +286,12 @@ TEST(TestRadialSchrodingerEquation, CompareToCoulombReference)
 {
   auto mesh = std::make_shared<const ExponentialMesh>(0.00001, 200, 200);
   double Z = 1.0;
-  compare_to_reference(Z, mesh, 1, 0, 8, 3e-8);
-  compare_to_reference(Z, mesh, 2, 0, 8, 2e-7);
-  compare_to_reference(Z, mesh, 2, 1, 8, 1e-7);
-  compare_to_reference(Z, mesh, 3, 0, 8, 5e-7);
-  compare_to_reference(Z, mesh, 3, 1, 8, 5e-7);
-  compare_to_reference(Z, mesh, 3, 2, 8, 5e-7);
+  compare_to_reference(Z, mesh, 1, 0, 3e-8);
+  compare_to_reference(Z, mesh, 2, 0, 2e-7);
+  compare_to_reference(Z, mesh, 2, 1, 1e-7);
+  compare_to_reference(Z, mesh, 3, 0, 5e-7);
+  compare_to_reference(Z, mesh, 3, 1, 5e-7);
+  compare_to_reference(Z, mesh, 3, 2, 5e-7);
 }
 
 

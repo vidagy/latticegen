@@ -28,7 +28,6 @@ void AdamsIntegrator::integrate(std::vector<double> &R, std::vector<double> &dR_
 namespace
 {
   // TODO write a generator for these coefficients
-
   static const double adams_params_1[1] =
     {0.5};
   static const double adams_params_2[2] =
@@ -60,15 +59,16 @@ namespace
 #define MAX_LENGTH_OF_PARAMS 8
 
 void AdamsIntegrator::adams_moulton_method(
-  std::vector<double> &R, std::vector<double> &dR_dr, unsigned long from, unsigned long to) const
+  std::vector<double> &R, std::vector<double> &dR_dr, int from, int to) const
 {
-  if (abs(static_cast<int>(from) - static_cast<int>(to)) <= static_cast<int>(quadrature))
+  const auto &quadrature = config.adams_moulton_quadrature_order;
+  if (abs(from - to) <= quadrature)
     throw std::logic_error("in AdamsIntegrator::adams_moulton_method from and to too close: from = " +
                            std::to_string(from) + " to = " + std::to_string(to) + " quadrature = " +
                            std::to_string(quadrature));
 
   const auto &r_points = r->points;
-  auto diff = from > to ? -1l : 1l;
+  auto diff = from > to ? -1 : 1;
   const auto ang = 0.5 * l * (l + 1);
 
   /// set up param and params to contain coefficients multiplied by dx
@@ -76,7 +76,7 @@ void AdamsIntegrator::adams_moulton_method(
   const auto &param = dx * adams_param[quadrature - 1];
 
   double params[MAX_LENGTH_OF_PARAMS];
-  for (auto i = 0u; i < quadrature; ++i) {
+  for (auto i = 0; i < quadrature; ++i) {
     params[i] = dx * adams_params[quadrature - 1][i];
   }
 
@@ -84,21 +84,21 @@ void AdamsIntegrator::adams_moulton_method(
   /// we read quadrature number of values from R and dR_dr ahead of from
   double f_R[MAX_LENGTH_OF_PARAMS];
   double f_dR_dr[MAX_LENGTH_OF_PARAMS];
-  for (auto k = 0ul, i = from - diff * quadrature; k < quadrature; ++k, i += diff) {
-    f_R[k] = static_cast<double>(diff) * r_points[i] * dR_dr[i];
-    f_dR_dr[k] = -2.0 * static_cast<double>(diff) * (energy * r_points[i] + z[i] - ang / r_points[i]) * R[i];
+  for (auto k = 0, i = from - diff * quadrature; k < quadrature; ++k, i += diff) {
+    f_R[k] = diff * r_points[i] * dR_dr[i];
+    f_dR_dr[k] = -2.0 * diff * (energy * r_points[i] + z[i] - ang / r_points[i]) * R[i];
   }
 
   /// we are using the Adams method on the inclusive range between from and to
-  for (auto i = from, k = 0ul; i != to + diff; i += diff, ++k) {
-    auto b = static_cast<double>(diff) * r_points[i];
-    auto c = -2.0 * static_cast<double>(diff) * (energy * r_points[i] + z[i] - ang / r_points[i]);
+  for (auto i = from, k = 0; i != to + diff; i += diff, ++k) {
+    auto b = diff * r_points[i];
+    auto c = -2.0 * diff * (energy * r_points[i] + z[i] - ang / r_points[i]);
     auto param_b = param * b;
     auto param_c = param * c;
     auto determinant = 1.0 - param_b * param_c;
     auto new_R = R[i - diff];
     auto new_dR_dr = dR_dr[i - diff];
-    for (auto ii = 0u; ii < quadrature; ++ii) {
+    for (auto ii = 0; ii < quadrature; ++ii) {
       new_R += params[ii] * f_R[(ii + k) % quadrature];
       new_dR_dr += params[ii] * f_dR_dr[(ii + k) % quadrature];
     }
@@ -113,8 +113,8 @@ void AdamsIntegrator::adams_moulton_method(
 
 void AdamsIntegrator::start_inward(std::vector<double> &R, std::vector<double> &dR_dr) const
 {
-#define INWARD_ASYMPTOTIC_EXPANSION 15
-#define TOLERANCE 1e-14
+  const auto &inward_expansion = config.inward_asymptotic_expansion_order;
+  const auto &cutoff = config.inward_asymptotic_expansion_cutoff;
 
   const auto &r_points = r->points;
 
@@ -123,28 +123,28 @@ void AdamsIntegrator::start_inward(std::vector<double> &R, std::vector<double> &
   double ang = l * (l + 1);
 
   /// set up coefficients
-  double coeff_R[INWARD_ASYMPTOTIC_EXPANSION];
-  double coeff_dR_dr[INWARD_ASYMPTOTIC_EXPANSION];
+  double coeff_R[inward_expansion];
+  double coeff_dR_dr[inward_expansion];
   coeff_R[0] = 1.0;
   coeff_dR_dr[0] = -alam;
-  for (auto i = 1; i < INWARD_ASYMPTOTIC_EXPANSION; ++i) {
+  for (auto i = 1; i < inward_expansion; ++i) {
     coeff_R[i] = (ang - (sigma - i + 1) * (sigma - i)) * coeff_R[i - 1] / (2.0 * i * alam);
     coeff_dR_dr[i] = ((sigma - i + 1) * (sigma + i) - ang) * coeff_R[i - 1] / (2.0 * i);
   }
 
   /// fill in the first few elements using the expansion formula
-  for (auto i = practical_infinity; i > practical_infinity - quadrature; --i) {
+  for (auto i = practical_infinity; i > practical_infinity - config.adams_moulton_quadrature_order; --i) {
     auto rfac = pow(r_points[i], sigma) * exp(-alam * r_points[i]);
     auto sum_R = coeff_R[0];
     auto sum_dR_dr = coeff_dR_dr[0];
     auto r_inverses = 1.0;
-    for (auto k = 1; k < INWARD_ASYMPTOTIC_EXPANSION; ++k) {
+    for (auto k = 1; k < inward_expansion; ++k) {
       r_inverses /= r_points[i];
       auto R_part = coeff_R[k] * r_inverses;
       auto dR_dr_part = coeff_dR_dr[k] * r_inverses;
       sum_R += R_part;
       sum_dR_dr += dR_dr_part;
-      if (std::max(fabs(R_part), fabs(dR_dr_part)) < TOLERANCE)
+      if (std::max(fabs(R_part), fabs(dR_dr_part)) < cutoff)
         break;
     }
 
@@ -161,41 +161,40 @@ void AdamsIntegrator::integrate_inward(std::vector<double> &R, std::vector<doubl
   start_inward(R, dR_dr);
 
   /// integrate the rest using the Adams--Moulton formula
-  adams_moulton_method(R, dR_dr, practical_infinity - quadrature, classical_turning_point);
+  adams_moulton_method(R, dR_dr, practical_infinity - config.adams_moulton_quadrature_order, classical_turning_point);
 }
 
 void AdamsIntegrator::start_outward(std::vector<double> &R, std::vector<double> &dR_dr) const
 {
   using namespace Math;
-#define OUTWARD_SCHEME_REPETITION 1
-#define OUTWARD_SCHEME 8
 
+  const auto &outward_scheme = config.outward_quadrature_order;
   const auto &r_points = r->points;
   const auto &dx = r->dx;
 
   double u0 = 1.0;
-  double v0 = -z[0] / (static_cast<double>(l) + 1.0);
+  double v0 = -z[0] / (l + 1.0);
 
-  auto lagrangian_quadrature = Derivator::lagrange_quadrature(OUTWARD_SCHEME + 1);
+  auto lagrangian_quadrature = Derivator::lagrange_quadrature(outward_scheme + 1);
 
-  for (auto scheme_repetition = 0; scheme_repetition < OUTWARD_SCHEME_REPETITION; ++scheme_repetition) {
-    auto starting_index = scheme_repetition * OUTWARD_SCHEME;
+  for (auto scheme_repetition = 0; scheme_repetition < config.outward_scheme_repetition; ++scheme_repetition) {
+    auto starting_index = scheme_repetition * outward_scheme;
 
     /// Preparation set up m matrix
-    std::vector<double> b(OUTWARD_SCHEME, 0.0);
-    std::vector<double> c(OUTWARD_SCHEME, 0.0);
-    std::vector<double> d(OUTWARD_SCHEME, 0.0);
-    std::vector<double> m(OUTWARD_SCHEME * OUTWARD_SCHEME, 0.0);
-    for (auto i = 0; i < OUTWARD_SCHEME; ++i) {
+    std::vector<double> b(outward_scheme, 0.0);
+    std::vector<double> c(outward_scheme, 0.0);
+    std::vector<double> d(outward_scheme, 0.0);
+    std::vector<double> m(outward_scheme * outward_scheme, 0.0);
+    for (auto i = 0; i < outward_scheme; ++i) {
       b[i] = dx * r_points[i + starting_index];
       c[i] = -2.0 * dx * (energy * r_points[i + starting_index] + z[i + starting_index]);
-      d[i] = -2.0 * dx * (static_cast<double>(l) + 1.0);
+      d[i] = -2.0 * dx * (l + 1.0);
 
-      for (auto j = 0; j < OUTWARD_SCHEME; ++j) {
+      for (auto j = 0; j < outward_scheme; ++j) {
         if (i == j)
-          m[i * OUTWARD_SCHEME + j] = lagrangian_quadrature[i + 1][j + 1] - d[i];
+          m[i * outward_scheme + j] = lagrangian_quadrature[i + 1][j + 1] - d[i];
         else
-          m[i * OUTWARD_SCHEME + j] = lagrangian_quadrature[i + 1][j + 1];
+          m[i * outward_scheme + j] = lagrangian_quadrature[i + 1][j + 1];
       }
     }
 
@@ -204,13 +203,13 @@ void AdamsIntegrator::start_outward(std::vector<double> &R, std::vector<double> 
 
     /// solve equation for R
     /// set up matrix and rhs
-    std::vector<double> fm(OUTWARD_SCHEME * OUTWARD_SCHEME, 0.0);
-    std::vector<double> rhs(OUTWARD_SCHEME, 0.0);
-    for (auto i = 0; i < OUTWARD_SCHEME; ++i) {
+    std::vector<double> fm(outward_scheme * outward_scheme, 0.0);
+    std::vector<double> rhs(outward_scheme, 0.0);
+    for (auto i = 0; i < outward_scheme; ++i) {
       rhs[i] = -lagrangian_quadrature[i + 1][0] * u0;
-      for (auto j = 0; j < OUTWARD_SCHEME; ++j) {
-        fm[i * OUTWARD_SCHEME + j] = lagrangian_quadrature[i + 1][j + 1] - b[i] * m[i * OUTWARD_SCHEME + j] * c[j];
-        rhs[i] += -b[i] * m[i * OUTWARD_SCHEME + j] * lagrangian_quadrature[j + 1][0] * v0;
+      for (auto j = 0; j < outward_scheme; ++j) {
+        fm[i * outward_scheme + j] = lagrangian_quadrature[i + 1][j + 1] - b[i] * m[i * outward_scheme + j] * c[j];
+        rhs[i] += -b[i] * m[i * outward_scheme + j] * lagrangian_quadrature[j + 1][0] * v0;
       }
     }
 
@@ -218,24 +217,24 @@ void AdamsIntegrator::start_outward(std::vector<double> &R, std::vector<double> 
     LapackWrapper::invert_matrix(fm);
 
     /// multiply rhs;
-    std::vector<double> R_solution(OUTWARD_SCHEME, 0.0);
-    for (auto i = 0; i < OUTWARD_SCHEME; ++i) {
-      for (auto j = 0; j < OUTWARD_SCHEME; ++j) {
-        R_solution[i] += fm[i * OUTWARD_SCHEME + j] * rhs[j];
+    std::vector<double> R_solution(outward_scheme, 0.0);
+    for (auto i = 0; i < outward_scheme; ++i) {
+      for (auto j = 0; j < outward_scheme; ++j) {
+        R_solution[i] += fm[i * outward_scheme + j] * rhs[j];
       }
     }
 
     /// solve for dR_dr
-    std::vector<double> dR_dr_solution(OUTWARD_SCHEME, 0.0);
-    for (auto i = 0; i < OUTWARD_SCHEME; ++i) {
-      for (auto j = 0; j < OUTWARD_SCHEME; ++j) {
+    std::vector<double> dR_dr_solution(outward_scheme, 0.0);
+    for (auto i = 0; i < outward_scheme; ++i) {
+      for (auto j = 0; j < outward_scheme; ++j) {
         dR_dr_solution[i] +=
-          m[i * OUTWARD_SCHEME + j] * (c[j] * R_solution[j] - lagrangian_quadrature[j + 1][0] * v0);
+          m[i * outward_scheme + j] * (c[j] * R_solution[j] - lagrangian_quadrature[j + 1][0] * v0);
       }
     }
 
     /// finalize solutions
-    for (auto i = 0; i < OUTWARD_SCHEME; ++i) {
+    for (auto i = 0; i < outward_scheme; ++i) {
       R[i + starting_index] = pow(r_points[i + starting_index], l + 1) * R_solution[i];
       dR_dr[i + starting_index] = pow(r_points[i + starting_index], l) *
                                   (r_points[i + starting_index] * dR_dr_solution[i] + (l + 1.0) * R_solution[i]);
@@ -251,7 +250,7 @@ void AdamsIntegrator::integrate_outward(std::vector<double> &R, std::vector<doub
   start_outward(R, dR_dr);
 
   /// integrate the rest using the Adams--Moulton formula
-  adams_moulton_method(R, dR_dr, quadrature, classical_turning_point);
+  adams_moulton_method(R, dR_dr, config.adams_moulton_quadrature_order, classical_turning_point);
 }
 
 void AdamsIntegrator::match_solutions(std::vector<double> &R, std::vector<double> &dR_dr, double old_R_at_ctp) const

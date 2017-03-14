@@ -1,12 +1,14 @@
 #include <Math/Integrator.h>
 #include "RadialSchrodingerEquation.h"
 #include "EnergyUpdate.h"
-#include "AdamsIntegrator.h"
 
 using namespace Physics::CoreElectrons;
 
 RadialSolution RadialSchrodingerEquation::solve(
-  unsigned int n, unsigned int l, double energy, unsigned int quadrature) const
+  int n, int l, double energy,
+  const AdamsIntegratorConfig &adams_integrator_config,
+  double energy_tolerance,
+  int max_iter) const
 {
   if (n == 0)
     throw std::invalid_argument("in RadialSchrodingerEquation::solve n must be positive");
@@ -25,9 +27,9 @@ RadialSolution RadialSchrodingerEquation::solve(
 
   std::vector<double> R(r.size(), 0.0);
   std::vector<double> dR_dr(r.size(), 0.0);
-  auto practical_infinity = r.size() - 1;
+  int practical_infinity = r.size() - 1;
 
-  auto number_of_iteration = 0u;
+  auto number_of_iteration = 0;
   while (number_of_iteration++ < max_iter) {
     /// above r_max the wave function is practically zero. we don't calculate in this region
     practical_infinity = get_practical_infinity(r, z, energy);
@@ -35,8 +37,8 @@ RadialSolution RadialSchrodingerEquation::solve(
     auto classical_turning_point = get_classical_turning_point(r, z, energy, practical_infinity);
 
     auto integrator =
-      AdamsIntegrator(effective_charge.r, z, energy, l, practical_infinity, classical_turning_point, quadrature,
-                      number_of_iteration);
+      AdamsIntegrator(effective_charge.r, z, energy, l, practical_infinity, classical_turning_point,
+                      adams_integrator_config);
     integrator.integrate(R, dR_dr);
 
     /// get the number of R = 0 (not counting the origin).
@@ -72,11 +74,11 @@ RadialSolution RadialSchrodingerEquation::solve(
   return RadialSolution(n, l, effective_charge.r, R, dR_dr, energy, practical_infinity, number_of_iteration);
 }
 
-unsigned long
+int
 RadialSchrodingerEquation::get_practical_infinity(
   const std::vector<double> &r, const std::vector<double> &z, double energy)
 {
-  auto practical_infinity = r.size() - 1;
+  int practical_infinity = r.size() - 1;
   static const double asymptotic_region = 40.0 * 40.0 / 2.0;
 
   while (
@@ -92,11 +94,11 @@ RadialSchrodingerEquation::get_practical_infinity(
   return practical_infinity;
 }
 
-unsigned long
+int
 RadialSchrodingerEquation::get_classical_turning_point(
-  const std::vector<double> &r, const std::vector<double> &z, double energy, unsigned long practical_infinity)
+  const std::vector<double> &r, const std::vector<double> &z, double energy, int practical_infinity)
 {
-  auto classical_turning_point = practical_infinity;
+  int classical_turning_point = practical_infinity;
 
   while (
     ((energy * r[classical_turning_point] + z[classical_turning_point]) < 0.0) &&
@@ -111,13 +113,13 @@ RadialSchrodingerEquation::get_classical_turning_point(
   return classical_turning_point;
 }
 
-unsigned int RadialSchrodingerEquation::get_number_of_nodes(
-  const std::vector<double> &R, unsigned long practical_infinity)
+int RadialSchrodingerEquation::get_number_of_nodes(
+  const std::vector<double> &R, int practical_infinity)
 {
   auto number_of_nodes = 0u;
   auto sign = R[2] > 0.0;
 
-  for (auto i = 3u; i < practical_infinity; ++i) {
+  for (auto i = 3; i < practical_infinity; ++i) {
     auto new_sign = R[i] > 0.0;
     if (sign != new_sign) {
       ++number_of_nodes;
@@ -128,11 +130,11 @@ unsigned int RadialSchrodingerEquation::get_number_of_nodes(
 }
 
 double RadialSchrodingerEquation::get_norm(
-  const std::vector<double> &r, double dx, const std::vector<double> &R, unsigned long practical_infinity)
+  const std::vector<double> &r, double dx, const std::vector<double> &R, int practical_infinity)
 {
   std::vector<double> f;
   f.reserve(practical_infinity);
-  for (auto i = 0u; i < practical_infinity; ++i) {
+  for (auto i = 0; i < practical_infinity; ++i) {
     f.push_back(R[i] * R[i] * r[i]);
   }
 
@@ -140,13 +142,13 @@ double RadialSchrodingerEquation::get_norm(
 }
 
 void RadialSchrodingerEquation::normalize_solution(
-  std::vector<double> &R, std::vector<double> &dR_dr, double norm, unsigned long practical_infinity)
+  std::vector<double> &R, std::vector<double> &dR_dr, double norm, int practical_infinity)
 {
   auto factor = 1.0 / sqrt(norm);
-  for (auto i = 0u; i < practical_infinity; ++i) {
+  for (auto i = 0; i < practical_infinity; ++i) {
     R[i] *= factor;
   }
-  for (auto i = 0u; i < practical_infinity; ++i) {
+  for (auto i = 0; i < practical_infinity; ++i) {
     dR_dr[i] *= factor;
   }
 }

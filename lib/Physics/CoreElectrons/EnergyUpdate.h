@@ -7,11 +7,11 @@ namespace Physics
   {
     struct EnergyUpdate
     {
-      EnergyUpdate(unsigned int required_number_of_nodes_, double energy_tolerance_)
+      EnergyUpdate(int required_number_of_nodes_, double energy_tolerance_)
         : required_number_of_nodes(required_number_of_nodes_), energy_tolerance(energy_tolerance_), lower(0.0),
           upper(0.0), lower_set(false), upper_set(false) {}
 
-      double coarse(unsigned int number_of_nodes, double energy_)
+      double coarse(int number_of_nodes, double energy_)
       {
         double energy = energy_;
         if (number_of_nodes > required_number_of_nodes) {
@@ -62,7 +62,7 @@ namespace Physics
           return std::make_pair(energy, true);
       }
 
-      const unsigned int required_number_of_nodes;
+      const int required_number_of_nodes;
       const double energy_tolerance;
 
     private:
