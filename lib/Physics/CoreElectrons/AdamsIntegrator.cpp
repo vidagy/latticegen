@@ -200,7 +200,7 @@ void AdamsIntegrator::start_outward(std::vector<double> &R, std::vector<double> 
     }
 
     /// invert (lagrangian_quadrature - d * id) matrix
-    LapackWrapper::invert_matrix(m, LAPACK_ROW_MAJOR);
+    LapackWrapper::invert_matrix(m);
 
     /// solve equation for R
     /// set up matrix and rhs
@@ -215,7 +215,7 @@ void AdamsIntegrator::start_outward(std::vector<double> &R, std::vector<double> 
     }
 
     /// invert matrix
-    LapackWrapper::invert_matrix(fm, LAPACK_ROW_MAJOR);
+    LapackWrapper::invert_matrix(fm);
 
     /// multiply rhs;
     std::vector<double> R_solution(OUTWARD_SCHEME, 0.0);
