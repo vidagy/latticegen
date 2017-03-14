@@ -3,9 +3,9 @@
 
 #include <vector>
 #include <stdexcept>
+#include <memory>
 
 #include <Core/ExponentialMesh.h>
-#include <memory>
 
 using namespace Core;
 

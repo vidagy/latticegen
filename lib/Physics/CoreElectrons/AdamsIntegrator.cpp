@@ -1,28 +1,9 @@
 #include <algorithm>
 #include <Math/Derivator.h>
 #include <Math/LapackWrapper.h>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
 #include "AdamsIntegrator.h"
 
 using namespace Physics::CoreElectrons;
-
-namespace
-{
-  void log(const std::vector<double> &R, const std::vector<double> &dR_dr, const std::string &ctxt, int number_of_iter)
-  {
-    std::ofstream out_R, out_dR_dr;
-    out_R.open(std::to_string(number_of_iter) + ctxt + "_R" + ".dat");
-    out_dR_dr.open(std::to_string(number_of_iter) + ctxt + "_dR_dr" + ".dat");
-    for (auto r : R)
-      out_R << std::setw(20) << std::setprecision(17) << std::fixed << r << "\n";
-    for (auto r : dR_dr)
-      out_dR_dr << std::setw(20) << std::setprecision(17) << std::fixed << r << "\n";
-    out_R.close();
-    out_dR_dr.close();
-  }
-}
 
 void AdamsIntegrator::integrate(std::vector<double> &R, std::vector<double> &dR_dr)
 {
@@ -32,23 +13,15 @@ void AdamsIntegrator::integrate(std::vector<double> &R, std::vector<double> &dR_
 
   auto old_R_at_ctp = R[classical_turning_point];
   auto old_dR_dr_at_ctp = dR_dr[classical_turning_point];
-  std::cout << " ==> old_R_at_ctp = " << std::setw(20) << std::setprecision(17) << std::fixed << old_R_at_ctp << "\n";
-  std::cout << " ==> old_dR_dr_at_ctp = " << std::setw(20) << std::setprecision(17) << std::fixed << old_dR_dr_at_ctp
-            << "\n";
 
   /// integrating the Schrodinger Equation from 0 to classical_turning_point
   /// this function will overwrite the corresponding region of R and dR_dr
   integrate_outward(R, dR_dr);
-  log(R, dR_dr, "_05_after_integration", number_of_iter);
   /// make R and dR_dr continuous
   match_solutions(R, dR_dr, old_R_at_ctp);
-  log(R, dR_dr, "_06_after_match", number_of_iter);
 
   /// the mismatch between the two regions will be used in fine energy update
-
   old_dR_dr_scaled = R[classical_turning_point] / old_R_at_ctp * old_dR_dr_at_ctp;
-  std::cout << " ==> old_dR_dr_scaled = " << std::setw(20) << std::setprecision(17) << std::fixed << old_dR_dr_at_ctp
-            << "\n";
 
 }
 
@@ -178,7 +151,6 @@ void AdamsIntegrator::start_inward(std::vector<double> &R, std::vector<double> &
     R[i] = rfac * sum_R;
     dR_dr[i] = rfac * sum_dR_dr;
   }
-  log(R, dR_dr, "_01_start_inward", number_of_iter);
 }
 
 void AdamsIntegrator::integrate_inward(std::vector<double> &R, std::vector<double> &dR_dr) const
@@ -190,30 +162,7 @@ void AdamsIntegrator::integrate_inward(std::vector<double> &R, std::vector<doubl
 
   /// integrate the rest using the Adams--Moulton formula
   adams_moulton_method(R, dR_dr, practical_infinity - quadrature, classical_turning_point);
-  log(R, dR_dr, "_02_adams_inward", number_of_iter);
 }
-
-//namespace
-//{
-//  void print_square_matrix(const std::vector<double> &matrix, bool is_row_ordered)
-//  {
-//    unsigned int n = static_cast<unsigned int>(lround(sqrt(matrix.size())));
-//    if (n * n != matrix.size())
-//      throw std::invalid_argument("matrix not square in print_square_matrix size = " + std::to_string(matrix.size()));
-//    for (auto i = 0u; i < n; ++i) {
-//      for (auto j = 0u; j < n; ++j) {
-//        int index;
-//        if (is_row_ordered)
-//          index = i * n + j;
-//        else
-//          index = i + j * n;
-//        std::cout << std::setw(20) << std::setprecision(17) << std::fixed << matrix[index] << " ";
-//      }
-//      std::cout << '\n';
-//    }
-//    std::cout << '\n';
-//  }
-//}
 
 void AdamsIntegrator::start_outward(std::vector<double> &R, std::vector<double> &dR_dr) const
 {
@@ -227,13 +176,10 @@ void AdamsIntegrator::start_outward(std::vector<double> &R, std::vector<double> 
   double u0 = 1.0;
   double v0 = -z[0] / (static_cast<double>(l) + 1.0);
 
-  R[0] = 0.0;
-  dR_dr[0] = (l == 0 ? 1.0 : 0.0);
-
   auto lagrangian_quadrature = Derivator::lagrange_quadrature(OUTWARD_SCHEME + 1);
 
   for (auto scheme_repetition = 0; scheme_repetition < OUTWARD_SCHEME_REPETITION; ++scheme_repetition) {
-    auto starting_index = 1 + scheme_repetition * OUTWARD_SCHEME;
+    auto starting_index = scheme_repetition * OUTWARD_SCHEME;
 
     /// Preparation set up m matrix
     std::vector<double> b(OUTWARD_SCHEME, 0.0);
@@ -252,12 +198,9 @@ void AdamsIntegrator::start_outward(std::vector<double> &R, std::vector<double> 
           m[i * OUTWARD_SCHEME + j] = lagrangian_quadrature[i + 1][j + 1];
       }
     }
+
     /// invert (lagrangian_quadrature - d * id) matrix
-    // std::cout << "==> start_outward: m before inversion: " << std::endl;
-    // print_square_matrix(m, false);
     LapackWrapper::invert_matrix(m, LAPACK_ROW_MAJOR);
-    // std::cout << "==> start_outward: m after inversion: " << std::endl;
-    // print_square_matrix(m, false);
 
     /// solve equation for R
     /// set up matrix and rhs
@@ -272,11 +215,8 @@ void AdamsIntegrator::start_outward(std::vector<double> &R, std::vector<double> 
     }
 
     /// invert matrix
-    // std::cout << "==> start_outward: fm before inversion: " << std::endl;
-    // print_square_matrix(fm, false);
     LapackWrapper::invert_matrix(fm, LAPACK_ROW_MAJOR);
-    // std::cout << "==> start_outward: fm before inversion: " << std::endl;
-    // print_square_matrix(fm, false);
+
     /// multiply rhs;
     std::vector<double> R_solution(OUTWARD_SCHEME, 0.0);
     for (auto i = 0; i < OUTWARD_SCHEME; ++i) {
@@ -303,7 +243,6 @@ void AdamsIntegrator::start_outward(std::vector<double> &R, std::vector<double> 
     u0 = R_solution.back();
     v0 = dR_dr_solution.back();
   }
-  log(R, dR_dr, "_03_start_outward", number_of_iter);
 }
 
 void AdamsIntegrator::integrate_outward(std::vector<double> &R, std::vector<double> &dR_dr) const
@@ -313,15 +252,11 @@ void AdamsIntegrator::integrate_outward(std::vector<double> &R, std::vector<doub
 
   /// integrate the rest using the Adams--Moulton formula
   adams_moulton_method(R, dR_dr, quadrature, classical_turning_point);
-  log(R, dR_dr, "_04_adams_outward", number_of_iter);
 }
 
 void AdamsIntegrator::match_solutions(std::vector<double> &R, std::vector<double> &dR_dr, double old_R_at_ctp) const
 {
   auto R_ratio = R[classical_turning_point] / old_R_at_ctp;
-  std::cout << " ==> new_R_at_ctp = " << std::setw(20) << std::setprecision(17) << std::fixed
-            << R[classical_turning_point] << "\n";
-  std::cout << " ==> R_ratio = " << std::setw(20) << std::setprecision(17) << std::fixed << R_ratio << "\n";
 
   for (auto i = classical_turning_point + 1; i < practical_infinity; ++i) {
     R[i] *= R_ratio;
