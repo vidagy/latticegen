@@ -1,9 +1,10 @@
 # Core
 
 file(GLOB all_core_hdr "Core/*.h")
-add_library(Core INTERFACE)
-target_sources(Core INTERFACE ${all_core_hdr})
-target_include_directories(Core INTERFACE .)
+file(GLOB all_core_src "Core/*.cpp")
+add_library(Core SHARED ${all_core_src} ${all_core_hdr})
+target_link_libraries(Core boost_program_options)
+target_include_directories(Core PUBLIC .)
 
 # Geometry
 
