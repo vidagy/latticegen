@@ -3,7 +3,7 @@
 file(GLOB all_core_hdr "Core/*.h")
 file(GLOB all_core_src "Core/*.cpp")
 add_library(Core SHARED ${all_core_src} ${all_core_hdr})
-target_link_libraries(Core boost_program_options)
+target_link_libraries(Core boost_program_options boost_log boost_system)
 target_include_directories(Core PUBLIC .)
 
 # Geometry

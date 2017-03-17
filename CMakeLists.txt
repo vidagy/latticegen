@@ -9,7 +9,9 @@ include(include/include.cmake)
 set(MULTITHREADED_BUILD "4")
 set(CMAKE_MAKE_PROGRAM "${CMAKE_MAKE_PROGRAM} -j${MULTITHREADED_BUILD}")
 message(STATUS "Added arguments to CMAKE_BUILD_TOOL: ${CMAKE_MAKE_PROGRAM}")
+
 find_package(Boost REQUIRED)
+add_definitions(-DBOOST_LOG_DYN_LINK)
 
 # Setting compipler
 set (CMAKE_CXX_COMPILER g++)

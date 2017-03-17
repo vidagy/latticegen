@@ -8,6 +8,7 @@ using namespace Core;
 std::once_flag App::onceFlag;
 std::map<std::string, std::string> App::args;
 std::map<std::string, std::string> App::environment_variables;
+Logger App::logger;
 
 void App::Create(int argc, char const *const *argv)
 {
@@ -21,7 +22,8 @@ void App::create_impl(int argc, char const *const *argv)
     options_description desc{"Options"};
     desc.add_options()
       ("help,h", "Help")
-      ("log_level,ll", value<std::string>()->default_value("info"), "Log level");
+      ("log_level,ll", value<std::string>()->default_value("info"), "Log level")
+      ("log_target,lt", value<std::string>()->default_value("cout"), "Log target: cout or filename");
 
     variables_map vm;
     store(
@@ -32,10 +34,15 @@ void App::create_impl(int argc, char const *const *argv)
 
     notify(vm);
 
-    if (vm.count("help"))
+    if (vm.count("help")) {
       std::cout << desc << '\n';
-    else if (vm.count("log_level")) {
+      exit(0);
+    }
+    if (vm.count("log_level")) {
       args["LOG_LEVEL"] = vm["log_level"].as<std::string>();
+    }
+    if (vm.count("log_target")) {
+      args["LOG_TARGET"] = vm["log_target"].as<std::string>();
     }
   }
   catch (const error &ex) {
@@ -51,4 +58,6 @@ void App::create_impl(int argc, char const *const *argv)
       environment_variables[key] = entry.substr(sep + 1);
     }
   }
+
+  logger.initialize();
 }
