@@ -2,6 +2,7 @@
 #include <gmock/gmock.h>
 
 #include <Core/App.h>
+#include <Core/Logger.h>
 
 using namespace Core;
 
@@ -22,12 +23,13 @@ TEST(TestApp, OnlyOnce)
 
 TEST(TestApp, Logger)
 {
-  // redundant, just to make sure it is working if run withour only once
+  // redundant, just to make sure it is working if run without only once
+  // TODO integrate own main function into tests
   App::Create(2, ab);
 
-  App::get_logger().log(Logger::Severity::Error, "this is an error message");
-  App::get_logger().log(Logger::Severity::Warning, "this is a warning message");
-  App::get_logger().log(Logger::Severity::Info, "this is an info message");
-  App::get_logger().log(Logger::Severity::Debug, "this is a debug message");
-  App::get_logger().flush();
+  Logger::log(Logger::Severity::Error, "this is an error message");
+  Logger::log(Logger::Severity::Warning, "this is a warning message");
+  Logger::log(Logger::Severity::Info, "this is an info message");
+  Logger::log(Logger::Severity::Debug, "this is a debug message");
+  Logger::flush();
 }

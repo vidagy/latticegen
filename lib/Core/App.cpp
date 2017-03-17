@@ -1,4 +1,5 @@
 #include "App.h"
+#include "Logger.h"
 
 #include <boost/program_options.hpp>
 #include <iostream>
@@ -8,7 +9,6 @@ using namespace Core;
 std::once_flag App::onceFlag;
 std::map<std::string, std::string> App::args;
 std::map<std::string, std::string> App::environment_variables;
-Logger App::logger;
 
 void App::Create(int argc, char const *const *argv)
 {
@@ -59,5 +59,5 @@ void App::create_impl(int argc, char const *const *argv)
     }
   }
 
-  logger.initialize();
+  Logger::initialize();
 }

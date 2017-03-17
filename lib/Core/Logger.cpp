@@ -10,7 +10,7 @@
 using namespace Core;
 using namespace boost::log;
 
-namespace Core
+namespace
 {
   class LoggerImpl
   {
@@ -41,20 +41,16 @@ namespace Core
       core::get()->flush();
     }
 
-    ~LoggerImpl()
-    {
-    }
-
-  private:
     sources::severity_logger<Logger::Severity> lg;
   };
+
+  static std::unique_ptr<LoggerImpl> loggerImpl;
 }
 
 namespace
 {
   Logger::Severity parse_severity(const std::string &s)
   {
-    std::cout << "asdasd " << s << std::endl;
     if (s == "DEBUG")
       return Logger::Severity::Debug;
     if (s == "INFO")
@@ -107,20 +103,15 @@ void Logger::initialize()
   auto severity = parse_severity(get_setting(args, env, "LOG_LEVEL"));
   auto target_string = get_setting(args, env, "LOG_TARGET");
 
-  impl = std::make_unique<LoggerImpl>(severity, target_string);
+  ::loggerImpl = std::make_unique<LoggerImpl>(severity, target_string);
 }
 
-void Logger::log(Logger::Severity severity, const char *message) const
+void Logger::log(Logger::Severity severity, const char *message)
 {
-  impl->log(severity, message);
+  ::loggerImpl->log(severity, message);
 }
 
-void Logger::flush() const
+void Logger::flush()
 {
-  impl->flush();
+  ::loggerImpl->flush();
 }
-
-Logger::Logger()
-  : impl(nullptr) {}
-
-Logger::~Logger() {}

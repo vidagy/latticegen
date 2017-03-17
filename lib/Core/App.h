@@ -5,7 +5,6 @@
 #include <map>
 #include <memory>
 #include <string>
-#include "Logger.h"
 
 namespace Core
 {
@@ -19,8 +18,6 @@ namespace Core
     static const std::map<std::string, std::string> &get_args() { return args; }
 
     static const std::map<std::string, std::string> &get_environment_variables() { return environment_variables; }
-
-    static const Logger &get_logger() { return logger; }
 
     App() = delete;
 
@@ -38,7 +35,6 @@ namespace Core
     static std::once_flag onceFlag;
     static std::map<std::string, std::string> args;
     static std::map<std::string, std::string> environment_variables;
-    static Logger logger;
   };
 }
 

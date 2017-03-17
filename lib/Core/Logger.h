@@ -5,8 +5,6 @@
 
 namespace Core
 {
-  class LoggerImpl;
-
   class Logger
   {
   public:
@@ -18,19 +16,22 @@ namespace Core
       Error = 3
     };
 
-    void log(Severity severity, const char *message) const;
+    static void log(Severity severity, const char *message);
 
-    void flush() const;
+    static void flush();
+
+    Logger() = delete;
+
+    Logger(const Logger &) = delete;
+
+    Logger(Logger &&) = delete;
+
+    Logger &operator=(const Logger &) = delete;
+
+    Logger &operator=(const Logger &&) = delete;
 
   private:
-    Logger();
-
-    ~Logger();
-
-    void initialize();
-
-    std::unique_ptr<LoggerImpl> impl;
-
+    static void initialize();
     friend class App;
   };
 }
