@@ -1,5 +1,6 @@
 #include <Math/SphericalHarmonics.h>
 #include <Math/Legendre.h>
+#include <Core/Exceptions.h>
 
 using namespace Math;
 
@@ -24,7 +25,7 @@ double Math::spherical_harmonic_slow(unsigned int l, int m, const Vector3D &v)
 std::function<double(const Core::Vector3D &)> Math::spherical_harmonic(unsigned int l, int m)
 {
   if ((unsigned int) abs(m) > l)
-    throw std::invalid_argument("m is not valid: " + std::to_string(m) + " while l is " + std::to_string(l));
+    THROW_INVALID_ARGUMENT("m is not valid: " + std::to_string(m) + " while l is " + std::to_string(l));
 
   switch (l) {
     case 0:

@@ -2,6 +2,7 @@
 #include <set>
 #include <iostream>
 #include "SymmetryTransformationFactory.h"
+#include <Core/Exceptions.h>
 
 using namespace Geometry;
 
@@ -168,7 +169,7 @@ Transformation SymmetryTransformationFactory::get(
     case CrystallographicPointGroup::ImproperRotationm6m1m1p1:
       return ImproperRotation(-pi / 3.0 * m1m1p1);
     default:
-      throw std::invalid_argument("symmetry_element not recognized in SymmetryTransformationFactory");
+      THROW_INVALID_ARGUMENT("symmetry_element not recognized in SymmetryTransformationFactory");
   }
 }
 

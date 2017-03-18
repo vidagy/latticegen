@@ -31,11 +31,6 @@ namespace
       core::get()->add_sink(sink);
     }
 
-    void log(Logger::Severity severity, const char *message)
-    {
-      BOOST_LOG_SEV(lg, severity) << message;
-    }
-
     void flush() const
     {
       core::get()->flush();
@@ -69,7 +64,7 @@ namespace
 //    else {
 //      std::ofstream f(s,std::fstream::out | std::fstream::app);
 //      if (!f.is_open()) {
-//        throw std::invalid_argument("Could not open file " + s + " as log output");
+//        THROW_INVALID_ARGUMENT("Could not open file " + s + " as log output");
 //      }
 //      return f;
 //    }
@@ -108,7 +103,20 @@ void Logger::initialize()
 
 void Logger::log(Logger::Severity severity, const char *message)
 {
-  ::loggerImpl->log(severity, message);
+  BOOST_LOG_SEV(loggerImpl->lg, severity) << message;
+}
+
+void Logger::log(Core::Logger::Severity severity, const char *filename, int line, const char *function_name,
+                 const char *message)
+{
+  BOOST_LOG_SEV(loggerImpl->lg, severity) << filename << ':' << line << ' ' << function_name << ' ' << message << '\n';
+}
+
+void Logger::log(Core::Logger::Severity severity, const char *filename, int line, const char *function_name,
+                 const std::string &message)
+{
+  BOOST_LOG_SEV(loggerImpl->lg, severity) << filename << ':' << line << " in function " << function_name << " : "
+                                          << message << '\n';
 }
 
 void Logger::flush()

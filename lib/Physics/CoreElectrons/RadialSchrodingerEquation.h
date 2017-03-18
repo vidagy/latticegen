@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <memory>
-#include <stdexcept>
 
 #include <Core/ExponentialMesh.h>
 #include "AdamsIntegrator.h"
@@ -28,8 +27,8 @@ namespace Physics
         : z(z_), r(r_)
       {
         if (z.size() != r->points.size())
-          throw std::invalid_argument("in EffectiveCharge z.size()=" + std::to_string(z.size()) +
-                                      " while r->points.size()=" + std::to_string(r->points.size()));
+          THROW_INVALID_ARGUMENT("in EffectiveCharge z.size()=" + std::to_string(z.size()) +
+                                 " while r->points.size()=" + std::to_string(r->points.size()));
       }
 
       const std::vector<double> z;
@@ -49,14 +48,14 @@ namespace Physics
           E(E_), practical_infinity(practical_infinity_), number_of_iteration(number_of_iteration_)
       {
         if (R.size() != r->points.size())
-          throw std::invalid_argument("in RadialSolution R.size()=" + std::to_string(R.size()) +
-                                      " while r->points.size()=" + std::to_string(r->points.size()));
+          THROW_INVALID_ARGUMENT("in RadialSolution R.size()=" + std::to_string(R.size()) +
+                                 " while r->points.size()=" + std::to_string(r->points.size()));
         if (R.size() != dR_dr.size())
-          throw std::invalid_argument("in RadialSolution R.size()=" + std::to_string(R.size()) +
-                                      " while dR_dr.size()=" + std::to_string(dR_dr.size()));
+          THROW_INVALID_ARGUMENT("in RadialSolution R.size()=" + std::to_string(R.size()) +
+                                 " while dR_dr.size()=" + std::to_string(dR_dr.size()));
         if (practical_infinity_ >= static_cast<int>(r->points.size()))
-          throw std::invalid_argument("in RadialSolution practical_infinity=" + std::to_string(practical_infinity) +
-                                      " while r->points.size()=" + std::to_string(r->points.size()));
+          THROW_INVALID_ARGUMENT("in RadialSolution practical_infinity=" + std::to_string(practical_infinity) +
+                                 " while r->points.size()=" + std::to_string(r->points.size()));
       }
 
       const int n;                                    /// principal quantum number

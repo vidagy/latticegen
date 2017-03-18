@@ -11,13 +11,13 @@ RadialSolution RadialSchrodingerEquation::solve(
   int max_iter) const
 {
   if (n == 0)
-    throw std::invalid_argument("in RadialSchrodingerEquation::solve n must be positive");
+    THROW_INVALID_ARGUMENT("in RadialSchrodingerEquation::solve n must be positive");
   if (l >= n)
-    throw std::invalid_argument("in RadialSchrodingerEquation::solve l must be less than n, now l = "
-                                + std::to_string(l) + " and n = " + std::to_string(n));
+    THROW_INVALID_ARGUMENT("in RadialSchrodingerEquation::solve l must be less than n, now l = "
+                           + std::to_string(l) + " and n = " + std::to_string(n));
   if (energy >= 0.0)
-    throw std::invalid_argument("in RadialSchrodingerEquation::solve energy guess must be negative energy = "
-                                + std::to_string(energy));
+    THROW_INVALID_ARGUMENT("in RadialSchrodingerEquation::solve energy guess must be negative energy = "
+                           + std::to_string(energy));
 
   const auto &r = effective_charge.r->points; // safe because class always has a strong reference on it
   const auto dx = effective_charge.r->dx;
@@ -67,9 +67,9 @@ RadialSolution RadialSchrodingerEquation::solve(
   }
 
   if (number_of_iteration > max_iter)
-    throw std::logic_error("RadialSchrodingerEquation::solve didn't converge. number_of_iteration="
-                           + std::to_string(number_of_iteration) + " while max_iter="
-                           + std::to_string(max_iter));
+    THROW_LOGIC_ERROR("RadialSchrodingerEquation::solve didn't converge. number_of_iteration="
+                      + std::to_string(number_of_iteration) + " while max_iter="
+                      + std::to_string(max_iter));
 
   return RadialSolution(n, l, effective_charge.r, R, dR_dr, energy, practical_infinity, number_of_iteration);
 }
@@ -89,7 +89,7 @@ RadialSchrodingerEquation::get_practical_infinity(
   }
 
   if (practical_infinity == 0)
-    throw std::logic_error("in get_practical_infinity, practical_infinity == 0");
+    THROW_LOGIC_ERROR("in get_practical_infinity, practical_infinity == 0");
 
   return practical_infinity;
 }
@@ -108,7 +108,7 @@ RadialSchrodingerEquation::get_classical_turning_point(
   }
 
   if (classical_turning_point == 0)
-    throw std::logic_error("in get_classical_turning_pointy, classical_turning_point == 0");
+    THROW_LOGIC_ERROR("in get_classical_turning_pointy, classical_turning_point == 0");
 
   return classical_turning_point;
 }

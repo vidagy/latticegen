@@ -2,6 +2,7 @@
 #define LATTICEGEN_LOGGER_H
 
 #include <memory>
+#include <stdexcept>
 
 namespace Core
 {
@@ -17,6 +18,11 @@ namespace Core
     };
 
     static void log(Severity severity, const char *message);
+
+    static void log(Severity severity, const char *filename, int line, const char *function_name, const char *message);
+
+    static void
+    log(Severity severity, const char *filename, int line, const char *function_name, const std::string &message);
 
     static void flush();
 

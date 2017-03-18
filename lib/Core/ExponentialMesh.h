@@ -4,8 +4,8 @@
 #include <vector>
 #include <cmath>
 #include <cstdlib>
-#include <stdexcept>
 #include <Core/ComparisonHelpers.h>
+#include <Core/Exceptions.h>
 
 namespace Core
 {
@@ -25,9 +25,9 @@ namespace Core
     static double get_dx(double a_, double b_, size_t N_)
     {
       if (nearlyZero(a_))
-        throw std::invalid_argument("in ExponentialMesh a is zero");
+        THROW_INVALID_ARGUMENT("in ExponentialMesh a is zero");
       if (N_ < 2u)
-        throw std::invalid_argument("in ExponentialMesh N < 2");
+        THROW_INVALID_ARGUMENT("in ExponentialMesh N < 2");
 
       return log(b_ / a_) / (N_ - 1);
     }

@@ -1,4 +1,5 @@
-#include "BravaisLattice2D.h" 
+#include "BravaisLattice2D.h"
+#include <Core/Exceptions.h>
 
 #include <algorithm>
 
@@ -14,22 +15,25 @@ BravaisLattice2D::UnitCell::UnitCell(const Point2D& a_, const Point2D& b_)
   : a(a_), b(b_)
 {
   if (a_.length() <= 0.0)
-    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: a must be non null vector but a = " + std::to_string(a_));
+    THROW_INVALID_ARGUMENT(
+      "In BravaisLattice2D::UnitCell::ctor: a must be non null vector but a = " + std::to_string(a_));
   if (b_.length() <= 0.0)
-    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: b must be non null vector but b = " + std::to_string(b_));
+    THROW_INVALID_ARGUMENT(
+      "In BravaisLattice2D::UnitCell::ctor: b must be non null vector but b = " + std::to_string(b_));
   
   if (a_.x <= 0.0)
-    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: a.x must be positive but a = " + std::to_string(a_));
+    THROW_INVALID_ARGUMENT("In BravaisLattice2D::UnitCell::ctor: a.x must be positive but a = " + std::to_string(a_));
   if (! nearlyZero(a_.y) )
-    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: a.y must be zero but a = " + std::to_string(a_));
+    THROW_INVALID_ARGUMENT("In BravaisLattice2D::UnitCell::ctor: a.y must be zero but a = " + std::to_string(a_));
 
   if (! positiveWithTolerance(b_.x))
-    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: b.x must be positive with tolerance but b = " + std::to_string(b_));
+    THROW_INVALID_ARGUMENT(
+      "In BravaisLattice2D::UnitCell::ctor: b.x must be positive with tolerance but b = " + std::to_string(b_));
   if (b_.y <= 0.0)
-    throw std::invalid_argument("In BravaisLattice2D::UnitCell::ctor: b.y must be positive but b = " + std::to_string(b_));
+    THROW_INVALID_ARGUMENT("In BravaisLattice2D::UnitCell::ctor: b.y must be positive but b = " + std::to_string(b_));
   
   if (! greaterEqualsWithTolerance(a_.length(), b_.length()))
-    throw std::invalid_argument(
+    THROW_INVALID_ARGUMENT(
       "In BravaisLattice2D::UnitCell::ctor: a must be longer than b but a = " + std::to_string(a_) + " and b = " + std::to_string(b)
       );
 }
@@ -39,13 +43,13 @@ BravaisLattice2D::UnitCell BravaisLattice2D::get_unit_cell(Point2D x, Point2D y)
   // validate input
   if ( nearlyZero(x.length()) || nearlyZero(y.length()))
   {
-    throw std::invalid_argument(
+    THROW_INVALID_ARGUMENT(
       "Null vector on the input of BravaisLattice2D::get_unit_cell: x = " + std::to_string(x) + " y = " + std::to_string(y)
       );
   }
   if ( nearlyZero( x.x * y.y - x.y * y.x) )
   {
-    throw std::invalid_argument(
+    THROW_INVALID_ARGUMENT(
       "Non-independent vectors on the input of BravaisLattice2D::get_unit_cell: x = " + std::to_string(x) + " y = " + std::to_string(y)
       );
   }
@@ -178,7 +182,7 @@ BravaisLattice2D::get_irreducible_wedge(const UnitCell &unit_cell_, unsigned int
       return sample_between(x, y, xsample, ysample);
     }
     default:
-      throw std::logic_error("Unhandled BravaisLattice2DType.");
+      THROW_LOGIC_ERROR("Unhandled BravaisLattice2DType.");
   }
 }
 

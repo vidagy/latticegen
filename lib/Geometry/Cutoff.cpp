@@ -1,4 +1,5 @@
 #include "Cutoff.h"
+#include <Core/Exceptions.h>
 
 using namespace Geometry;
 
@@ -45,7 +46,7 @@ CutoffCube::CutoffCube(double a_)
   : a(a_)
 {
   if (!strictlyPositive(a))
-    throw std::invalid_argument("In CutoffCube::ctor: a must be non-negative but a = " + std::to_string(a));
+    THROW_INVALID_ARGUMENT("In CutoffCube::ctor: a must be non-negative but a = " + std::to_string(a));
 }
 
 bool CutoffCube::is_included(const Point3D &point) const
@@ -64,7 +65,7 @@ CutoffSphere::CutoffSphere(double r_)
   : r(r_)
 {
   if (!strictlyPositive(r))
-    throw std::invalid_argument("In CutoffSphere::ctor: a must be non-negative but r = " + std::to_string(r));
+    THROW_INVALID_ARGUMENT("In CutoffSphere::ctor: a must be non-negative but r = " + std::to_string(r));
 }
 
 bool CutoffSphere::is_included(const Point3D &point) const

@@ -1,7 +1,7 @@
 #include "Derivator.h"
 
 #include <Math/Factorial.h>
-#include <stdexcept>
+#include <Core/Exceptions.h>
 
 using namespace Math;
 
@@ -23,7 +23,7 @@ namespace
 std::vector<std::vector<double>> Derivator::lagrange_quadrature(int n)
 {
   if (n < 1)
-    throw std::invalid_argument("in Derivator::lagrange_quadrature n = " + std::to_string(n));
+    THROW_INVALID_ARGUMENT("in Derivator::lagrange_quadrature n = " + std::to_string(n));
 
   std::vector<std::vector<double>> result(n, std::vector<double>(n, 0.0));
 

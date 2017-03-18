@@ -7,7 +7,7 @@ double IntegratorEquidistant::simpson(const std::vector<double> &f, double dx)
   auto f_size = f.size();
 
   if (f_size < 2)
-    throw std::invalid_argument("in IntegratorEquidistant::simpson, vector size is < 2");
+    THROW_INVALID_ARGUMENT("in IntegratorEquidistant::simpson, vector size is < 2");
   else if (f_size == 2)
     return dx * (f[0] + f[1]) / 2.0;
   else {
@@ -121,9 +121,9 @@ namespace
 double IntegratorEquidistant::trapezoidal(const std::vector<double> &f, double dx, unsigned int quadrature)
 {
   if (!(quadrature == 1 || quadrature == 3 || quadrature == 5 || quadrature == 7))
-    throw std::invalid_argument("invalid quadrature = " + std::to_string(quadrature) + " in trapezoidal rule ");
+    THROW_INVALID_ARGUMENT("invalid quadrature = " + std::to_string(quadrature) + " in trapezoidal rule ");
   if (f.size() < 2)
-    throw std::invalid_argument("f.size() = " + std::to_string(f.size()) + " in trapezoidal rule, must be at least 2");
+    THROW_INVALID_ARGUMENT("f.size() = " + std::to_string(f.size()) + " in trapezoidal rule, must be at least 2");
   if (f.size() < 2 * quadrature) {
     auto new_quadrature = static_cast<unsigned int>(f.size()) / 2;
     new_quadrature = (new_quadrature & 1) == 0 ? new_quadrature - 1 : new_quadrature;
@@ -153,11 +153,11 @@ double IntegratorExponential::simpson(const std::vector<double> &f, const Core::
   const auto &dx = x.dx;
 
   if (f_size != points.size())
-    throw std::invalid_argument(
+    THROW_INVALID_ARGUMENT(
       "in IntegratorExponential::simpson, vector sizes are unequal f=" + std::to_string(f_size) +
       " x=" + std::to_string(points.size()));
   if (f_size < 2)
-    throw std::invalid_argument("in IntegratorExponential::simpson, vector size is < 2");
+    THROW_INVALID_ARGUMENT("in IntegratorExponential::simpson, vector size is < 2");
   else if (f_size == 2)
     return dx * (f[0] * points[0] + f[1] * points[1]) / 2.0;
   else {
@@ -196,7 +196,7 @@ double IntegratorExponential::simpson_alt(const std::vector<double> &f, const Co
   const auto &dx = x.dx;
 
   if (f_size != points.size())
-    throw std::invalid_argument(
+    THROW_INVALID_ARGUMENT(
       "in IntegratorExponential::simpson, vector sizes are unequal f=" + std::to_string(f_size) +
       " x=" + std::to_string(points.size()));
 
@@ -235,11 +235,11 @@ double IntegratorGeneric::integrate(const std::vector<double> &f, const std::vec
   auto f_size = f.size();
 
   if (f_size != x.size())
-    throw std::invalid_argument(
+    THROW_INVALID_ARGUMENT(
       "in IntegratorGeneric::simpson, vector sizes are unequal f=" + std::to_string(f_size) +
       " x=" + std::to_string(x.size()));
   else if (f_size < 2)
-    throw std::invalid_argument("in IntegratorGeneric::simpson, vector size is < 2");
+    THROW_INVALID_ARGUMENT("in IntegratorGeneric::simpson, vector size is < 2");
   else {
     double result = 0.0;
 

@@ -1,6 +1,7 @@
 #include "UnitCell3D.h" 
 
 #include "Transformations.h"
+#include <Core/Exceptions.h>
 
 #include <cmath>
 
@@ -9,19 +10,19 @@ using namespace Core;
 
 #define CHECK_LENGTH_POSITIVE(x) \
     if (! strictlyPositive(x))         \
-      { throw std::invalid_argument(std::string("Lattice vector length ") + #x  + " must be positive"); } ; 
+      { THROW_INVALID_ARGUMENT(std::string("Lattice vector length ") + #x  + " must be positive"); } ;
 
 #define CHECK_LENGTH_DIFFERENT(x, y)   \
     if (equalsWithTolerance(x, y))     \
-      { throw std::invalid_argument(std::string("Lattice vector length ") + #x  + " and " + #y + " must differ"); } ; 
+      { THROW_INVALID_ARGUMENT(std::string("Lattice vector length ") + #x  + " and " + #y + " must differ"); } ;
 
 #define CHECK_ANGLE_ACUTE(x)            \
     if (! strictlyPositive(x) || ! strictlyLess(x, pi/2.0) )    \
-      throw std::invalid_argument(std::string("Lattice angle ") + #x  + " must be acute");
+      THROW_INVALID_ARGUMENT(std::string("Lattice angle ") + #x  + " must be acute");
 
 #define CHECK_ANGLE_DIFFERENT(x, y)   \
     if (equalsWithTolerance(x, y))     \
-      { throw std::invalid_argument(std::string("Lattice angle ") + #x  + " and " + #y + " must differ"); } ; 
+      { THROW_INVALID_ARGUMENT(std::string("Lattice angle ") + #x  + " and " + #y + " must differ"); } ;
 
 #define CHECK_LENGTH2(x, y) \
     CHECK_LENGTH_POSITIVE(x); \
@@ -56,11 +57,11 @@ UnitCell3D::UnitCell3D(BravaisLattice3DType type_, const Point3D &a_, const Poin
   : type(type_), a(a_), b(b_), c(c_)
 {
   if (a_.length() <= 0.0)
-    throw std::invalid_argument("In UnitCell3D::ctor: a must be non null vector but a = " + std::to_string(a_));
+    THROW_INVALID_ARGUMENT("In UnitCell3D::ctor: a must be non null vector but a = " + std::to_string(a_));
   if (b_.length() <= 0.0)
-    throw std::invalid_argument("In UnitCell3D::ctor: b must be non null vector but b = " + std::to_string(b_));
+    THROW_INVALID_ARGUMENT("In UnitCell3D::ctor: b must be non null vector but b = " + std::to_string(b_));
   if (c_.length() <= 0.0)
-    throw std::invalid_argument("In UnitCell3D::ctor: c must be non null vector but c = " + std::to_string(c_));
+    THROW_INVALID_ARGUMENT("In UnitCell3D::ctor: c must be non null vector but c = " + std::to_string(c_));
 }
 
 UnitCell3D UnitCell3D::create_triclinic_primitive(
@@ -243,7 +244,8 @@ namespace
     long l_ratio = std::lround(ratio);
 
     if (! (equalsWithTolerance(ratio, l_ratio) || nearlyZero( ratio - (double)l_ratio)))
-      throw std::invalid_argument("Point " + std::to_string(to_digest) + " is not a lattice vector. Unit vectors are unit_vector = "
+      THROW_INVALID_ARGUMENT(
+        "Point " + std::to_string(to_digest) + " is not a lattice vector. Unit vectors are unit_vector = "
         + std::to_string(unit_vector) + " perp1 = "
         + std::to_string(perp1) + " perp2 = "
         + std::to_string(perp2) + " diff for n = " + std::to_string(ratio - (double)l_ratio)
@@ -289,6 +291,6 @@ CrystalClass UnitCell3D::get_point_group() const
     case Cubic_Face:
       return CrystalClass::Hexaoctahedron;
     default:
-      throw std::invalid_argument("Unhandled BravaisLattice3DType in UnitCell3D::get_crystal_class");
+      THROW_INVALID_ARGUMENT("Unhandled BravaisLattice3DType in UnitCell3D::get_crystal_class");
   }
 }

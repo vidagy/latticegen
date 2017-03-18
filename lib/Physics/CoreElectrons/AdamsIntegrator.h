@@ -2,10 +2,10 @@
 #define LATTICEGEN_ADAMSINTEGRATOR_H
 
 #include <vector>
-#include <stdexcept>
 #include <memory>
 
 #include <Core/ExponentialMesh.h>
+#include <Core/Exceptions.h>
 
 using namespace Core;
 
@@ -27,15 +27,15 @@ namespace Physics
           outward_quadrature_order(outward_quadrature_order_), outward_scheme_repetition(outward_scheme_repetition_)
       {
         if (adams_moulton_quadrature_order < 1 || adams_moulton_quadrature_order > 8)
-          throw std::invalid_argument("adams_moulton_quadrature_order must be int the range [1,8]");
+          THROW_INVALID_ARGUMENT("adams_moulton_quadrature_order must be int the range [1,8]");
         if (inward_asymptotic_expansion_order < 1)
-          throw std::invalid_argument("inward_asymptotic_expansion_order must be positive");
+          THROW_INVALID_ARGUMENT("inward_asymptotic_expansion_order must be positive");
         if (inward_asymptotic_expansion_cutoff < 0.0)
-          throw std::invalid_argument("inward_asymptotic_expansion_cutoff must be positive");
+          THROW_INVALID_ARGUMENT("inward_asymptotic_expansion_cutoff must be positive");
         if (outward_quadrature_order < 1)
-          throw std::invalid_argument("outward_quadrature_order must be positive");
+          THROW_INVALID_ARGUMENT("outward_quadrature_order must be positive");
         if (outward_scheme_repetition < 1)
-          throw std::invalid_argument("outward_scheme_repetition must be positive");
+          THROW_INVALID_ARGUMENT("outward_scheme_repetition must be positive");
       }
 
       static const int default_adams_moulton_quadrature_order = 8;
@@ -62,9 +62,9 @@ namespace Physics
           classical_turning_point(classical_turning_point_), config(config_)
       {
         if (energy_ > 0.0)
-          throw std::invalid_argument("invalid energy in AdamsIntegrator, energy = " + std::to_string(energy_));
+          THROW_INVALID_ARGUMENT("invalid energy in AdamsIntegrator, energy = " + std::to_string(energy_));
         if (l_ < 0)
-          throw std::invalid_argument("l must be non-negative l = " + std::to_string(l));
+          THROW_INVALID_ARGUMENT("l must be non-negative l = " + std::to_string(l));
       }
 
       void integrate(std::vector<double> &R, std::vector<double> &dR_dr);

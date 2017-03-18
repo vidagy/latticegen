@@ -1,4 +1,5 @@
 #include "Transformations.h"
+#include <Core/Exceptions.h>
 
 using namespace Core;
 using namespace Geometry;
@@ -23,7 +24,7 @@ namespace
     const double angle = rotation_vector.length();
 
     if (nearlyZero(angle))
-      throw std::invalid_argument("Rotation can not be created from null vector");
+      THROW_INVALID_ARGUMENT("Rotation can not be created from null vector");
 
     const Vector3D axis = rotation_vector * (1.0 / angle);
 
@@ -71,7 +72,7 @@ Reflection::Reflection(const Vector3D& reflection_plane)
   : Transformation(Transformation::Reflection, get_reflection_matrix(reflection_plane))
 {
   if (! equalsWithTolerance(reflection_plane.length(), 1.0))
-    throw std::invalid_argument("Non-unit vector on input of Reflection: " + std::to_string(reflection_plane));
+    THROW_INVALID_ARGUMENT("Non-unit vector on input of Reflection: " + std::to_string(reflection_plane));
 }
 
 ImproperRotation::ImproperRotation(const Vector3D& rotation_vector)

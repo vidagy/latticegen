@@ -1,5 +1,7 @@
 #include "CrystallographicPointGroups.h"
 
+#include <Core/Exceptions.h>
+
 using namespace Geometry;
 
 CrystalSystem Geometry::get_crystal_system(CrystalClass crystal_class)
@@ -52,7 +54,7 @@ CrystalSystem Geometry::get_crystal_system(CrystalClass crystal_class)
       return Cubic;
 
     default:
-      throw std::invalid_argument("Unrecognised crystal class on the input of get_crystal_system");
+      THROW_INVALID_ARGUMENT("Unrecognised crystal class on the input of get_crystal_system");
   }
 }
 
@@ -125,7 +127,7 @@ std::unique_ptr<CrystallographicPointGroup> CrystallographicPointGroup::create(C
       return std::make_unique<Oh>();
 
     default:
-      throw std::invalid_argument("Unrecognised crystal class in CrystallographicPointGroup::create");
+      THROW_INVALID_ARGUMENT("Unrecognised crystal class in CrystallographicPointGroup::create");
   }
 }
 

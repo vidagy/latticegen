@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <Core/Exceptions.h>
 #include "IrreducibleWedge.h"
 #include "Mesh.h"
 
@@ -41,7 +42,7 @@ std::vector<Point3D>
 IrreducibleWedge::get_irreducible_wedge(const UnitCell3D &unit_cell, size_t sample)
 {
   if (sample == 0)
-    throw std::invalid_argument("sample is zero in IrreducibleWedge::get_irreducible_wedge");
+    THROW_INVALID_ARGUMENT("sample is zero in IrreducibleWedge::get_irreducible_wedge");
 
   std::unique_ptr<CrystallographicPointGroup> group = CrystallographicPointGroup::create(unit_cell.get_point_group());
   SymmetryTransformationFactory::Transformations transformations

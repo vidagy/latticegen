@@ -1,5 +1,5 @@
 #include <cmath>
-#include <stdexcept>
+#include <Core/Exceptions.h>
 #include "LapackWrapper.h"
 
 using namespace Math;
@@ -8,7 +8,7 @@ void LapackWrapper::invert_matrix(std::vector<double> &matrix, int majority)
 {
   unsigned int n = static_cast<unsigned int>(lround(sqrt(matrix.size())));
   if (n * n != matrix.size())
-    throw std::invalid_argument("matrix not square in invert_matrix length = " + std::to_string(matrix.size()));
+    THROW_INVALID_ARGUMENT("matrix not square in invert_matrix length = " + std::to_string(matrix.size()));
 
   std::vector<int> pivotArray;
   pivotArray.reserve(n);

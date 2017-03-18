@@ -63,9 +63,9 @@ void AdamsIntegrator::adams_moulton_method(
 {
   const auto &quadrature = config.adams_moulton_quadrature_order;
   if (abs(from - to) <= quadrature)
-    throw std::logic_error("in AdamsIntegrator::adams_moulton_method from and to too close: from = " +
-                           std::to_string(from) + " to = " + std::to_string(to) + " quadrature = " +
-                           std::to_string(quadrature));
+    THROW_LOGIC_ERROR("in AdamsIntegrator::adams_moulton_method from and to too close: from = " +
+                      std::to_string(from) + " to = " + std::to_string(to) + " quadrature = " +
+                      std::to_string(quadrature));
 
   const auto &r_points = r->points;
   auto diff = from > to ? -1 : 1;

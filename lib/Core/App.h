@@ -5,6 +5,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include "Logger.h"
 
 namespace Core
 {
@@ -13,7 +14,7 @@ namespace Core
   class App
   {
   public:
-    static void Create(int argc_, char const *const *argv_);
+    static void initialize(int argc_, char const *const *argv_);
 
     static const std::map<std::string, std::string> &get_args() { return args; }
 
@@ -30,7 +31,7 @@ namespace Core
     App &operator=(App &&) = delete;
 
   private:
-    static void create_impl(int argc, char const *const *argv);
+    static void initialize_impl(int argc, char const *const *argv);
 
     static std::once_flag onceFlag;
     static std::map<std::string, std::string> args;

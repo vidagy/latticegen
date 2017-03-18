@@ -10,12 +10,12 @@ std::once_flag App::onceFlag;
 std::map<std::string, std::string> App::args;
 std::map<std::string, std::string> App::environment_variables;
 
-void App::Create(int argc, char const *const *argv)
+void App::initialize(int argc, char const *const *argv)
 {
-  std::call_once(onceFlag, create_impl, argc, argv);
+  std::call_once(onceFlag, initialize_impl, argc, argv);
 }
 
-void App::create_impl(int argc, char const *const *argv)
+void App::initialize_impl(int argc, char const *const *argv)
 {
   using namespace boost::program_options;
   try {
