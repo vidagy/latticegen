@@ -23,7 +23,8 @@ void App::initialize_impl(int argc, char const *const *argv)
     desc.add_options()
       ("help,h", "Help")
       ("log_level,ll", value<std::string>()->default_value("info"), "Log level")
-      ("log_target,lt", value<std::string>()->default_value("cout"), "Log target: cout or filename");
+      ("log_target,lt", value<std::string>()->default_value("default"),
+       "Log target: cout, default for default location or custom filename");
 
     variables_map vm;
     store(

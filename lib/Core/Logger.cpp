@@ -3,32 +3,63 @@
 
 #include <boost/log/common.hpp>
 #include <boost/log/sinks.hpp>
+#include <boost/log/expressions.hpp>
+#include <boost/log/utility/setup/file.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/support/date_time.hpp>
 #include <boost/core/null_deleter.hpp>
 
 #include <fstream>
 
 using namespace Core;
-using namespace boost::log;
 
 namespace
 {
+  using namespace boost::log;
+  static const std::string default_filename = "latticegen.log";
+
   class LoggerImpl
   {
   public:
-    LoggerImpl(Logger::Severity severity, const std::string &target_string)
+    LoggerImpl(Logger::Level severity, Logger::Target target, const std::string &target_string)
     {
-      typedef sinks::asynchronous_sink<sinks::text_ostream_backend> text_sink;
-      boost::shared_ptr<text_sink> sink = boost::make_shared<text_sink>();
+      if (target == Logger::Target::cout) {
+        typedef sinks::asynchronous_sink<sinks::text_ostream_backend> text_sink;
+        boost::shared_ptr<text_sink> sink = boost::make_shared<text_sink>();
 
-      boost::shared_ptr<std::ostream> stream{&std::cout, boost::null_deleter{}};
-      sink->locked_backend()->add_stream(stream);
-      sink->set_filter(
-        [severity](const attribute_value_set &set)
-        {
-          return set["Severity"].extract<Logger::Severity>() >= severity;
-        });
+        boost::shared_ptr<std::ostream> stream{&std::cout, boost::null_deleter{}};
+        sink->locked_backend()->add_stream(stream);
+        sink->set_filter(
+          [severity](const attribute_value_set &set)
+          {
+            return set["Severity"].extract<Logger::Level>() >= severity;
+          });
 
-      core::get()->add_sink(sink);
+        core::get()->add_sink(sink);
+        add_common_attributes();
+      } else {
+        std::string filename;
+        if (target == Logger::Target::default_file)
+          filename = default_filename;
+        else
+          filename = target_string;
+
+        add_file_log
+          (
+            keywords::file_name = filename,
+            keywords::rotation_size = 10 * 1024 * 1024,
+            keywords::format =
+              (
+                expressions::stream
+                  << '['
+                  << expressions::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y%m%d %H:%M:%S")
+                  << "] - "
+                  << expressions::smessage
+              )
+          );
+
+        add_common_attributes();
+      }
     }
 
     void flush() const
@@ -36,7 +67,7 @@ namespace
       core::get()->flush();
     }
 
-    sources::severity_logger<Logger::Severity> lg;
+    sources::severity_logger<Logger::Level> lg;
   };
 
   static std::unique_ptr<LoggerImpl> loggerImpl;
@@ -44,31 +75,31 @@ namespace
 
 namespace
 {
-  Logger::Severity parse_severity(const std::string &s)
+  Logger::Level parse_severity(const std::string &s)
   {
     if (s == "DEBUG")
-      return Logger::Severity::Debug;
+      return Logger::Level::Debug;
     if (s == "INFO")
-      return Logger::Severity::Info;
+      return Logger::Level::Info;
     if (s == "WARNING")
-      return Logger::Severity::Warning;
+      return Logger::Level::Warning;
     if (s == "ERROR")
-      return Logger::Severity::Error;
+      return Logger::Level::Error;
 
-    return Logger::Severity::Info;
+    return Logger::Level::Info;
   }
 
-//  std::ostream parse_target(const std::string& s) {
-//    if (s == "COUT")
-//      return std::cout;
-//    else {
-//      std::ofstream f(s,std::fstream::out | std::fstream::app);
-//      if (!f.is_open()) {
-//        THROW_INVALID_ARGUMENT("Could not open file " + s + " as log output");
-//      }
-//      return f;
-//    }
-//  }
+  Logger::Target parse_target_type(const std::string &s)
+  {
+    auto caps = s;
+    std::transform(caps.begin(), caps.end(), caps.begin(), ::toupper);
+    if (caps == "COUT")
+      return Logger::Target::cout;
+    if (caps == "DEFAULT")
+      return Logger::Target::default_file;
+    else
+      return Logger::Target::file;
+  }
 
   std::string get_setting(
     const std::map<std::string, std::string> &args,
@@ -97,20 +128,21 @@ void Logger::initialize()
   auto env = App::get_environment_variables();
   auto severity = parse_severity(get_setting(args, env, "LOG_LEVEL"));
   auto target_string = get_setting(args, env, "LOG_TARGET");
+  auto target_type = parse_target_type(target_string);
 
-  ::loggerImpl = std::make_unique<LoggerImpl>(severity, target_string);
+  ::loggerImpl = std::make_unique<LoggerImpl>(severity, target_type, target_string);
 }
 
-void Logger::log(Logger::Severity severity, const char *message)
+void Logger::log(Logger::Level severity, const char *message)
 {
   BOOST_LOG_SEV(loggerImpl->lg, severity) << message;
 }
 
-void Logger::log(Core::Logger::Severity severity, const char *filename, int line, const char *function_name,
+void Logger::log(Core::Logger::Level severity, const char *filename, int line, const char *function_name,
                  const std::string &message)
 {
   BOOST_LOG_SEV(loggerImpl->lg, severity) << filename << ':' << line << " in function " << function_name << " : "
-                                          << message << '\n';
+                                          << message;
 }
 
 void Logger::flush()

@@ -9,7 +9,7 @@ namespace Core
   class Logger
   {
   public:
-    enum Severity
+    enum Level
     {
       Debug = 0,
       Info = 1,
@@ -17,10 +17,17 @@ namespace Core
       Error = 3
     };
 
-    static void log(Severity severity, const char *message);
+    enum Target
+    {
+      cout,
+      file,
+      default_file
+    };
+
+    static void log(Level severity, const char *message);
 
     static void
-    log(Severity severity, const char *filename, int line, const char *function_name, const std::string &message);
+    log(Level severity, const char *filename, int line, const char *function_name, const std::string &message);
 
     static void flush();
 
