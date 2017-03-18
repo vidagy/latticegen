@@ -19,8 +19,6 @@ namespace Core
 
     static void log(Severity severity, const char *message);
 
-    static void log(Severity severity, const char *filename, int line, const char *function_name, const char *message);
-
     static void
     log(Severity severity, const char *filename, int line, const char *function_name, const std::string &message);
 

@@ -107,12 +107,6 @@ void Logger::log(Logger::Severity severity, const char *message)
 }
 
 void Logger::log(Core::Logger::Severity severity, const char *filename, int line, const char *function_name,
-                 const char *message)
-{
-  BOOST_LOG_SEV(loggerImpl->lg, severity) << filename << ':' << line << ' ' << function_name << ' ' << message << '\n';
-}
-
-void Logger::log(Core::Logger::Severity severity, const char *filename, int line, const char *function_name,
                  const std::string &message)
 {
   BOOST_LOG_SEV(loggerImpl->lg, severity) << filename << ':' << line << " in function " << function_name << " : "
