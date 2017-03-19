@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <Math/Derivator.h>
 #include <Math/LapackWrapper.h>
+#include <Math/Factorial.h>
 #include "AdamsIntegrator.h"
 
 using namespace Physics::CoreElectrons;
@@ -25,38 +26,7 @@ void AdamsIntegrator::integrate(std::vector<double> &R, std::vector<double> &dR_
 
 }
 
-namespace
-{
-  // TODO write a generator for these coefficients
-  static const double adams_params_1[1] =
-    {0.5};
-  static const double adams_params_2[2] =
-    {-1.0 / 12.0, 8.0 / 12.0};
-  static const double adams_params_3[3] =
-    {1.0 / 24.0, -5.0 / 24.0, 19.0 / 24.0};
-  static const double adams_params_4[4] =
-    {-19.0 / 720.0, 106.0 / 720.0, -264.0 / 720.0, 646.0 / 720.0};
-  static const double adams_params_5[5] =
-    {27.0 / 1440.0, -173.0 / 1440.0, 482.0 / 1440.0, -798.0 / 1440.0, 1427.0 / 1440.0};
-  static const double adams_params_6[6] =
-    {-863.0 / 60480.0, 6312 / 60480.0, -20211.0 / 60480.0,
-     37504.0 / 60480.0, -46461.0 / 60480.0, 65112.0 / 60480.0};
-  static const double adams_params_7[7] =
-    {1375.0 / 120960.0, -11351.0 / 120960.0, 41499.0 / 120960.0,
-     -88547.0 / 120960.0, 123133.0 / 120960.0, -121797.0 / 120960.0, 139849.0 / 120960.0};
-  static const double adams_params_8[8] =
-    {-33953.0 / 3628800.0, 312874.0 / 3628800.0, -1291214.0 / 3628800.0, 3146338.0 / 3628800.0,
-     -5033120.0 / 3628800.0, 5595358.0 / 3628800.0, -4604594.0 / 3628800.0, 4467094.0 / 3628800.0};
-
-  static const double *adams_params[8] =
-    {adams_params_1, adams_params_2, adams_params_3, adams_params_4,
-     adams_params_5, adams_params_6, adams_params_7, adams_params_8};
-
-  static const double adams_param[8] =
-    {0.5, 5.0 / 12.0, 9.0 / 24.0, 251.0 / 720.0,
-     475.0 / 1440.0, 19087.0 / 60480.0, 36799.0 / 120960.0, 1070017.0 / 3628800.0};
-}
-#define MAX_LENGTH_OF_PARAMS 8
+#define MAX_LENGTH_OF_PARAMS 16
 
 void AdamsIntegrator::adams_moulton_method(
   std::vector<double> &R, std::vector<double> &dR_dr, int from, int to) const
@@ -66,18 +36,19 @@ void AdamsIntegrator::adams_moulton_method(
     THROW_LOGIC_ERROR("in AdamsIntegrator::adams_moulton_method from and to too close: from = " +
                       std::to_string(from) + " to = " + std::to_string(to) + " quadrature = " +
                       std::to_string(quadrature));
+  if (quadrature >= MAX_LENGTH_OF_PARAMS)
+    THROW_LOGIC_ERROR("quadrature must be smaller than " + std::to_string(MAX_LENGTH_OF_PARAMS));
 
   const auto &r_points = r->points;
   auto diff = from > to ? -1 : 1;
   const auto ang = 0.5 * l * (l + 1);
 
-  /// set up param and params to contain coefficients multiplied by dx
+  /// set up params to contain coefficients multiplied by dx
   const auto &dx = r->dx;
-  const auto &param = dx * adams_param[quadrature - 1];
+  auto params = get_adams_parameters(quadrature);
 
-  double params[MAX_LENGTH_OF_PARAMS];
-  for (auto i = 0; i < quadrature; ++i) {
-    params[i] = dx * adams_params[quadrature - 1][i];
+  for (auto i = 0; i <= quadrature; ++i) {
+    params[i] *= dx;
   }
 
   /// set up f with initial values
@@ -93,8 +64,8 @@ void AdamsIntegrator::adams_moulton_method(
   for (auto i = from, k = 0; i != to + diff; i += diff, ++k) {
     auto b = diff * r_points[i];
     auto c = -2.0 * diff * (energy * r_points[i] + z[i] - ang / r_points[i]);
-    auto param_b = param * b;
-    auto param_c = param * c;
+    auto param_b = params[quadrature] * b;
+    auto param_c = params[quadrature] * c;
     auto determinant = 1.0 - param_b * param_c;
     auto new_R = R[i - diff];
     auto new_dR_dr = dR_dr[i - diff];
@@ -261,4 +232,45 @@ void AdamsIntegrator::match_solutions(std::vector<double> &R, std::vector<double
     R[i] *= R_ratio;
     dR_dr[i] *= R_ratio;
   }
+}
+
+namespace
+{
+  double get_adams_parameter(int n, int i)
+  {
+    // i = 0 ... n
+    double prefactor = (((n - i) & 1) ? -1.0 : 1.0) / Math::factorial(i) / Math::factorial(n - i);
+
+    std::vector<double> factors(n, 0.0);
+    factors[0] = 1.0;
+    for (auto j = 0; j <= n; ++j) {
+      if (j != n - i) {
+        double current = j - 1;
+
+        for (auto k = n - 1; k > 0; --k) {
+          factors[k] = current * factors[k] + factors[k - 1];
+        }
+        factors[0] *= current;
+      }
+    }
+    double integral = 0.0;
+    for (int j = 0; j < n; ++j) {
+      integral += factors[j] / (j + 1.0);
+    }
+    integral += 1.0 / (n + 1.0);
+
+    return prefactor * integral;
+  }
+}
+
+std::vector<double> AdamsIntegrator::get_adams_parameters(int quadrature)
+{
+  if (quadrature < 1)
+    THROW_INVALID_ARGUMENT("quadrature must be positive");
+
+  std::vector<double> res;
+  res.reserve(quadrature + 1);
+  for (auto i = 0; i <= quadrature; ++i)
+    res.push_back(get_adams_parameter(quadrature, i));
+  return res;
 }

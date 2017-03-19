@@ -1,3 +1,5 @@
+#include <tuple>
+
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -41,10 +43,10 @@ namespace
     double dR_dr_20(double r) const
     {
       return 1.0 / sqrt(2.0) * pow(Q, 3.0 / 2.0) *
-             (
-               -Q / 2.0 * exp(-Q * r / 2.0) * (r - Q * r * r / 2.0)
-               + exp(-Q * r / 2.0) * (1.0 - Q * r)
-             );
+        (
+          -Q / 2.0 * exp(-Q * r / 2.0) * (r - Q * r * r / 2.0)
+          + exp(-Q * r / 2.0) * (1.0 - Q * r)
+        );
     }
 
     double R21(double r) const { return 1.0 / (2.0 * sqrt(6.0)) * pow(Q, 5.0 / 2.0) * r * r * exp(-Q * r / 2.0); }
@@ -52,24 +54,24 @@ namespace
     double dR_dr_21(double r) const
     {
       return 1.0 / (2.0 * sqrt(6.0)) * pow(Q, 5.0 / 2.0) *
-             (2.0 * r * exp(-Q * r / 2.0) - Q / 2.0 * r * r * exp(-Q * r / 2.0));
+        (2.0 * r * exp(-Q * r / 2.0) - Q / 2.0 * r * r * exp(-Q * r / 2.0));
     }
 
     double R30(double r) const
     {
       return 2.0 / 3.0 / sqrt(3.0) * pow(Q, 3.0 / 2.0) * r * exp(-Q * r / 3.0) *
-             (1.0 - Q * r * 2.0 / 3.0 + 2.0 / 27.0 * Q * Q * r * r);
+        (1.0 - Q * r * 2.0 / 3.0 + 2.0 / 27.0 * Q * Q * r * r);
     }
 
     double dR_dr_30(double r) const
     {
       return 2.0 / 3.0 / sqrt(3.0) * pow(Q, 3.0 / 2.0) *
-             (
-               -Q / 3.0 * exp(-Q * r / 3.0) *
-               (r - Q * r * r * 2.0 / 3.0 + 2.0 / 27.0 * Q * Q * r * r * r)
-               + exp(-Q * r / 3.0) *
-                 (1.0 - Q * r * 4.0 / 3.0 + 2.0 / 9.0 * Q * Q * r * r)
-             );
+        (
+          -Q / 3.0 * exp(-Q * r / 3.0) *
+          (r - Q * r * r * 2.0 / 3.0 + 2.0 / 27.0 * Q * Q * r * r * r)
+          + exp(-Q * r / 3.0) *
+            (1.0 - Q * r * 4.0 / 3.0 + 2.0 / 9.0 * Q * Q * r * r)
+        );
     }
 
     double R31(double r) const
@@ -80,10 +82,10 @@ namespace
     double dR_dr_31(double r) const
     {
       return 8.0 / 27.0 / sqrt(6.0) * pow(Q, 5.0 / 2.0) *
-             (
-               -Q / 3.0 * exp(-Q * r / 3.0) * (r * r - Q * r * r * r / 6.0)
-               + exp(-Q * r / 3.0) * (2.0 * r - Q * r * r / 2.0)
-             );
+        (
+          -Q / 3.0 * exp(-Q * r / 3.0) * (r * r - Q * r * r * r / 6.0)
+          + exp(-Q * r / 3.0) * (2.0 * r - Q * r * r / 2.0)
+        );
     }
 
     double R32(double r) const { return 4.0 / 81.0 / sqrt(30.0) * pow(Q, 7.0 / 2.0) * r * r * r * exp(-Q * r / 3.0); }
@@ -91,7 +93,7 @@ namespace
     double dR_dr_32(double r) const
     {
       return 4.0 / 81.0 / sqrt(30.0) * pow(Q, 7.0 / 2.0) *
-             (3.0 * r * r * exp(-Q * r / 3.0) - Q / 3.0 * r * r * r * exp(-Q * r / 3.0));
+        (3.0 * r * r * exp(-Q * r / 3.0) - Q / 3.0 * r * r * r * exp(-Q * r / 3.0));
     }
 
     std::vector<double> generate(std::function<double(double)> f) const
@@ -219,9 +221,15 @@ namespace Physics
     {
     public:
       static void adams_moulton_method(
-        const AdamsIntegrator &adamsIntegrator, std::vector<double> &R, std::vector<double> &dR_dr, int from, int to)
+        const AdamsIntegrator &adamsIntegrator, std::vector<double> &R, std::vector<double> &dR_dr, int from, int to
+      )
       {
         return adamsIntegrator.adams_moulton_method(R, dR_dr, from, to);
+      }
+
+      static std::vector<double> get_adams_parameters(int quadrature)
+      {
+        return AdamsIntegrator::get_adams_parameters(quadrature);
       }
     };
   }
@@ -254,6 +262,47 @@ TEST(TestAdamsIntegrator, AdamsMoultonMethod)
     EXPECT_EQ(R[i], reference.reference_R10[i]);
     EXPECT_EQ(dR_dR[i], reference.reference_dR_dr_10[i]);
   }
+}
+
+namespace
+{
+  // TODO write a generator for these coefficients
+  static const std::vector<double> adams_params_1{0.5, 0.5};
+  static const std::vector<double> adams_params_2{-1.0 / 12.0, 8.0 / 12.0, 5.0 / 12.0};
+  static const std::vector<double> adams_params_3{1.0 / 24.0, -5.0 / 24.0, 19.0 / 24.0, 9.0 / 24.0};
+  static const std::vector<double> adams_params_4{-19.0 / 720.0, 106.0 / 720.0, -264.0 / 720.0, 646.0 / 720.0,
+                                                  251.0 / 720.0};
+  static const std::vector<double> adams_params_5{27.0 / 1440.0, -173.0 / 1440.0, 482.0 / 1440.0, -798.0 / 1440.0,
+                                                  1427.0 / 1440.0, 475.0 / 1440.0};
+  static const std::vector<double> adams_params_6{-863.0 / 60480.0, 6312 / 60480.0, -20211.0 / 60480.0,
+                                                  37504.0 / 60480.0, -46461.0 / 60480.0, 65112.0 / 60480.0,
+                                                  19087.0 / 60480.0};
+  static const std::vector<double> adams_params_7{1375.0 / 120960.0, -11351.0 / 120960.0, 41499.0 / 120960.0,
+                                                  -88547.0 / 120960.0,
+                                                  123133.0 / 120960.0, -121797.0 / 120960.0, 139849.0 / 120960.0,
+                                                  36799.0 / 120960.0};
+  static const std::vector<double> adams_params_8{-33953.0 / 3628800.0, 312874.0 / 3628800.0, -1291214.0 / 3628800.0,
+                                                  3146338.0 / 3628800.0, -5033120.0 / 3628800.0, 5595358.0 / 3628800.0,
+                                                  -4604594.0 / 3628800.0, 4467094.0 / 3628800.0, 1070017.0 / 3628800.0};
+}
+
+MATCHER_P(NearWithTolerance, tolerance, "")
+{
+  return std::fabs(std::get<0>(arg) - std::get<1>(arg)) <= tolerance;
+}
+
+TEST(TestAdamsIntegrator, AdamsParameters)
+{
+  auto eps = std::numeric_limits<double>::epsilon();
+  EXPECT_THAT(TestAccessor::get_adams_parameters(1), ::testing::Pointwise(NearWithTolerance(eps), adams_params_1));
+  EXPECT_THAT(TestAccessor::get_adams_parameters(2), ::testing::Pointwise(NearWithTolerance(eps), adams_params_2));
+  EXPECT_THAT(TestAccessor::get_adams_parameters(3), ::testing::Pointwise(NearWithTolerance(eps), adams_params_3));
+  EXPECT_THAT(TestAccessor::get_adams_parameters(4), ::testing::Pointwise(NearWithTolerance(eps), adams_params_4));
+  EXPECT_THAT(TestAccessor::get_adams_parameters(5), ::testing::Pointwise(NearWithTolerance(eps), adams_params_5));
+  EXPECT_THAT(TestAccessor::get_adams_parameters(6), ::testing::Pointwise(NearWithTolerance(eps), adams_params_6));
+  EXPECT_THAT(TestAccessor::get_adams_parameters(7), ::testing::Pointwise(NearWithTolerance(eps), adams_params_7));
+  EXPECT_THAT(TestAccessor::get_adams_parameters(8),
+              ::testing::Pointwise(NearWithTolerance(2.0 * eps), adams_params_8));
 }
 
 namespace

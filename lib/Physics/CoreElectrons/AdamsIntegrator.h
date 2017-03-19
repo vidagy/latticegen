@@ -84,6 +84,8 @@ namespace Physics
 
       void match_solutions(std::vector<double> &R, std::vector<double> &dR_dr, double old_R_at_ctp) const;
 
+      static std::vector<double> get_adams_parameters(int quadrature);
+
       const std::shared_ptr<const ExponentialMesh> &r;
       const std::vector<double> &z;
       const double energy;
