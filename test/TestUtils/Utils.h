@@ -11,4 +11,5 @@ namespace Utils
 
   void log(const std::vector<double> &R, const std::string &ctxt);
 }
+
 #endif //LATTICEGEN_UTILS_H

@@ -5,7 +5,6 @@
 #include <map>
 #include <memory>
 #include <string>
-#include "Logger.h"
 
 namespace Core
 {

@@ -7,13 +7,13 @@
 
 namespace Math
 {
-  inline double zero(double x)
+  inline double zero(double)
   {
     return 0.0;
   }
 
   // l = 0
-  inline double legendre_polynomial_00(double x)
+  inline double legendre_polynomial_00(double)
   {
     return 1.0;
   };
