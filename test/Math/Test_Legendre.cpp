@@ -1,5 +1,4 @@
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
+#include <TestUtils/base.h>
 
 #include <Math/Legendre.h>
 

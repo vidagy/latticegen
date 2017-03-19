@@ -8,7 +8,7 @@ int main(int argc, char **argv)
   ::testing::InitGoogleTest(&argc, argv);
 
   // initialize App
-  Core::App::initialize(argc, argv);
+  Core::App::initialize(argc, static_cast<char const *const *>(argv));
 
   return RUN_ALL_TESTS();
 }

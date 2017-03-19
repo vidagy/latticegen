@@ -1,10 +1,8 @@
 #include <tuple>
 
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
-
 #include <Physics/CoreElectrons/RadialSchrodingerEquation.h>
-#include "Utils.h"
+#include <TestUtils/Utils.h>
+#include <TestUtils/base.h>
 
 using namespace Physics::CoreElectrons;
 
@@ -266,7 +264,6 @@ TEST(TestAdamsIntegrator, AdamsMoultonMethod)
 
 namespace
 {
-  // TODO write a generator for these coefficients
   static const std::vector<double> adams_params_1{0.5, 0.5};
   static const std::vector<double> adams_params_2{-1.0 / 12.0, 8.0 / 12.0, 5.0 / 12.0};
   static const std::vector<double> adams_params_3{1.0 / 24.0, -5.0 / 24.0, 19.0 / 24.0, 9.0 / 24.0};
@@ -286,10 +283,6 @@ namespace
                                                   -4604594.0 / 3628800.0, 4467094.0 / 3628800.0, 1070017.0 / 3628800.0};
 }
 
-MATCHER_P(NearWithTolerance, tolerance, "")
-{
-  return std::fabs(std::get<0>(arg) - std::get<1>(arg)) <= tolerance;
-}
 
 TEST(TestAdamsIntegrator, AdamsParameters)
 {

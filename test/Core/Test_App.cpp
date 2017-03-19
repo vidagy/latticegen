@@ -1,8 +1,6 @@
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
+#include <TestUtils/base.h>
 
 #include <Core/App.h>
-#include <Core/Logger.h>
 
 using namespace Core;
 
