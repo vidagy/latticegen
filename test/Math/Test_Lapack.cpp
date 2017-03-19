@@ -19,9 +19,7 @@ TEST(TestLapack, InvertMatrixColumnMajor)
   };
 
   LapackWrapper::invert_matrix(matrix);
-  for (auto i = 0u; i < reference.size(); ++i) {
-    EXPECT_NEAR(matrix[i], reference[i], std::numeric_limits<double>::epsilon());
-  }
+  EXPECT_THAT(matrix, ::testing::Pointwise(NearWithTolerance(std::numeric_limits<double>::epsilon()), reference));
 }
 
 TEST(TestLapack, InvertMatrixRowMajor)
@@ -39,7 +37,5 @@ TEST(TestLapack, InvertMatrixRowMajor)
   };
 
   LapackWrapper::invert_matrix(matrix, LAPACK_ROW_MAJOR);
-  for (auto i = 0u; i < reference.size(); ++i) {
-    EXPECT_NEAR(matrix[i], reference[i], std::numeric_limits<double>::epsilon());
-  }
+  EXPECT_THAT(matrix, ::testing::Pointwise(NearWithTolerance(std::numeric_limits<double>::epsilon()), reference));
 }
