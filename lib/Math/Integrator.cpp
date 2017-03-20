@@ -149,17 +149,17 @@ double IntegratorEquidistant::trapezoidal(const std::vector<double> &f, double d
 double IntegratorExponential::simpson(const std::vector<double> &f, const Core::ExponentialMesh &x)
 {
   auto f_size = f.size();
-  const auto &points = x.points;
+  const auto &d_points = x.d_points;
   const auto &dx = x.dx;
 
-  if (f_size != points.size())
+  if (f_size != d_points.size())
     THROW_INVALID_ARGUMENT(
       "in IntegratorExponential::simpson, vector sizes are unequal f=" + std::to_string(f_size) +
-      " x=" + std::to_string(points.size()));
+      " x=" + std::to_string(d_points.size()));
   if (f_size < 2)
     THROW_INVALID_ARGUMENT("in IntegratorExponential::simpson, vector size is < 2");
   else if (f_size == 2)
-    return dx * (f[0] * points[0] + f[1] * points[1]) / 2.0;
+    return dx * (f[0] * d_points[0] + f[1] * d_points[1]) / 2.0;
   else {
     double result = 0.0;
 
@@ -167,22 +167,22 @@ double IntegratorExponential::simpson(const std::vector<double> &f, const Core::
     const double dx_4_p_3 = 4.0 * dx / 3.0;
     const double dx_2_p_3 = 2.0 * dx / 3.0;
 
-    result += dx_p_3 * f[0] * points[0];
+    result += dx_p_3 * f[0] * d_points[0];
     auto i = 1u;
     while (i < f_size - 3) {
-      result += dx_4_p_3 * f[i] * points[i];
-      result += dx_2_p_3 * f[i + 1] * points[i + 1];
+      result += dx_4_p_3 * f[i] * d_points[i];
+      result += dx_2_p_3 * f[i + 1] * d_points[i + 1];
       i += 2;
     }
-    result += dx_4_p_3 * f[i] * points[i];
+    result += dx_4_p_3 * f[i] * d_points[i];
     ++i;
-    result += dx_p_3 * f[i] * points[i];
+    result += dx_p_3 * f[i] * d_points[i];
     ++i;
 
     if (i == f_size - 1) // size is even
     {
       // warning! if we get here the error may potentially increase
-      result += dx * (f[i - 1] * points[i - 1] + f[i] * points[i]) / 2.0;
+      result += dx * (f[i - 1] * d_points[i - 1] + f[i] * d_points[i]) / 2.0;
     }
 
     return result;
@@ -192,13 +192,13 @@ double IntegratorExponential::simpson(const std::vector<double> &f, const Core::
 double IntegratorExponential::simpson_alt(const std::vector<double> &f, const Core::ExponentialMesh &x)
 {
   auto f_size = f.size();
-  const auto &points = x.points;
+  const auto &d_points = x.d_points;
   const auto &dx = x.dx;
 
-  if (f_size != points.size())
+  if (f_size != d_points.size())
     THROW_INVALID_ARGUMENT(
       "in IntegratorExponential::simpson, vector sizes are unequal f=" + std::to_string(f_size) +
-      " x=" + std::to_string(points.size()));
+      " x=" + std::to_string(d_points.size()));
 
   if (f_size < 8)
     return IntegratorExponential::simpson(f, x);
@@ -209,22 +209,22 @@ double IntegratorExponential::simpson_alt(const std::vector<double> &f, const Co
     const double dx_49_p_48 = 49.0 * dx / 48.0;
 
     double pre = 0.0;
-    pre += dx_17_p_48 * f[0] * points[0];
-    pre += dx_59_p_48 * f[1] * points[1];
-    pre += dx_43_p_48 * f[2] * points[2];
-    pre += dx_49_p_48 * f[3] * points[3];
+    pre += dx_17_p_48 * f[0] * d_points[0];
+    pre += dx_59_p_48 * f[1] * d_points[1];
+    pre += dx_43_p_48 * f[2] * d_points[2];
+    pre += dx_49_p_48 * f[3] * d_points[3];
 
     auto i = 4u;
     double result = 0.0;
     while (i < f_size - 4) {
-      result += dx * f[i] * points[i];
+      result += dx * f[i] * d_points[i];
       ++i;
     }
     double post = 0.0;
-    post += dx_49_p_48 * f[i] * points[i];
-    post += dx_43_p_48 * f[i + 1] * points[i + 1];
-    post += dx_59_p_48 * f[i + 2] * points[i + 2];
-    post += dx_17_p_48 * f[i + 3] * points[i + 3];
+    post += dx_49_p_48 * f[i] * d_points[i];
+    post += dx_43_p_48 * f[i + 1] * d_points[i + 1];
+    post += dx_59_p_48 * f[i + 2] * d_points[i + 2];
+    post += dx_17_p_48 * f[i + 3] * d_points[i + 3];
 
     return pre + result + post;
   }

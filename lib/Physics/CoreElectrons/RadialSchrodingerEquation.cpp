@@ -20,6 +20,7 @@ RadialSolution RadialSchrodingerEquation::solve(
                            + std::to_string(energy));
 
   const auto &r = effective_charge.r->points; // safe because class always has a strong reference on it
+  const auto &dr_di = effective_charge.r->d_points;
   const auto dx = effective_charge.r->dx;
   const auto &z = effective_charge.z;
   const auto required_number_of_nodes = n - l - 1;
@@ -50,7 +51,7 @@ RadialSolution RadialSchrodingerEquation::solve(
     } else {
       /// if the node number is OK, then we fine-tune the energy so that the dR_dr
       /// becomes continuous as well
-      auto norm = get_norm(r, dx, R, practical_infinity);
+      auto norm = get_norm(dr_di, dx, R, practical_infinity);
       auto new_R = R[classical_turning_point];
       auto new_dR_dr = dR_dr[classical_turning_point];
 
@@ -130,12 +131,12 @@ int RadialSchrodingerEquation::get_number_of_nodes(
 }
 
 double RadialSchrodingerEquation::get_norm(
-  const std::vector<double> &r, double dx, const std::vector<double> &R, int practical_infinity)
+  const std::vector<double> &dr_di, double dx, const std::vector<double> &R, int practical_infinity)
 {
   std::vector<double> f;
   f.reserve(practical_infinity);
   for (auto i = 0; i < practical_infinity; ++i) {
-    f.push_back(R[i] * R[i] * r[i]);
+    f.push_back(R[i] * R[i] * dr_di[i]);
   }
 
   return Math::IntegratorEquidistant::trapezoidal(f, dx);

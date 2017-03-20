@@ -6,7 +6,7 @@
 
 MATCHER_P(NearWithTolerance, tolerance, "")
 {
-  *result_listener << "where the difference is " << std::setprecision(18) << std::get<0>(arg) - std::get<1>(arg);
+  *result_listener << "the difference is " << std::setprecision(18) << std::get<0>(arg) - std::get<1>(arg);
   return std::fabs(std::get<0>(arg) - std::get<1>(arg)) <= tolerance;
 }
 

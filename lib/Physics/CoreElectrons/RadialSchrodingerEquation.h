@@ -97,7 +97,7 @@ namespace Physics
       static int get_number_of_nodes(const std::vector<double> &R, int practical_infinity);
 
       static double get_norm(
-        const std::vector<double> &r, double dx, const std::vector<double> &R, int practical_infinity);
+        const std::vector<double> &dr_di, double dx, const std::vector<double> &R, int practical_infinity);
 
       static void normalize_solution(
         std::vector<double> &R, std::vector<double> &dR_dr, double norm, int practical_infinity);

@@ -191,26 +191,6 @@ namespace
   };
 }
 
-TEST(DISABLED_TestRadialSchrodingerEquation, LogReferenceSolution)
-{
-  auto mesh = std::make_shared<const ExponentialMesh>(0.00001, 50, 100);
-  auto reference = CoulombReferenceSolutions(mesh, 1.0);
-
-  Utils::log(mesh->points, "ReferenceSolution_r");
-  Utils::log(reference.reference_R10, "ReferenceSolution_reference_R10");
-  Utils::log(reference.reference_dR_dr_10, "ReferenceSolution_reference_dR_dr_10");
-  Utils::log(reference.reference_R20, "ReferenceSolution_reference_R20");
-  Utils::log(reference.reference_dR_dr_10, "ReferenceSolution_reference_dR_dr_20");
-  Utils::log(reference.reference_R21, "ReferenceSolution_reference_R21");
-  Utils::log(reference.reference_dR_dr_10, "ReferenceSolution_reference_dR_dr_21");
-  Utils::log(reference.reference_R30, "ReferenceSolution_reference_R30");
-  Utils::log(reference.reference_dR_dr_10, "ReferenceSolution_reference_dR_dr_30");
-  Utils::log(reference.reference_R31, "ReferenceSolution_reference_R31");
-  Utils::log(reference.reference_dR_dr_10, "ReferenceSolution_reference_dR_dr_31");
-  Utils::log(reference.reference_R32, "ReferenceSolution_reference_R32");
-  Utils::log(reference.reference_dR_dr_10, "ReferenceSolution_reference_dR_dr_32");
-}
-
 namespace Physics
 {
   namespace CoreElectrons
@@ -235,7 +215,7 @@ namespace Physics
 
 TEST(TestAdamsIntegrator, AdamsMoultonMethod)
 {
-  auto mesh = std::make_shared<const ExponentialMesh>(0.01, 50, 100);
+  auto mesh = std::make_shared<const ExponentialMesh>(0.01, 50, 100, 1.0);
   auto reference = CoulombReferenceSolutions(mesh, 1.0);
 
   auto R = reference.reference_R10;
@@ -283,7 +263,6 @@ namespace
                                                   -4604594.0 / 3628800.0, 4467094.0 / 3628800.0, 1070017.0 / 3628800.0};
 }
 
-
 TEST(TestAdamsIntegrator, AdamsParameters)
 {
   auto eps = std::numeric_limits<double>::epsilon();
@@ -302,14 +281,30 @@ namespace
 {
   void compare_to_reference(
     double Z, const std::shared_ptr<const ExponentialMesh> &mesh,
-    int n, int l, double tol = std::numeric_limits<double>::epsilon()
+    int n, int l, double tol = std::numeric_limits<double>::epsilon(), bool print_logs = false
   )
   {
     auto reference = CoulombReferenceSolutions(mesh, Z);
     auto sch = RadialSchrodingerEquation(EffectiveCharge(std::vector<double>(mesh->points.size(), Z), mesh));
     auto solution = sch.solve(n, l, reference.energy(n));
+
+    if (print_logs) {
+      Utils::log(solution.R,
+                 "ScaledSolution_R" + std::to_string(n) + std::to_string(l) + "_" + std::to_string(mesh->scale));
+      Utils::log(solution.dR_dr,
+                 "ScaledSolution_dR_dr" + std::to_string(n) + std::to_string(l) + "_" + std::to_string(mesh->scale));
+    }
+
     auto reference_R = reference.get_R(n, l);
     auto reference_dR_dr = reference.get_dR_dr(n, l);
+
+    if (print_logs) {
+      Utils::log(reference_R, "ScaledReferenceSolution_reference_R" + std::to_string(n) + std::to_string(l) + "_" +
+                              std::to_string(mesh->scale));
+      Utils::log(reference_dR_dr,
+                 "ScaledReferenceSolution_reference_dR_dr" + std::to_string(n) + std::to_string(l) + "_" +
+                 std::to_string(mesh->scale));
+    }
 
     EXPECT_LE(solution.number_of_iteration, 2) << "for n = " << n << " l = " << l;
     EXPECT_NEAR(solution.E, reference.energy(n), tol) << "for n = " << n << " l = " << l;
@@ -318,12 +313,26 @@ namespace
             << "for n = " << n << " l = " << l;
     EXPECT_THAT(solution.dR_dr, ::testing::Pointwise(NearWithTolerance(tol), reference_dR_dr))
             << "for n = " << n << " l = " << l;
+
+    if (print_logs) {
+      double max_R = 0.0;
+      double max_dR = 0.0;
+      for (auto i = 0u; i < reference_R.size(); ++i) {
+        if (fabs(solution.R[i] - reference_R[i]) > max_R)
+          max_R = fabs(solution.R[i] - reference_R[i]);
+        if (fabs(solution.R[i] - reference_R[i]) > max_dR)
+          max_dR = fabs(solution.dR_dr[i] - reference_dR_dr[i]);
+      }
+      std::cout << "for n = " << n << " l = " << l << " scale " << mesh->scale << " max_R = " << std::setprecision(16)
+                << std::scientific
+                << std::setw(21) << max_R << " msx_dr " << max_dR << std::endl;
+    }
   }
 }
 
 TEST(TestRadialSchrodingerEquation, CompareToCoulombReference)
 {
-  auto mesh = std::make_shared<const ExponentialMesh>(0.00001, 200, 200);
+  auto mesh = std::make_shared<const ExponentialMesh>(0.00001, 200, 200, 1.0);
   double Z = 1.0;
   compare_to_reference(Z, mesh, 1, 0, 3e-8);
   compare_to_reference(Z, mesh, 2, 0, 2e-7);
@@ -333,4 +342,30 @@ TEST(TestRadialSchrodingerEquation, CompareToCoulombReference)
   compare_to_reference(Z, mesh, 3, 2, 5e-7);
 }
 
+TEST(TestRadialSchrodingerEquation, CompareToCoulombReferenceScaledMesh)
+{
+  auto mesh = std::make_shared<const ExponentialMesh>(0.00001, 200, 200, 0.7);
+  double Z = 1.0;
+  Utils::log(mesh->points, "NotScaledSolution_r");
+  compare_to_reference(Z, mesh, 1, 0, 9e-10);
+  compare_to_reference(Z, mesh, 2, 0, 7e-9);
+  compare_to_reference(Z, mesh, 2, 1, 4e-9);
+  compare_to_reference(Z, mesh, 3, 0, 4e-8);
+  compare_to_reference(Z, mesh, 3, 1, 3e-8);
+  compare_to_reference(Z, mesh, 3, 2, 9e-9);
+}
 
+TEST(DISABLED_TestRadialSchrodingerEquation, GenerateInputForParametrizedExponentialMesh)
+{
+  for (auto scale = 0.1; scale < 1.05; scale += 0.1) {
+    auto mesh = std::make_shared<const ExponentialMesh>(0.00001, 200, 200, scale);
+    Utils::log(mesh->points, "ScaledSolution_r_" + std::to_string(scale));
+    double Z = 1.0;
+    compare_to_reference(Z, mesh, 1, 0, 3e-1, true);
+    compare_to_reference(Z, mesh, 2, 0, 2e-1, true);
+    compare_to_reference(Z, mesh, 2, 1, 1e-1, true);
+    compare_to_reference(Z, mesh, 3, 0, 5e-1, true);
+    compare_to_reference(Z, mesh, 3, 1, 5e-1, true);
+    compare_to_reference(Z, mesh, 3, 2, 5e-1, true);
+  }
+}

@@ -32,6 +32,7 @@ void AdamsIntegrator::adams_moulton_method(
   std::vector<double> &R, std::vector<double> &dR_dr, int from, int to) const
 {
   const auto &quadrature = config.adams_moulton_quadrature_order;
+  // TODO revisit assertions in AdamsIntegrator (for eg. this one makes no sense)
   if (abs(from - to) <= quadrature)
     THROW_LOGIC_ERROR("in AdamsIntegrator::adams_moulton_method from and to too close: from = " +
                       std::to_string(from) + " to = " + std::to_string(to) + " quadrature = " +
@@ -40,15 +41,16 @@ void AdamsIntegrator::adams_moulton_method(
     THROW_LOGIC_ERROR("quadrature must be smaller than " + std::to_string(MAX_LENGTH_OF_PARAMS));
 
   const auto &r_points = r->points;
+  const auto &dr_di = r->d_points;
+
   auto diff = from > to ? -1 : 1;
   const auto ang = 0.5 * l * (l + 1);
 
   /// set up params to contain coefficients multiplied by dx
-  const auto &dx = r->dx;
   auto params = get_adams_parameters(quadrature);
 
   for (auto i = 0; i <= quadrature; ++i) {
-    params[i] *= dx;
+    params[i] *= r->dx;
   }
 
   /// set up f with initial values
@@ -56,14 +58,14 @@ void AdamsIntegrator::adams_moulton_method(
   double f_R[MAX_LENGTH_OF_PARAMS];
   double f_dR_dr[MAX_LENGTH_OF_PARAMS];
   for (auto k = 0, i = from - diff * quadrature; k < quadrature; ++k, i += diff) {
-    f_R[k] = diff * r_points[i] * dR_dr[i];
-    f_dR_dr[k] = -2.0 * diff * (energy * r_points[i] + z[i] - ang / r_points[i]) * R[i];
+    f_R[k] = diff * dr_di[i] * dR_dr[i];
+    f_dR_dr[k] = -2.0 * diff * (energy + (z[i] - ang / r_points[i]) / r_points[i]) * dr_di[i] * R[i];
   }
 
   /// we are using the Adams method on the inclusive range between from and to
   for (auto i = from, k = 0; i != to + diff; i += diff, ++k) {
-    auto b = diff * r_points[i];
-    auto c = -2.0 * diff * (energy * r_points[i] + z[i] - ang / r_points[i]);
+    auto b = diff * dr_di[i];
+    auto c = -2.0 * diff * (energy + (z[i] - ang / r_points[i]) / r_points[i]) * dr_di[i];
     auto param_b = params[quadrature] * b;
     auto param_c = params[quadrature] * c;
     auto determinant = 1.0 - param_b * param_c;
@@ -141,6 +143,7 @@ void AdamsIntegrator::start_outward(std::vector<double> &R, std::vector<double> 
 
   const auto &outward_scheme = config.outward_quadrature_order;
   const auto &r_points = r->points;
+  const auto &dr_di = r->d_points;
   const auto &dx = r->dx;
 
   double u0 = 1.0;
@@ -157,9 +160,9 @@ void AdamsIntegrator::start_outward(std::vector<double> &R, std::vector<double> 
     std::vector<double> d(outward_scheme, 0.0);
     std::vector<double> m(outward_scheme * outward_scheme, 0.0);
     for (auto i = 0; i < outward_scheme; ++i) {
-      b[i] = dx * r_points[i + starting_index];
-      c[i] = -2.0 * dx * (energy * r_points[i + starting_index] + z[i + starting_index]);
-      d[i] = -2.0 * dx * (l + 1.0);
+      b[i] = dx * dr_di[i + starting_index];
+      c[i] = -2.0 * dx * (energy + z[i + starting_index] / r_points[i + starting_index]) * dr_di[i + starting_index];
+      d[i] = -2.0 * dx * (l + 1.0) * dr_di[i + starting_index] / r_points[i + starting_index];
 
       for (auto j = 0; j < outward_scheme; ++j) {
         if (i == j)
