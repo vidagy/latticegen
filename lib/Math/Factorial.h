@@ -37,5 +37,19 @@ namespace Math
       return result * double_factorial_cache[n];
     }
   }
+
+  inline double pow(double base, int exponent)
+  {
+    double result = 1.0;
+
+    while (exponent) {
+      if (exponent & 1)
+        result *= base;
+      exponent >>= 1;
+      base *= base;
+    }
+
+    return result;
+  }
 }
 #endif //LATTICEGEN_FACTORIAL_H

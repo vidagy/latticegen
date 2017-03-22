@@ -209,8 +209,8 @@ void AdamsIntegrator::start_outward(std::vector<double> &R, std::vector<double> 
 
     /// finalize solutions
     for (auto i = 0; i < outward_scheme; ++i) {
-      R[i + starting_index] = pow(r_points[i + starting_index], l + 1) * R_solution[i];
-      dR_dr[i + starting_index] = pow(r_points[i + starting_index], l) *
+      R[i + starting_index] = Math::pow(r_points[i + starting_index], l + 1) * R_solution[i];
+      dR_dr[i + starting_index] = Math::pow(r_points[i + starting_index], l) *
                                   (r_points[i + starting_index] * dR_dr_solution[i] + (l + 1.0) * R_solution[i]);
     }
     u0 = R_solution.back();
