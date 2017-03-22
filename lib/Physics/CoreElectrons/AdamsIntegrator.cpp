@@ -141,6 +141,12 @@ void AdamsIntegrator::start_outward(std::vector<double> &R, std::vector<double> 
 {
   using namespace Math;
 
+  // TODO this is 2 orders less accurate in case of l=0 and n!=1 for dR_dr then for the other cases.
+  // Most probably the reason is related to the fact that in those cases dR_dr is finite while R is zero.
+  // There must some loss or precision but I'm not sure where is it coming from.
+  // A possible solution would be to refine the mesh for the start of the outward integration.
+  // For that we would need interpolation for Z as well.
+
   const auto &outward_scheme = config.outward_quadrature_order;
   const auto &r_points = r->points;
   const auto &dr_di = r->d_points;
