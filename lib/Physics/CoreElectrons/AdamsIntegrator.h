@@ -15,6 +15,9 @@ namespace Physics
   {
     struct AdamsIntegratorConfig
     {
+#define MAX_ADAMS_MOULTON_QUADRATURE_ORDER 16
+#define MAX_INWARD_ASYMPTOTIC_EXPANSION_ORDER 32
+
       AdamsIntegratorConfig(
         int adams_moulton_quadrature_order_ = default_adams_moulton_quadrature_order,
         int inward_asymptotic_expansion_order_ = default_inward_asymptotic_expansion_order,
@@ -24,11 +27,13 @@ namespace Physics
       ) : adams_moulton_quadrature_order(adams_moulton_quadrature_order_),
           inward_asymptotic_expansion_order(inward_asymptotic_expansion_order_),
           inward_asymptotic_expansion_cutoff(inward_asymptotic_expansion_cutoff_),
-          outward_quadrature_order(outward_quadrature_order_), outward_scheme_repetition(outward_scheme_repetition_)
+          outward_quadrature_order(outward_quadrature_order_),
+          outward_scheme_repetition(outward_scheme_repetition_)
       {
-        if (adams_moulton_quadrature_order < 1 || adams_moulton_quadrature_order > 8)
-          THROW_INVALID_ARGUMENT("adams_moulton_quadrature_order must be int the range [1,8]");
-        if (inward_asymptotic_expansion_order < 1)
+        if (adams_moulton_quadrature_order < 1 || adams_moulton_quadrature_order > MAX_ADAMS_MOULTON_QUADRATURE_ORDER)
+          THROW_INVALID_ARGUMENT("adams_moulton_quadrature_order must be in range [1,16]");
+        if (inward_asymptotic_expansion_order < 1
+            || inward_asymptotic_expansion_order > MAX_INWARD_ASYMPTOTIC_EXPANSION_ORDER)
           THROW_INVALID_ARGUMENT("inward_asymptotic_expansion_order must be positive");
         if (inward_asymptotic_expansion_cutoff < 0.0)
           THROW_INVALID_ARGUMENT("inward_asymptotic_expansion_cutoff must be positive");

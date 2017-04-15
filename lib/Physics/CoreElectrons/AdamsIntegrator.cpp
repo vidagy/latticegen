@@ -27,8 +27,6 @@ void AdamsIntegrator::integrate(std::vector<double> &R, std::vector<double> &dR_
 
 }
 
-#define MAX_LENGTH_OF_PARAMS 16
-
 void AdamsIntegrator::adams_moulton_method(
   std::vector<double> &R, std::vector<double> &dR_dr, int from, int to) const
 {
@@ -38,8 +36,8 @@ void AdamsIntegrator::adams_moulton_method(
     THROW_LOGIC_ERROR("in AdamsIntegrator::adams_moulton_method from and to too close: from = " +
                       std::to_string(from) + " to = " + std::to_string(to) + " quadrature = " +
                       std::to_string(quadrature));
-  if (quadrature >= MAX_LENGTH_OF_PARAMS)
-    THROW_LOGIC_ERROR("quadrature must be smaller than " + std::to_string(MAX_LENGTH_OF_PARAMS));
+  if (quadrature >= MAX_ADAMS_MOULTON_QUADRATURE_ORDER)
+    THROW_LOGIC_ERROR("quadrature must be smaller than " + std::to_string(MAX_ADAMS_MOULTON_QUADRATURE_ORDER));
 
   const auto &r_points = r->points;
   const auto &dr_di = r->d_points;
@@ -56,8 +54,8 @@ void AdamsIntegrator::adams_moulton_method(
 
   /// set up f with initial values
   /// we read quadrature number of values from R and dR_dr ahead of from
-  double f_R[MAX_LENGTH_OF_PARAMS];
-  double f_dR_dr[MAX_LENGTH_OF_PARAMS];
+  double f_R[MAX_ADAMS_MOULTON_QUADRATURE_ORDER];
+  double f_dR_dr[MAX_ADAMS_MOULTON_QUADRATURE_ORDER];
   for (auto k = 0, i = from - diff * quadrature; k < quadrature; ++k, i += diff) {
     f_R[k] = diff * dr_di[i] * dR_dr[i];
     f_dR_dr[k] = -2.0 * diff * (energy + (z[i] - ang / r_points[i]) / r_points[i]) * dr_di[i] * R[i];
@@ -85,14 +83,12 @@ void AdamsIntegrator::adams_moulton_method(
   }
 }
 
-#define MAX_EXPANSION_ORDER 32
-
 void AdamsIntegrator::start_inward(std::vector<double> &R, std::vector<double> &dR_dr) const
 {
   const auto &inward_expansion = config.inward_asymptotic_expansion_order;
-  if (inward_expansion >= MAX_EXPANSION_ORDER)
+  if (inward_expansion >= MAX_INWARD_ASYMPTOTIC_EXPANSION_ORDER)
     THROW_INVALID_ARGUMENT("inward expansion order " + std::to_string(inward_expansion)
-                           + " is not less than" + std::to_string(MAX_EXPANSION_ORDER));
+                           + " is not less than" + std::to_string(MAX_INWARD_ASYMPTOTIC_EXPANSION_ORDER));
 
   const auto &cutoff = config.inward_asymptotic_expansion_cutoff;
   const auto &r_points = r->points;
@@ -102,8 +98,8 @@ void AdamsIntegrator::start_inward(std::vector<double> &R, std::vector<double> &
   double ang = l * (l + 1);
 
   /// set up coefficients
-  double coeff_R[MAX_EXPANSION_ORDER];
-  double coeff_dR_dr[MAX_EXPANSION_ORDER];
+  double coeff_R[MAX_INWARD_ASYMPTOTIC_EXPANSION_ORDER];
+  double coeff_dR_dr[MAX_INWARD_ASYMPTOTIC_EXPANSION_ORDER];
   coeff_R[0] = 1.0;
   coeff_dR_dr[0] = -alam;
   for (auto i = 1; i < inward_expansion; ++i) {
