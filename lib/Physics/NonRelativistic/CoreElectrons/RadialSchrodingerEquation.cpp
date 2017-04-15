@@ -2,7 +2,7 @@
 #include "RadialSchrodingerEquation.h"
 #include "EnergyUpdate.h"
 
-using namespace Physics::CoreElectrons;
+using namespace Physics::NonRelativistic::CoreElectrons;
 
 RadialSolution RadialSchrodingerEquation::solve(
   int n, int l, double energy,

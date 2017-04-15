@@ -32,7 +32,7 @@ add_test(NAME Test_Math COMMAND Test_Math --gtest_output=xml:testresults_math.xm
 
 # Physics
 
-file(GLOB all_physics_test_src "Physics/CoreElectrons/*.cpp")
+file(GLOB all_physics_test_src "Physics/NonRelativistic/CoreElectrons/*.cpp")
 add_executable(Test_Physics ${all_physics_test_src})
 target_link_libraries(Test_Physics Physics TestUtils)
 install(TARGETS Test_Physics DESTINATION tests/)

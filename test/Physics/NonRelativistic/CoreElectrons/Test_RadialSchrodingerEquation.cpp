@@ -1,10 +1,10 @@
 #include <tuple>
 
-#include <Physics/CoreElectrons/RadialSchrodingerEquation.h>
+#include <Physics/NonRelativistic/CoreElectrons/RadialSchrodingerEquation.h>
 #include <TestUtils/Utils.h>
 #include <TestUtils/base.h>
 
-using namespace Physics::CoreElectrons;
+using namespace Physics::NonRelativistic::CoreElectrons;
 
 namespace
 {
@@ -193,23 +193,26 @@ namespace
 
 namespace Physics
 {
-  namespace CoreElectrons
+  namespace NonRelativistic
   {
-    class TestAccessor
+    namespace CoreElectrons
     {
-    public:
-      static void adams_moulton_method(
-        const AdamsIntegrator &adamsIntegrator, std::vector<double> &R, std::vector<double> &dR_dr, int from, int to
-      )
+      class TestAccessor
       {
-        return adamsIntegrator.adams_moulton_method(R, dR_dr, from, to);
-      }
+      public:
+        static void adams_moulton_method(
+          const AdamsIntegrator &adamsIntegrator, std::vector<double> &R, std::vector<double> &dR_dr, int from, int to
+        )
+        {
+          return adamsIntegrator.adams_moulton_method(R, dR_dr, from, to);
+        }
 
-      static std::vector<double> get_adams_parameters(int quadrature)
-      {
-        return AdamsIntegrator::get_adams_parameters(quadrature);
-      }
-    };
+        static std::vector<double> get_adams_parameters(int quadrature)
+        {
+          return AdamsIntegrator::get_adams_parameters(quadrature);
+        }
+      };
+    }
   }
 }
 
@@ -226,7 +229,7 @@ TEST(TestAdamsIntegrator, AdamsMoultonMethod)
 
   auto from = 20;
   auto to = 70;
-  Physics::CoreElectrons::TestAccessor::adams_moulton_method(ai, R, dR_dR, from, to);
+  Physics::NonRelativistic::CoreElectrons::TestAccessor::adams_moulton_method(ai, R, dR_dR, from, to);
 
   for (auto i = 0; i < from; ++i) {
     EXPECT_EQ(R[i], reference.reference_R10[i]);

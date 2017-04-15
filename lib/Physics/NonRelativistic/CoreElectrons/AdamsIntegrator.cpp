@@ -4,7 +4,7 @@
 #include <Math/Factorial.h>
 #include "AdamsIntegrator.h"
 
-using namespace Physics::CoreElectrons;
+using namespace Physics::NonRelativistic::CoreElectrons;
 
 void AdamsIntegrator::integrate(std::vector<double> &R, std::vector<double> &dR_dr)
 {

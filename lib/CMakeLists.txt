@@ -25,8 +25,8 @@ target_include_directories(Math PUBLIC .)
 
 # Physics
 
-file(GLOB all_physics_src "Physics/CoreElectrons/*.cpp")
-file(GLOB all_physics_hdr "Physics/CoreElectrons/*.h")
+file(GLOB all_physics_src "Physics/NonRelativistic/CoreElectrons/*.cpp")
+file(GLOB all_physics_hdr "Physics/NonRelativistic/CoreElectrons/*.h")
 add_library(Physics SHARED ${all_physics_src} ${all_physics_hdr})
 target_link_libraries(Physics Core Math)
 target_include_directories(Physics PUBLIC .)
