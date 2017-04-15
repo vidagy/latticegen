@@ -18,6 +18,7 @@ void AdamsIntegrator::integrate(std::vector<double> &R, std::vector<double> &dR_
   /// integrating the Schrodinger Equation from 0 to classical_turning_point
   /// this function will overwrite the corresponding region of R and dR_dr
   integrate_outward(R, dR_dr);
+
   /// make R and dR_dr continuous
   match_solutions(R, dR_dr, old_R_at_ctp);
 
@@ -84,11 +85,16 @@ void AdamsIntegrator::adams_moulton_method(
   }
 }
 
+#define MAX_EXPANSION_ORDER 32
+
 void AdamsIntegrator::start_inward(std::vector<double> &R, std::vector<double> &dR_dr) const
 {
   const auto &inward_expansion = config.inward_asymptotic_expansion_order;
-  const auto &cutoff = config.inward_asymptotic_expansion_cutoff;
+  if (inward_expansion >= MAX_EXPANSION_ORDER)
+    THROW_INVALID_ARGUMENT("inward expansion order " + std::to_string(inward_expansion)
+                           + " is not less than" + std::to_string(MAX_EXPANSION_ORDER));
 
+  const auto &cutoff = config.inward_asymptotic_expansion_cutoff;
   const auto &r_points = r->points;
 
   double alam = sqrt(-2.0 * energy);
@@ -96,8 +102,8 @@ void AdamsIntegrator::start_inward(std::vector<double> &R, std::vector<double> &
   double ang = l * (l + 1);
 
   /// set up coefficients
-  double coeff_R[inward_expansion];
-  double coeff_dR_dr[inward_expansion];
+  double coeff_R[MAX_EXPANSION_ORDER];
+  double coeff_dR_dr[MAX_EXPANSION_ORDER];
   coeff_R[0] = 1.0;
   coeff_dR_dr[0] = -alam;
   for (auto i = 1; i < inward_expansion; ++i) {
