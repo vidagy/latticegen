@@ -36,6 +36,6 @@ TEST(TestLapack, InvertMatrixRowMajor)
     25.0 / 104.0, 3.0 / 52.0, -7.0 / 104.0
   };
 
-  LapackWrapper::invert_matrix(matrix, LAPACK_ROW_MAJOR);
+  LapackWrapper::invert_matrix(matrix, LapackWrapper::Row);
   EXPECT_THAT(matrix, ::testing::Pointwise(NearWithTolerance(std::numeric_limits<double>::epsilon()), reference));
 }

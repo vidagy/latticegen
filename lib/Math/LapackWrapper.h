@@ -2,15 +2,20 @@
 #define LATTICEGEN_LAPACKWRAPPER_H
 
 #include <vector>
-#include <lapacke.h>
 
 namespace Math
 {
   class LapackWrapper
   {
   public:
+    enum Majority
+    {
+      Column,
+      Row
+    };
+
     /// @brief inverts column ordered matrix in place
-    static void invert_matrix(std::vector<double> &matrix, int majority = LAPACK_COL_MAJOR);
+    static void invert_matrix(std::vector<double> &matrix, Majority majority = Majority::Column);
   };
 }
 #endif //LATTICEGEN_LAPACKWRAPPER_H
