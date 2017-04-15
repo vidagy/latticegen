@@ -32,7 +32,7 @@ RadialSolution RadialSchrodingerEquation::solve(
 
   auto number_of_iteration = 0;
   while (number_of_iteration++ < max_iter) {
-    /// above r_max the wave function is practically zero. we don't calculate in this region
+    /// above practical_infinity the wave function is practically zero. we don't calculate in this region
     practical_infinity = get_practical_infinity(r, z, energy);
     /// classical_turning_point is the boundary between the inward and the outward integration
     auto classical_turning_point = get_classical_turning_point(r, z, energy, practical_infinity);
@@ -42,14 +42,14 @@ RadialSolution RadialSchrodingerEquation::solve(
                       adams_integrator_config);
     integrator.integrate(R, dR_dr);
 
-    /// get the number of R = 0 (not counting the origin).
+    /// get the number of nodes (R = 0) excluding the origin.
     auto number_of_nodes = get_number_of_nodes(R, practical_infinity);
 
     if (required_number_of_nodes != number_of_nodes) {
-      /// if it is not the required then we need a bigger energy step.
+      /// if it is not the required then we need a larger energy step.
       energy = update_energy.coarse(number_of_nodes, energy);
     } else {
-      /// if the node number is OK, then we fine-tune the energy so that the dR_dr
+      /// if the node number is OK, then we fine-tune the energy so that dR_dr
       /// becomes continuous as well
       auto norm = get_norm(dr_di, dx, R, practical_infinity);
       auto new_R = R[classical_turning_point];
