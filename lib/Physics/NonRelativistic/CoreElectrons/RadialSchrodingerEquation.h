@@ -4,10 +4,11 @@
 #include <vector>
 #include <memory>
 
-#include <Core/ExponentialMesh.h>
+#include <Physics/Common/CoreElectrons/EffectiveCharge.h>
 #include "AdamsIntegrator.h"
 
 using namespace Core;
+using namespace Physics::Common::CoreElectrons;
 
 namespace Physics
 {
@@ -19,23 +20,6 @@ namespace Physics
       // The numeric solution of the Schrodinger Equation is based on chapter  //
       //          2.3 of Atomic Structure Theory by Walter R. Johnson          //
       ///////////////////////////////////////////////////////////////////////////
-
-      /// @brief The generalized Coulomb potential in atomic units is V(r) = - Z(r)/r.
-      /// @brief EffectiveCharge is this Z(r) function
-      class EffectiveCharge
-      {
-      public:
-        EffectiveCharge(const std::vector<double> &z_, const std::shared_ptr<const ExponentialMesh> &r_)
-          : z(z_), r(r_)
-        {
-          if (z.size() != r->points.size())
-            THROW_INVALID_ARGUMENT("in EffectiveCharge z.size()=" + std::to_string(z.size()) +
-                                   " while r->points.size()=" + std::to_string(r->points.size()));
-        }
-
-        const std::vector<double> z;
-        const std::shared_ptr<const ExponentialMesh> r;
-      };
 
       class RadialSolution
       {
