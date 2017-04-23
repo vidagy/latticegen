@@ -4,6 +4,7 @@
 #include <Core/Exceptions.h>
 #include "ClebschGordan.h"
 #include "Factorial.h"
+#include "SphericalHarmonics.h"
 
 using namespace Math;
 
@@ -80,3 +81,14 @@ double ClebschGordan::calculate(double j1, double m1, double j2, double m2, doub
       * factorial((double_j2 - double_m2) / 2)
     ) * sum;
 };
+
+double Gaunt::calculate(double l1, double m1, double l2, double m2, double L, double M)
+{
+  if ((l1 < 0) || (l2 < 0) || (L < 0))
+    return 0.0;
+
+  return
+    sqrt((2 * l1 + 1) * (2 * l2 + 1) / 4.0 / pi / (2 * L + 1))
+    * ClebschGordan::calculate(l1, 0, l2, 0, L, 0)
+    * ClebschGordan::calculate(l1, m1, l2, m2, L, M);
+}

@@ -1,6 +1,7 @@
 #include <TestUtils/base.h>
 
 #include <Math/ClebschGordan.h>
+#include <Math/SphericalHarmonics.h>
 
 using namespace Math;
 
@@ -116,4 +117,10 @@ TEST(TestClebschGordan, j105)
   EXPECT_NEAR(ClebschGordan::calculate(0.5, -0.5, 1.0, 0.0, 1.5, 1.5), 0.0, tol);
   EXPECT_NEAR(ClebschGordan::calculate(0.5, 0.5, 1.0, -1.0, 1.5, 1.5), 0.0, tol);
   EXPECT_NEAR(ClebschGordan::calculate(0.5, -0.5, 1.0, -1.0, 1.5, 1.5), 0.0, tol);
+}
+
+TEST(TestGaunt, Simple)
+{
+  EXPECT_NEAR(Gaunt::calculate(0, 0, 0, 0, 0, 0), sqrt(1.0 / 4.0 / pi), tol);
+  EXPECT_NEAR(Gaunt::calculate(0.5, -0.5, 1.0, 1.0, 1.5, 0.5), 0.11516471649044516, tol);
 }
