@@ -1,6 +1,8 @@
 #ifndef LATTICEGEN_FACTORIAL_H
 #define LATTICEGEN_FACTORIAL_H
 
+#include <Core/Exceptions.h>
+
 namespace Math
 {
   inline double factorial(int n)
@@ -8,6 +10,9 @@ namespace Math
     static const double factorial_cache[16] =
       {1, 1, 2, 6, 24, 120, 720, 5040,
        40320, 362880, 3628800, 39916800, 479001600, 6227020800, 87178291200, 1307674368000};
+
+    if (n < 0)
+      THROW_INVALID_ARGUMENT("factorial invoked with n = " + std::to_string(n));
 
     if (n < 16)
       return factorial_cache[n];
@@ -25,6 +30,9 @@ namespace Math
   {
     static const double double_factorial_cache[16] =
       {1, 1, 2, 3, 8, 15, 48, 105, 384, 945, 3840, 10395, 46080, 135135, 645120, 2027025};
+
+    if (n < 0)
+      THROW_INVALID_ARGUMENT("double factorial invoked with n = " + std::to_string(n));
 
     if (n < 16)
       return double_factorial_cache[n];
