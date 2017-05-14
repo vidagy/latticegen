@@ -18,6 +18,7 @@ double ClebschGordan::calculate(double j1, double m1, double j2, double m2, doub
   int double_M = static_cast<int>(lround(2.0 * M));
 
   double tol = 10 * std::numeric_limits<double>::epsilon();
+
   if (fabs(2.0 * j1 - double_j1) > tol)
     THROW_INVALID_ARGUMENT("j1 = " + std::to_string(j1) + " is not half or integer");
   if (fabs(2.0 * j2 - double_j2) > tol)
@@ -29,7 +30,7 @@ double ClebschGordan::calculate(double j1, double m1, double j2, double m2, doub
   if (fabs(2.0 * J - double_J) > tol)
     THROW_INVALID_ARGUMENT("J = " + std::to_string(J) + " is not half or integer");
   if (fabs(2.0 * M - double_M) > tol)
-    THROW_INVALID_ARGUMENT("M = " + std::to_string(M) + " s not half or integer");
+    THROW_INVALID_ARGUMENT("M = " + std::to_string(M) + " is not half or integer");
 
   if ((double_j1 < 0) || (double_j2 < 0) || (double_J < 0))
     return 0.0;
