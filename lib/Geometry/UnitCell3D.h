@@ -73,6 +73,10 @@ namespace Geometry
   private:
     UnitCell3D(BravaisLattice3DType type_, const Point3D &a_, const Point3D &b_, const Point3D &c_);
   };
+
+  struct Coordinates3D : public std::tuple<int, int, int>
+  {
+  };
 }
 
 #endif // LATTICEGEN_UNITCELL3D_H_

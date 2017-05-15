@@ -2,6 +2,7 @@
 #define LATTICEGEN_FACTORIAL_H
 
 #include <Core/Exceptions.h>
+#include <complex>
 
 namespace Math
 {
@@ -58,6 +59,33 @@ namespace Math
     }
 
     return result;
+  }
+
+  inline unsigned int modulo(int num, unsigned int base)
+  {
+    if (num < 0)
+      return (num % base) + base;
+    else
+      return num % base;
+  }
+
+  inline std::complex<double> ipow(int exponent)
+  {
+    using namespace std::complex_literals;
+
+    auto mod = modulo(exponent, 4);
+    switch (mod) {
+      case 0:
+        return 1.0;
+      case 1:
+        return 1i;
+      case 2:
+        return -1.0;
+      case 3:
+        return -1i;
+      default:
+        THROW_LOGIC_ERROR("modulo 4 returned" + std::to_string(mod));
+    }
   }
 }
 #endif //LATTICEGEN_FACTORIAL_H
