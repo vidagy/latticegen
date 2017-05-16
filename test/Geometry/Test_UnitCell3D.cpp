@@ -189,9 +189,9 @@ namespace
 {
   void test_get_offset(const UnitCell3D& unit_cell)
   {
-    const Point3D& a = unit_cell.a;
-    const Point3D& b = unit_cell.b;
-    const Point3D& c = unit_cell.c;
+    const Point3D &a = unit_cell.v1;
+    const Point3D &b = unit_cell.v2;
+    const Point3D &c = unit_cell.v3;
 
     EXPECT_EQ( unit_cell.get_offsets( ( 0.0)*a + ( 0.0)*b + ( 0.0)*c ), std::make_tuple( 0, 0, 0) );
     

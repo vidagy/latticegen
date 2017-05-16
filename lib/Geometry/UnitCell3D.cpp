@@ -1,7 +1,6 @@
 #include "UnitCell3D.h" 
 
 #include "Transformations.h"
-#include <Core/Exceptions.h>
 
 #include <cmath>
 
@@ -51,17 +50,6 @@ namespace
   static const Vector3D x = Vector3D(1.0,0.0,0.0);
   static const Vector3D y = Vector3D(0.0,1.0,0.0);
   static const Vector3D z = Vector3D(0.0,0.0,1.0);
-}
-
-UnitCell3D::UnitCell3D(BravaisLattice3DType type_, const Point3D &a_, const Point3D &b_, const Point3D &c_)
-  : type(type_), a(a_), b(b_), c(c_)
-{
-  if (a_.length() <= 0.0)
-    THROW_INVALID_ARGUMENT("In UnitCell3D::ctor: a must be non null vector but a = " + std::to_string(a_));
-  if (b_.length() <= 0.0)
-    THROW_INVALID_ARGUMENT("In UnitCell3D::ctor: b must be non null vector but b = " + std::to_string(b_));
-  if (c_.length() <= 0.0)
-    THROW_INVALID_ARGUMENT("In UnitCell3D::ctor: c must be non null vector but c = " + std::to_string(c_));
 }
 
 UnitCell3D UnitCell3D::create_triclinic_primitive(
@@ -255,12 +243,12 @@ namespace
   }
 }
 
-std::tuple<long, long, long> UnitCell3D::get_offsets(const Point3D& point) const
+std::tuple<long, long, long> Cell3D::get_offsets(const Point3D &point) const
 {
   long lna, lnb, lnc;
-  lna = get_steps(a, b, c, point);
-  lnb = get_steps(b, c, a, point);
-  lnc = get_steps(c, a, b, point);
+  lna = get_steps(v1, v2, v3, point);
+  lnb = get_steps(v2, v3, v1, point);
+  lnc = get_steps(v3, v1, v2, point);
 
   return std::make_tuple(lna, lnb, lnc);
 }
@@ -293,4 +281,14 @@ CrystalClass UnitCell3D::get_point_group() const
     default:
       THROW_INVALID_ARGUMENT("Unhandled BravaisLattice3DType in UnitCell3D::get_crystal_class");
   }
+}
+
+ReciprocalUnitCell3D::ReciprocalUnitCell3D(const UnitCell3D &unit_cell)
+  : Cell3D(
+  unit_cell.type,
+  2 * pi * (cross_product(unit_cell.v2, unit_cell.v3)) / (unit_cell.v1 * cross_product(unit_cell.v2, unit_cell.v3)),
+  2 * pi * (cross_product(unit_cell.v3, unit_cell.v1)) / (unit_cell.v2 * cross_product(unit_cell.v3, unit_cell.v1)),
+  2 * pi * (cross_product(unit_cell.v1, unit_cell.v2)) / (unit_cell.v3 * cross_product(unit_cell.v1, unit_cell.v2))
+)
+{
 }

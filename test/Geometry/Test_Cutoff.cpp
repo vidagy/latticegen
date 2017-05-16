@@ -137,9 +137,9 @@ TEST(TestCutoff,SphereCutoffFalse)
 TEST(TestCutoff,UnitVectorsCutoffTrue)
 {
   UnitCell3D unit_cell = UnitCell3D::create_rhombohedral_centered(1.0, pi / 3.0);
-  const Vector3D& a = unit_cell.a;
-  const Vector3D& b = unit_cell.b;
-  const Vector3D& c = unit_cell.c;
+  const Vector3D &a = unit_cell.v1;
+  const Vector3D &b = unit_cell.v2;
+  const Vector3D &c = unit_cell.v3;
 
   CutoffUnitVectors cutoff = CutoffUnitVectors(unit_cell, 1, 2, 3);
 
@@ -179,9 +179,9 @@ TEST(TestCutoff,UnitVectorsCutoffTrue)
 TEST(TestCutoff,UnitVectorsCutoffFalse)
 {
   UnitCell3D unit_cell = UnitCell3D::create_rhombohedral_centered(1.0, pi / 3.0);
-  const Vector3D& a = unit_cell.a;
-  const Vector3D& b = unit_cell.b;
-  const Vector3D& c = unit_cell.c;
+  const Vector3D &a = unit_cell.v1;
+  const Vector3D &b = unit_cell.v2;
+  const Vector3D &c = unit_cell.v3;
 
   CutoffUnitVectors cutoff = CutoffUnitVectors(unit_cell, 1, 2, 3);
 
@@ -211,9 +211,9 @@ TEST(TestCutoff,UnitVectorsCutoffFalse)
 TEST(TestCutoff,WSCellCutoffTrue)
 {
   UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-  const Vector3D& a = unit_cell.a;
-  const Vector3D& b = unit_cell.b;
-  const Vector3D& c = unit_cell.c;
+  const Vector3D &a = unit_cell.v1;
+  const Vector3D &b = unit_cell.v2;
+  const Vector3D &c = unit_cell.v3;
 
   CutoffWSCell cutoff = CutoffWSCell(UnitCell3D::create_cubic_primitive(3.0));
 
@@ -249,9 +249,9 @@ TEST(TestCutoff,WSCellCutoffTrue)
 TEST(TestCutoff,WSCellCutoffFalse)
 {
   UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-  const Vector3D& a = 2.0 * unit_cell.a;
-  const Vector3D& b = 2.0 * unit_cell.b;
-  const Vector3D& c = 2.0 * unit_cell.c;
+  const Vector3D &a = 2.0 * unit_cell.v1;
+  const Vector3D &b = 2.0 * unit_cell.v2;
+  const Vector3D &c = 2.0 * unit_cell.v3;
 
   CutoffWSCell cutoff = CutoffWSCell(UnitCell3D::create_cubic_primitive(3.0));
 

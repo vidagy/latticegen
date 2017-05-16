@@ -2,6 +2,7 @@
 #define LATTICEGEN_UNITCELL3D_H_
 
 #include <Core/Point3D.h>
+#include <Core/Exceptions.h>
 #include "CrystallographicPointGroups.h"
 #include <vector>
 
@@ -27,7 +28,40 @@ namespace Geometry
     Cubic_Face
   };
 
-  class UnitCell3D
+  struct Coordinates3D
+  {
+    Coordinates3D(long a_, long b_, long c_)
+      : a(a_), b(b_), c(c_) {}
+
+    long a;
+    long b;
+    long c;
+  };
+
+  class Cell3D
+  {
+  public:
+    std::tuple<long, long, long> get_offsets(const Point3D &point) const;
+
+    const BravaisLattice3DType type;
+
+    const Point3D v1;
+    const Point3D v2;
+    const Point3D v3;
+  protected:
+    Cell3D(BravaisLattice3DType type_, const Point3D &v1_, const Point3D &v2_, const Point3D &v3_)
+      : type(type_), v1(v1_), v2(v2_), v3(v3_)
+    {
+      if (!strictlyPositive(v1_.length()))
+        THROW_INVALID_ARGUMENT("In UnitCell3D::ctor: a must be non null vector but a = " + std::to_string(v1_));
+      if (!strictlyPositive(v2_.length()))
+        THROW_INVALID_ARGUMENT("In UnitCell3D::ctor: b must be non null vector but b = " + std::to_string(v2_));
+      if (!strictlyPositive(v3_.length()))
+        THROW_INVALID_ARGUMENT("In UnitCell3D::ctor: c must be non null vector but c = " + std::to_string(v3_));
+    }
+  };
+
+  class UnitCell3D : public Cell3D
   {
   public: 
     static UnitCell3D create_triclinic_primitive(
@@ -62,21 +96,17 @@ namespace Geometry
 
     CrystalClass get_point_group() const;
 
-    std::tuple<long, long, long> get_offsets(const Point3D& point) const;
-
-    const BravaisLattice3DType type;
-
-    const Point3D a; 
-    const Point3D b;
-    const Point3D c;
-
   private:
-    UnitCell3D(BravaisLattice3DType type_, const Point3D &a_, const Point3D &b_, const Point3D &c_);
+    UnitCell3D(BravaisLattice3DType type_, const Point3D &a_, const Point3D &b_, const Point3D &c_)
+      : Cell3D(type_, a_, b_, c_) {}
   };
 
-  struct Coordinates3D : public std::tuple<int, int, int>
+  class ReciprocalUnitCell3D : public Cell3D
   {
+  public:
+    ReciprocalUnitCell3D(const UnitCell3D &unit_cell);
   };
+
 }
 
 #endif // LATTICEGEN_UNITCELL3D_H_

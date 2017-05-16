@@ -52,18 +52,18 @@ IrreducibleWedge::get_irreducible_wedge(const UnitCell3D &unit_cell, size_t samp
   CrystalSystem crystal_system = get_crystal_system(unit_cell.get_point_group());
   if (crystal_system == CrystalSystem::Hexagonal)
   {
-    double sample_width = unit_cell.a.length() / sample;
+    double sample_width = unit_cell.v1.length() / sample;
     mesh = std::make_unique<TetrahedronMesh>(sample_width);
   }
   else if (crystal_system == CrystalSystem::Trigonal)
   {
-    double sample_width_a = unit_cell.a.length() / sample;
-    double sample_width_c = unit_cell.c.length() / sample;
+    double sample_width_a = unit_cell.v1.length() / sample;
+    double sample_width_c = unit_cell.v3.length() / sample;
     mesh = std::make_unique<TrigonalMesh>(sample_width_a, sample_width_c);
   }
   else
   {
-    double sample_width = unit_cell.a.length() / sample;
+    double sample_width = unit_cell.v1.length() / sample;
     mesh = std::make_unique<CubicMesh>(sample_width);
   }
 

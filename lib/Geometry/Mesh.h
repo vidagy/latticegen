@@ -19,12 +19,12 @@ namespace Geometry
   class LatticeMesh : public Mesh
   {
   public:
-    LatticeMesh(const UnitCell3D& unit_cell_) : unit_cell(unit_cell_)
+    LatticeMesh(const Cell3D &cell_) : cell(cell_)
     {}
 
     std::vector<Point3D> generate(const Cutoff &cutoff, bool shift = false) const final override;
 
-    UnitCell3D unit_cell;
+    Cell3D cell;
   };
 
   class TrigonalMesh : public Mesh
