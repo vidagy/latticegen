@@ -33,6 +33,16 @@ namespace Geometry
     Coordinates3D(long a_, long b_, long c_)
       : a(a_), b(b_), c(c_) {}
 
+    bool operator==(const Coordinates3D &other) const
+    {
+      return (this->a == other.a) && (this->b == other.b) && (this->c == other.c);
+    }
+
+    Coordinates3D operator-(const Coordinates3D &other) const
+    {
+      return Coordinates3D(a - other.a, b - other.b, c - other.c);
+    }
+
     long a;
     long b;
     long c;
@@ -48,6 +58,11 @@ namespace Geometry
     const Point3D v1;
     const Point3D v2;
     const Point3D v3;
+
+    Point3D at(const Coordinates3D &coordinates) const
+    {
+      return coordinates.a * v1 + coordinates.b * v2 + coordinates.c * v3;
+    }
   protected:
     Cell3D(BravaisLattice3DType type_, const Point3D &v1_, const Point3D &v2_, const Point3D &v3_)
       : type(type_), v1(v1_), v2(v2_), v3(v3_)
@@ -106,7 +121,14 @@ namespace Geometry
   public:
     ReciprocalUnitCell3D(const UnitCell3D &unit_cell);
   };
+}
 
+namespace std
+{
+  inline std::string to_string(const Geometry::Coordinates3D &coords)
+  {
+    return "( " + std::to_string(coords.a) + " , " + std::to_string(coords.b) + " , " + std::to_string(coords.c) + " )";
+  }
 }
 
 #endif // LATTICEGEN_UNITCELL3D_H_
