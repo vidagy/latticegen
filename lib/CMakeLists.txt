@@ -36,6 +36,6 @@ file(GLOB all_physics_hdr
         "Physics/NonRelativistic/CoreElectrons/*.h"
         "Physics/Relativistic/CoreElectrons/*.h")
 add_library(Physics SHARED ${all_physics_src} ${all_physics_hdr})
-target_link_libraries(Physics Core Math)
+target_link_libraries(Physics Core Math Geometry)
 target_include_directories(Physics PUBLIC .)
 
