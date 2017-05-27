@@ -54,9 +54,9 @@ StructureConstants::calculate_reciprocal_space(unsigned int l, unsigned int m, u
     THROW_INVALID_ARGUMENT(
       " mprime = " + std::to_string(mprime) + " is grater than lprime = " + std::to_string(lprime));
 
-  int mpp = m + mprime;
-  unsigned int lpp_min = static_cast<unsigned int>(abs(lprime - l));
-  unsigned int lpp_max = lprime + l;
+  auto mpp = m + mprime;
+  auto lpp_min = static_cast<unsigned int>(abs(lprime - l));
+  auto lpp_max = lprime + l;
 
   auto res = 0i;
   for (auto lpp = lpp_min; lpp <= lpp_max; ++lpp) {
@@ -64,7 +64,7 @@ StructureConstants::calculate_reciprocal_space(unsigned int l, unsigned int m, u
            * Gaunt::calculate(l, m, lprime, mprime, lpp, mpp)
            * (D1(lpp, mpp, k, z) + D2(lpp, mpp, k, z) + D3(lpp, mpp, k, z));
   }
-  return 4 * pi * res;
+  return 4.0 * pi * res;
 }
 
 ///@brief Zabloudil et al (15.77)
@@ -91,7 +91,7 @@ StructureConstants::D1(unsigned int l, int m, const Vector3D &k, const std::comp
            * std::conj(Complex::spherical_harmonic(l, m, K_plus_k));
   }
 
-  return -4 * pi
+  return -4.0 * pi
          / std::abs(unit_cell.v1 * cross_product(unit_cell.v2, unit_cell.v3))
          * ipow(l)
          * std::pow(p, -l)
@@ -106,14 +106,14 @@ namespace
     const double tol = config.integral_tolerance;
     const int max_iter = config.max_step_count;
     const auto exponent = z / 4.0 - R_squared;
-    const double step_size = sqrt(std::abs(1.0 / exponent)) / 200.0;
+    const double step_size = sqrt(std::abs(1.0 / exponent)) / config.steps_per_unit;
     auto res = 0i;
     auto diff = 0i;
     auto xi_0 = sqrt(config.ewald_param) / 2.0;
     auto iter = 0;
     do {
       auto xi = xi_0 + iter * step_size;
-      diff = Math::pow(xi, 2 * l) * std::exp(exponent * xi * xi);
+      diff = Math::pow(xi, 2 * l) * std::exp(exponent * xi * xi) * step_size;
       res += diff;
       ++iter;
     } while ((std::abs(diff) > tol) && iter != max_iter);
@@ -121,7 +121,7 @@ namespace
       THROW_LOGIC_ERROR("reached max iteration, last diff = "
                         + std::to_string(diff.real()) + " (+) " + std::to_string(diff.imag())
                         + " xi = " + std::to_string(xi_0 + (iter - 1) * step_size));
-    //std::cout << "iter = " << iter << std::endl;
+    // Logger::log(Logger::Debug, "D2 integral iter: " + std::to_string(iter));
     return res;
   }
 }
@@ -142,7 +142,7 @@ StructureConstants::D2(unsigned int l, int m, const Vector3D &k, const std::comp
                   * std::exp(1i * (R * k))
                   * std::conj(Complex::spherical_harmonic(l, m, R))
                   * integral(l, config, R_R, z);
-      std::cout << " diff " << diff << std::endl;
+      // std::cout << " diff " << diff << std::endl;
       sum += diff;
     }
   }
@@ -154,13 +154,11 @@ StructureConstants::D2(unsigned int l, int m, const Vector3D &k, const std::comp
 std::complex<double>
 StructureConstants::D3(unsigned int l, int m, const Vector3D &k, const std::complex<double> &z) const
 {
-  if (l != 0)
-    return 0i;
-  if (m != 0)
+  if ((l != 0) || (m != 0))
     return 0i;
 
-  auto &ewald_param = config.ewald_param;
-  auto &tol = config.integral_tolerance;
+  auto ewald_param = config.ewald_param;
+  auto tol = config.integral_tolerance;
   auto res = 0i;
   auto diff = 1.0;
   auto n = 0;
@@ -179,25 +177,25 @@ StructureConstants::D3(unsigned int l, int m, const Vector3D &k, const std::comp
 
 namespace
 {
-  std::vector<Point3D> get_direct_mesh(const Cell3D &cell)
+  std::vector<Point3D> get_direct_mesh(const Cell3D &cell, double cutoff_scale)
   {
-    auto cutoff = 5 * std::max(
+    auto scaled_cutoff = cutoff_scale * std::max(
       std::max(
         cell.v1.length(),
         cell.v2.length()),
       cell.v3.length()
     );
 
-    return LatticeMesh(cell).generate(CutoffSphere(cutoff));
+    return LatticeMesh(cell).generate(CutoffSphere(scaled_cutoff));
   }
 
-  std::vector<Point3D> get_reciprocal_mesh(const UnitCell3D &unit_cell)
+  std::vector<Point3D> get_reciprocal_mesh(const UnitCell3D &unit_cell, double cutoff_scale)
   {
     auto reciprocal_unit_cell = ReciprocalUnitCell3D(unit_cell);
-    return get_direct_mesh(reciprocal_unit_cell);
+    return get_direct_mesh(reciprocal_unit_cell, cutoff_scale);
   }
 }
 
 StructureConstants::StructureConstants(const UnitCell3D &unit_cell_, const StructureConstantsConfig config_)
-  : unit_cell(unit_cell_), direct_mesh(get_direct_mesh(unit_cell)), reciprocal_mesh(get_reciprocal_mesh(unit_cell)),
-    config(config_) {}
+  : unit_cell(unit_cell_), direct_mesh(get_direct_mesh(unit_cell, config_.lattice_cutoff_scale)),
+    reciprocal_mesh(get_reciprocal_mesh(unit_cell, config_.lattice_cutoff_scale)), config(config_) {}
