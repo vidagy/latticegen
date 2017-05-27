@@ -53,6 +53,8 @@ namespace Geometry
   public:
     std::tuple<long, long, long> get_offsets(const Point3D &point) const;
 
+    CrystalClass get_point_group() const;
+
     const BravaisLattice3DType type;
 
     const Point3D v1;
@@ -108,8 +110,6 @@ namespace Geometry
     static UnitCell3D create_cubic_body(double a_);
 
     static UnitCell3D create_cubic_face(double a_);
-
-    CrystalClass get_point_group() const;
 
   private:
     UnitCell3D(BravaisLattice3DType type_, const Point3D &a_, const Point3D &b_, const Point3D &c_)

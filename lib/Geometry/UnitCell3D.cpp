@@ -253,7 +253,7 @@ std::tuple<long, long, long> Cell3D::get_offsets(const Point3D &point) const
   return std::make_tuple(lna, lnb, lnc);
 }
 
-CrystalClass UnitCell3D::get_point_group() const
+CrystalClass Cell3D::get_point_group() const
 {
   switch (type)
   {
