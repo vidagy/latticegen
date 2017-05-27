@@ -24,7 +24,7 @@ namespace Core
       default_file
     };
 
-    static void log(Level severity, const char *message);
+    static void log(Level severity, const std::string &message);
 
     static void
     log(Level severity, const char *filename, int line, const char *function_name, const std::string &message);

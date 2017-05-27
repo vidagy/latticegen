@@ -133,7 +133,7 @@ void Logger::initialize()
   ::loggerImpl = std::make_unique<LoggerImpl>(severity, target_type, target_string);
 }
 
-void Logger::log(Logger::Level severity, const char *message)
+void Logger::log(Logger::Level severity, const std::string &message)
 {
   BOOST_LOG_SEV(loggerImpl->lg, severity) << message;
 }
