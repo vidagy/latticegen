@@ -5,11 +5,6 @@
 using namespace Core;
 using namespace Geometry;
 
-namespace
-{
-  static const double pi = 3.14159265358979323846;
-}
-
 TEST(TestMesh,LatticeMeshContainsOrigin)
 {
   UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);

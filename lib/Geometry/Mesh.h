@@ -5,6 +5,7 @@
 #include <Geometry/UnitCell3D.h>
 #include <Geometry/Cutoff.h>
 #include <vector>
+#include <Math/SphericalHarmonics.h>
 
 using namespace Core;
 
@@ -13,55 +14,42 @@ namespace Geometry
   class Mesh
   {
   public:
-    virtual std::vector<Point3D> generate(const Cutoff &cutoff, bool shift = false) const = 0;
+    std::vector<Point3D> generate(const Cutoff &cutoff, bool shift = false) const;
+
+    const Cell3D cell;
+  protected:
+    Mesh(const Cell3D &cell_) : cell(cell_) {}
   };
 
   class LatticeMesh : public Mesh
   {
   public:
-    LatticeMesh(const Cell3D &cell_) : cell(cell_)
+    LatticeMesh(const Cell3D &cell_) : Mesh(cell_)
     {}
-
-    std::vector<Point3D> generate(const Cutoff &cutoff, bool shift = false) const final override;
-
-    Cell3D cell;
   };
 
   class TrigonalMesh : public Mesh
   {
   public:
     TrigonalMesh(double a_, double c_)
-      : a(a_), c(c_)
+      : Mesh(UnitCell3D::create_hexagonal_primitive(a_, c_))
     {}
-
-    std::vector<Point3D> generate(const Cutoff &cutoff, bool shift = false) const final override;
-
-    double a;
-    double c;
   };
 
   class TetrahedronMesh : public Mesh
   {
   public:
     TetrahedronMesh(double a_)
-      : a(a_)
+      : Mesh(UnitCell3D::create_rhombohedral_centered(a_, pi / 3.0))
     {}
-
-    std::vector<Point3D> generate(const Cutoff &cutoff, bool shift = false) const final override;
-
-    double a;
   };
 
   class CubicMesh : public Mesh
   {
   public:
     CubicMesh(double a_)
-      : a(a_)
+      : Mesh(UnitCell3D::create_cubic_primitive(a_))
     {}
-
-    std::vector<Point3D> generate(const Cutoff &cutoff, bool shift = false) const final override;
-
-    double a;
   };
 }
 #endif //LATTICEGEN_MESH_H

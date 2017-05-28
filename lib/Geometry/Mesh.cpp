@@ -5,8 +5,6 @@ using namespace Geometry;
 
 namespace
 {
-  static const double pi = 3.14159265358979323846;
-
   std::vector<Point3D> generate_mesh(
     const Cell3D &cell3D, const Cutoff &cutoff, const Point3D &offset)
   {
@@ -41,25 +39,7 @@ namespace
   }
 }
 
-std::vector<Point3D> LatticeMesh::generate(const Cutoff &cutoff, bool shift) const
+std::vector<Point3D> Mesh::generate(const Cutoff &cutoff, bool shift) const
 {
   return generate_mesh(cell, cutoff, get_offset(cell, shift));
-}
-
-std::vector<Point3D> TrigonalMesh::generate(const Cutoff &cutoff, bool shift) const
-{
-  const UnitCell3D unit_cell = UnitCell3D::create_hexagonal_primitive(a, c);
-  return generate_mesh(unit_cell, cutoff, get_offset(unit_cell, shift));
-}
-
-std::vector<Point3D> TetrahedronMesh::generate(const Cutoff &cutoff, bool shift) const
-{
-  const UnitCell3D unit_cell = UnitCell3D::create_rhombohedral_centered(a, pi / 3.0);
-  return generate_mesh(unit_cell, cutoff, get_offset(unit_cell, shift));
-}
-
-std::vector<Point3D> CubicMesh::generate(const Cutoff &cutoff, bool shift) const
-{
-  const UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(a);
-  return generate_mesh(unit_cell, cutoff, get_offset(unit_cell, shift));
 }
