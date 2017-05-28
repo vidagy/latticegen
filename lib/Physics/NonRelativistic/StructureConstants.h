@@ -3,7 +3,7 @@
 
 #include <complex>
 #include <Geometry/UnitCell3D.h>
-#include <Geometry/Mesh.h>
+#include <Geometry/Shell.h>
 
 using namespace Geometry;
 
@@ -66,8 +66,8 @@ namespace Physics
       std::complex<double> D3(unsigned int l, int m, const Vector3D &k, const std::complex<double> &z) const;
 
       const UnitCell3D unit_cell;
-      const std::vector<Point3D> direct_mesh;
-      const std::vector<Point3D> reciprocal_mesh;
+      const std::vector<Shell> direct_shells;
+      const std::vector<Shell> reciprocal_shells;
       const StructureConstantsConfig config;
 
       friend class TestAccessor;

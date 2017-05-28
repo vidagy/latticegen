@@ -76,19 +76,26 @@ StructureConstants::D1(unsigned int l, int m, const Vector3D &k, const std::comp
 
   auto sum = 0i;
   // calculating the sum over reciprocal lattice positions
-  for (auto K: reciprocal_mesh) {
-    auto K_plus_k = K + k;
-    auto K_plus_k_squared = K_plus_k * K_plus_k;
-    if (nearlyZero(abs(K_plus_k_squared - z)))
-      THROW_LOGIC_ERROR(
-        "division by zero: K = " + std::to_string(K)
-        + " k = " + std::to_string(k)
-        + " z = " + std::to_string(z.real()) + " (+) " + std::to_string(z.imag()) + "i");
+  for (auto shell: reciprocal_shells) {
+    auto shell_diff = 0i;
+    for (auto K: shell.points) {
+      auto K_plus_k = K + k;
+      auto K_plus_k_squared = K_plus_k * K_plus_k;
+      if (nearlyZero(abs(K_plus_k_squared - z)))
+        THROW_LOGIC_ERROR(
+          "division by zero: K = " + std::to_string(K)
+          + " k = " + std::to_string(k)
+          + " z = " + std::to_string(z.real()) + " (+) " + std::to_string(z.imag()) + "i");
 
-    sum += Math::pow(K_plus_k.length(), l)
-           * exp(-K_plus_k_squared / ewald_param)
-           / (K_plus_k_squared - z)
-           * std::conj(Complex::spherical_harmonic(l, m, K_plus_k));
+      shell_diff += Math::pow(K_plus_k.length(), l)
+                    * exp(-K_plus_k_squared / ewald_param)
+                    / (K_plus_k_squared - z)
+                    * std::conj(Complex::spherical_harmonic(l, m, K_plus_k));
+    }
+    sum += shell_diff;
+    if (abs(shell_diff / sum) < config.integral_tolerance) {
+      break;
+    }
   }
 
   return -4.0 * pi
@@ -134,16 +141,21 @@ StructureConstants::D2(unsigned int l, int m, const Vector3D &k, const std::comp
 
   auto sum = 0i;
   // calculating the sum over lattice positions
-  for (auto R: direct_mesh) {
-    auto R_R = R * R;
-    auto length = sqrt(R_R);
-    if (!nearlyZero(length)) {
-      auto diff = Math::pow(length, l)
-                  * std::exp(1i * (R * k))
-                  * std::conj(Complex::spherical_harmonic(l, m, R))
-                  * integral(l, config, R_R, z);
-      // std::cout << " diff " << diff << std::endl;
-      sum += diff;
+  for (auto shell: direct_shells) {
+    auto shell_diff = 0i;
+    for (auto R: shell.points) {
+      auto R_R = R * R;
+      auto length = sqrt(R_R);
+      if (!nearlyZero(length)) {
+        shell_diff += Math::pow(length, l)
+                      * std::exp(1i * (R * k))
+                      * std::conj(Complex::spherical_harmonic(l, m, R))
+                      * integral(l, config, R_R, z);
+      }
+    }
+    sum += shell_diff;
+    if (abs(shell_diff / sum) < config.integral_tolerance) {
+      break;
     }
   }
 
@@ -177,7 +189,7 @@ StructureConstants::D3(unsigned int l, int m, const Vector3D &k, const std::comp
 
 namespace
 {
-  std::vector<Point3D> get_direct_mesh(const Cell3D &cell, double cutoff_scale)
+  std::vector<Shell> get_direct_shells(const Cell3D &cell, double cutoff_scale)
   {
     auto scaled_cutoff = cutoff_scale * std::max(
       std::max(
@@ -186,16 +198,18 @@ namespace
       cell.v3.length()
     );
 
-    return LatticeMesh(cell).generate(CutoffSphere(scaled_cutoff));
+    auto mesh = LatticeMesh(cell).generate(CutoffSphere(scaled_cutoff));
+
+    return Shell::get_shells(cell, mesh);
   }
 
-  std::vector<Point3D> get_reciprocal_mesh(const UnitCell3D &unit_cell, double cutoff_scale)
+  std::vector<Shell> get_reciprocal_shells(const UnitCell3D &unit_cell, double cutoff_scale)
   {
     auto reciprocal_unit_cell = ReciprocalUnitCell3D(unit_cell);
-    return get_direct_mesh(reciprocal_unit_cell, cutoff_scale);
+    return get_direct_shells(reciprocal_unit_cell, cutoff_scale);
   }
 }
 
 StructureConstants::StructureConstants(const UnitCell3D &unit_cell_, const StructureConstantsConfig config_)
-  : unit_cell(unit_cell_), direct_mesh(get_direct_mesh(unit_cell, config_.lattice_cutoff_scale)),
-    reciprocal_mesh(get_reciprocal_mesh(unit_cell, config_.lattice_cutoff_scale)), config(config_) {}
+  : unit_cell(unit_cell_), direct_shells(get_direct_shells(unit_cell, config_.lattice_cutoff_scale)),
+    reciprocal_shells(get_reciprocal_shells(unit_cell, config_.lattice_cutoff_scale)), config(config_) {}
