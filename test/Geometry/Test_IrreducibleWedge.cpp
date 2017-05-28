@@ -48,3 +48,39 @@ TEST(TestIrreducibleWedge,GetCubic)
   };
   EXPECT_THAT( irreducible_points, ::testing::UnorderedElementsAreArray(reference) );
 }
+
+namespace
+{
+  struct NoData
+  {
+    bool operator==(const NoData &other) const { return true; }
+  };
+}
+
+TEST(TestIrreducibleWedge, Replicate)
+{
+  auto cell = UnitCell3D::create_cubic_primitive(2.0);
+  auto group = CrystallographicPointGroup::create(cell.get_point_group());
+  auto transformations = SymmetryTransformationFactory::get(group->get_elements());
+
+  auto irreducible_points = IrreducibleWedge::get_irreducible_wedge(cell, 2);
+
+  auto irreduc = std::vector<std::pair<Point3D, NoData>>();
+  std::transform(irreducible_points.begin(), irreducible_points.end(), std::back_inserter(irreduc),
+                 [](const Point3D &x)
+                 {
+                   return std::make_pair(x, NoData());
+                 });
+
+  auto replicated = IrreducibleWedge::replicate(irreduc, transformations);
+  auto replicated_points = std::vector<Point3D>();
+  std::transform(replicated.begin(), replicated.end(), std::back_inserter(replicated_points),
+                 [](const std::pair<Point3D, NoData> &x)
+                 {
+                   return x.first;
+                 });
+
+  auto reference_mesh = CubicMesh(1.0).generate(CutoffCube(1.0));
+
+  EXPECT_THAT(replicated_points, ::testing::UnorderedElementsAreArray(reference_mesh));
+}
