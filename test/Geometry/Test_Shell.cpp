@@ -10,8 +10,9 @@ TEST(TestShell, SmallCube)
   auto mesh = LatticeMesh(unit_cell);
   auto cutoff = CutoffSphere(1.8);
   auto points = mesh.generate(cutoff);
+  auto transformations = SymmetryTransformationFactory::generate(unit_cell);
 
-  auto shells = Shell::get_shells(unit_cell, points);
+  auto shells = Shell::get_shells(transformations, points);
   EXPECT_EQ(shells.size(), 4u);
 
   const auto reference_0 = std::vector<Point3D>{{0, 0, 0}};
@@ -62,6 +63,7 @@ TEST(TestShell, SameDistance)
   auto mesh = LatticeMesh(unit_cell);
   auto cutoff = CutoffSphere(3.05);
   auto points = mesh.generate(cutoff);
+  auto transformations = SymmetryTransformationFactory::generate(unit_cell);
 
   auto skin = std::vector<Point3D>();
   std::copy_if(points.begin(), points.end(), std::back_inserter(skin),
@@ -70,7 +72,7 @@ TEST(TestShell, SameDistance)
                  return p.length() > 2.95;
                });
 
-  auto shells = Shell::get_shells(unit_cell, skin);
+  auto shells = Shell::get_shells(transformations, skin);
   ASSERT_EQ(shells.size(), 2u);
   auto shell_0 = shells[0].points.size() == 24 ? shells[0] : shells[1];
   auto shell_1 = shells[0].points.size() == 24 ? shells[1] : shells[0];

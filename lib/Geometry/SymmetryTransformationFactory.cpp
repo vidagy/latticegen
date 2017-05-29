@@ -2,7 +2,6 @@
 #include <set>
 #include <iostream>
 #include "SymmetryTransformationFactory.h"
-#include <Core/Exceptions.h>
 
 using namespace Geometry;
 
@@ -221,5 +220,11 @@ SymmetryTransformationFactory::Transformations SymmetryTransformationFactory::ge
   }
 
   return Transformations{elements.begin(), elements.end()};
+}
+
+SymmetryTransformationFactory::Transformations SymmetryTransformationFactory::generate(const Cell3D &cell)
+{
+  auto group = CrystallographicPointGroup::create(cell.get_point_group());
+  return SymmetryTransformationFactory::get(group->get_elements());
 }
 

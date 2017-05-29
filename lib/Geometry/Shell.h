@@ -5,6 +5,7 @@
 #include <Core/Point3D.h>
 #include <vector>
 #include "Mesh.h"
+#include "SymmetryTransformationFactory.h"
 
 using namespace Core;
 
@@ -34,7 +35,8 @@ namespace Geometry
       return points[0].length();
     }
 
-    static std::vector<Shell> get_shells(const Cell3D &cell, const std::vector<Point3D> &mesh);
+    static std::vector<Shell> get_shells(
+      const SymmetryTransformationFactory::Transformations &transformations, const std::vector<Point3D> &mesh);
   };
 }
 #endif //LATTICEGEN_SHELL_H

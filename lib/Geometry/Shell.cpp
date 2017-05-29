@@ -1,6 +1,5 @@
 #include <algorithm>
 #include "Shell.h"
-#include "SymmetryTransformationFactory.h"
 
 using namespace Geometry;
 
@@ -52,7 +51,8 @@ namespace
   }
 }
 
-std::vector<Shell> Shell::get_shells(const Cell3D &cell, const std::vector<Point3D> &mesh)
+std::vector<Shell> Shell::get_shells(
+  const SymmetryTransformationFactory::Transformations &transformations, const std::vector<Point3D> &mesh)
 {
   auto res = std::vector<Shell>();
 
@@ -65,10 +65,6 @@ std::vector<Shell> Shell::get_shells(const Cell3D &cell, const std::vector<Point
             {
               return lhs.length() < rhs.length();
             });
-
-  std::unique_ptr<CrystallographicPointGroup> group = CrystallographicPointGroup::create(cell.get_point_group());
-  SymmetryTransformationFactory::Transformations transformations
-    = SymmetryTransformationFactory::get(group->get_elements());
 
   auto pre_length = sorted_mesh[0].length();
   auto begin = sorted_mesh.begin();

@@ -199,8 +199,9 @@ namespace
     );
 
     auto mesh = LatticeMesh(cell).generate(CutoffSphere(scaled_cutoff));
+    auto transformations = SymmetryTransformationFactory::generate(cell);
 
-    return Shell::get_shells(cell, mesh);
+    return Shell::get_shells(transformations, mesh);
   }
 
   std::vector<Shell> get_reciprocal_shells(const UnitCell3D &unit_cell, double cutoff_scale)
