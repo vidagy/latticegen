@@ -14,7 +14,7 @@ namespace Geometry
   {
   public:
     static std::vector<Point3D> reduce_by_symmetries(
-      const std::vector<Point3D>& points,
+      std::vector<Point3D> points,
       const SymmetryTransformationFactory::Transformations& transformations);
 
     static std::vector<Point3D> get_irreducible_wedge(const Cell3D &cell, size_t sample);
