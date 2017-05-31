@@ -172,7 +172,8 @@ namespace std
   {
     std::stringstream ss;
     ss << std::scientific << std::setprecision(std::numeric_limits< double >::max_digits10)
-       << "(" << point.x << " , " << point.y << " , " << point.z << " )";
+       << "(" << std::setw(24) << point.x << " , " << std::setw(24) << point.y << " , " << std::setw(24) << point.z
+       << " )";
     return ss.str();
   }
 
