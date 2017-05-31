@@ -136,6 +136,33 @@ namespace Core
     rhs.y = tmp_y;
     rhs.z = tmp_z;
   }
+
+  struct Point3DComparator
+  {
+    explicit Point3DComparator(double abs_tol, double rel_tol)
+      : x_abs_tol(abs_tol), y_abs_tol(abs_tol), z_abs_tol(abs_tol), x_rel_tol(rel_tol), y_rel_tol(rel_tol),
+        z_rel_tol(rel_tol) {}
+
+    Point3DComparator(
+      double x_abs_tol_, double y_abs_tol_, double z_abs_tol_,
+      double x_rel_tol_, double y_rel_tol_, double z_rel_tol_)
+      : x_abs_tol(x_abs_tol_), y_abs_tol(y_abs_tol_), z_abs_tol(z_abs_tol_), x_rel_tol(x_rel_tol_),
+        y_rel_tol(y_rel_tol_), z_rel_tol(z_rel_tol_) {}
+
+    bool isEqual(const Point3D &lhs, const Point3D &rhs) const
+    {
+      return equalsWithTolerance(lhs.x, rhs.x, x_abs_tol, x_rel_tol) &&
+             equalsWithTolerance(lhs.y, rhs.y, y_abs_tol, y_rel_tol) &&
+             equalsWithTolerance(lhs.z, rhs.z, z_abs_tol, z_rel_tol);
+    }
+
+    const double x_abs_tol;
+    const double y_abs_tol;
+    const double z_abs_tol;
+    const double x_rel_tol;
+    const double y_rel_tol;
+    const double z_rel_tol;
+  };
 }
 
 namespace std

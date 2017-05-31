@@ -161,3 +161,22 @@ TEST(TestPoint3D,Compare)
   EXPECT_FALSE(p == w);
   EXPECT_FALSE(p == x);
 }
+
+TEST(TestPoint3D, CompareWithTolerance)
+{
+  const Point3D p = Point3D(1.0, 2.0, 3.0);
+  const Point3D q = Point3D(1.01, 2.0, 3.0);
+
+  auto comparator1 = Point3DComparator(0.1, 1.0);
+  EXPECT_TRUE(comparator1.isEqual(p, q));
+  auto comparator2 = Point3DComparator(0.001, 1.0);
+  EXPECT_FALSE(comparator2.isEqual(p, q));
+
+  const Point3D r = Point3D(100.0, 200.0, 300.0);
+  const Point3D s = Point3D(100.01, 200.0, 300.0);
+
+  auto comparator3 = Point3DComparator(0.1, 1e-3);
+  EXPECT_TRUE(comparator3.isEqual(r, s));
+  auto comparator4 = Point3DComparator(0.1, 1e-7);
+  EXPECT_FALSE(comparator4.isEqual(r, s));
+}
