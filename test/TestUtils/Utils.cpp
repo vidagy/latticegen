@@ -45,4 +45,14 @@ namespace Utils
       out_R << std::setw(20) << std::setprecision(17) << std::fixed << r << "\n";
     out_R.close();
   }
+
+  void log(const std::vector<Core::Point3D> &R, const std::string &filename)
+  {
+    std::ofstream out_R;
+    out_R.open(filename + ".dat");
+    for (auto p : R)
+      out_R << std::setfill(' ') << std::setw(20) << std::setprecision(17) << std::fixed
+            << p.x << '\t' << p.y << '\t' << p.z << "\n";
+    out_R.close();
+  }
 }
