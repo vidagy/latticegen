@@ -55,35 +55,72 @@ namespace
   {
     bool operator==(const NoData &other) const { return true; }
   };
+
+  std::vector<std::pair<Point3D, NoData>> zip(const std::vector<Point3D> &points)
+  {
+    auto res = std::vector<std::pair<Point3D, NoData>>();
+    res.reserve(points.size());
+    std::transform(points.begin(), points.end(), std::back_inserter(res),
+                   [](const Point3D &x)
+                   {
+                     return std::make_pair(x, NoData());
+                   });
+    return res;
+  }
+
+  std::vector<Point3D> unzip(const std::vector<std::pair<Point3D, NoData>> &points_with_nodata)
+  {
+    auto res = std::vector<Point3D>();
+    std::transform(points_with_nodata.begin(), points_with_nodata.end(), std::back_inserter(res),
+                   [](const std::pair<Point3D, NoData> &x)
+                   {
+                     return x.first;
+                   });
+    return res;
+  }
 }
 
 TEST(TestIrreducibleWedge, Replicate)
 {
   auto cell = UnitCell3D::create_cubic_primitive(2.0);
-  auto group = CrystallographicPointGroup::create(cell.get_point_group());
-  auto transformations = SymmetryTransformationFactory::get(group->get_elements());
+  auto transformations = SymmetryTransformationFactory::generate(cell);
 
   auto irreducible_points = IrreducibleWedge::get_irreducible_wedge(cell, 2);
 
-  auto irreduc = std::vector<std::pair<Point3D, NoData>>();
-  std::transform(irreducible_points.begin(), irreducible_points.end(), std::back_inserter(irreduc),
-                 [](const Point3D &x)
-                 {
-                   return std::make_pair(x, NoData());
-                 });
-
+  auto irreduc = zip(irreducible_points);
   auto replicated = IrreducibleWedge::replicate(irreduc, transformations);
-  auto replicated_points = std::vector<Point3D>();
-  std::transform(replicated.begin(), replicated.end(), std::back_inserter(replicated_points),
-                 [](const std::pair<Point3D, NoData> &x)
-                 {
-                   return x.first;
-                 });
+  auto replicated_points = unzip(replicated);
 
   auto reference_mesh = CubicMesh(1.0).generate(CutoffCube(1.0));
 
   EXPECT_THAT(replicated_points, ::testing::UnorderedElementsAreArray(reference_mesh));
 }
+
+TEST(TestIrreducibleWedge, Roundtrip)
+{
+  auto a = 1.0;
+  auto n = 5;
+  auto abs_tol = IrreducibleWedge::get_tolerance(UnitCell3D::create_cubic_primitive(a));
+  auto mesh = CubicMesh(a);
+  auto cutoff = CutoffCube(n * a);
+  auto all_points = mesh.generate(cutoff);
+  auto points = std::vector<Point3D>();
+  std::copy_if(all_points.begin(), all_points.end(), std::back_inserter(points),
+               [](const Point3D &p)
+               {
+                 return p.length() > sqrt(3.0) * 4.42 && p.length() < sqrt(3.0) * 5.1;
+               });
+  auto transformations = SymmetryTransformationFactory::generate(Oh().get_generators());
+  auto irreducible_points = IrreducibleWedge::reduce_by_symmetries(points, transformations, abs_tol);
+
+  auto irreduc = zip(irreducible_points);
+  auto replicated = IrreducibleWedge::replicate(irreduc, transformations, abs_tol);
+  auto replicated_points = unzip(replicated);
+
+  EXPECT_THAT(replicated_points, ::testing::UnorderedElementsAreArray(points));
+}
+
+
 
 TEST(DISABLED_TestIrreducibleWedge, Speed)
 {
