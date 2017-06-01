@@ -10,8 +10,10 @@ RadialSolution RadialSchrodingerEquation::solve(
   double energy_tolerance,
   int max_iter) const
 {
-  if (n == 0)
+  if (n <= 0)
     THROW_INVALID_ARGUMENT("in RadialSchrodingerEquation::solve n must be positive");
+  if (l < 0)
+    THROW_INVALID_ARGUMENT("in RadialSchrodingerEquation::solve l must be non negative");
   if (l >= n)
     THROW_INVALID_ARGUMENT("in RadialSchrodingerEquation::solve l must be less than n, now l = "
                            + std::to_string(l) + " and n = " + std::to_string(n));
