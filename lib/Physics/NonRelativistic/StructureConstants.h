@@ -54,7 +54,7 @@ namespace Physics
       ) const;
 
       std::complex<double> calculate_reciprocal_space(
-        unsigned int l, unsigned int m, unsigned int lprime, unsigned int mprime,
+        unsigned int l, int m, unsigned int lprime, int mprime,
         const Vector3D &k, const std::complex<double> &z
       ) const;
 

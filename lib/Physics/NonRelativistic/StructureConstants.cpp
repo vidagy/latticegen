@@ -45,12 +45,12 @@ StructureConstants::calculate_real_space(unsigned int l, unsigned int m, unsigne
 
 ///@brief Zabloudil et al (15.75)
 std::complex<double>
-StructureConstants::calculate_reciprocal_space(unsigned int l, unsigned int m, unsigned int lprime, unsigned int mprime,
+StructureConstants::calculate_reciprocal_space(unsigned int l, int m, unsigned int lprime, int mprime,
                                                const Vector3D &k, const std::complex<double> &z) const
 {
-  if (m > l)
+  if (abs(m) > l)
     THROW_INVALID_ARGUMENT(" m = " + std::to_string(m) + " is grater than l = " + std::to_string(l));
-  if (mprime > lprime)
+  if (abs(mprime) > lprime)
     THROW_INVALID_ARGUMENT(
       " mprime = " + std::to_string(mprime) + " is grater than lprime = " + std::to_string(lprime));
 
@@ -150,6 +150,8 @@ StructureConstants::D2(unsigned int l, int m, const Vector3D &k, const std::comp
         shell_diff += Math::pow(length, l)
                       * std::exp(1i * (R * k))
                       * std::conj(Complex::spherical_harmonic(l, m, R))
+                      // TODO this integral takes up the 90% of the calculation. it can be optimized since it is
+                      // independent of k and m and only depend on R^2 instead of R
                       * integral(l, config, R_R, z);
       }
     }
