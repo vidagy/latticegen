@@ -32,10 +32,11 @@ namespace Geometry
       auto comparator = Point3DComparator(abs_tolerance, 1.0);
       auto res = std::vector<std::pair<Point3D, T>>();
       for (auto point: irreducible_data) {
+        auto sub_res = std::vector<std::pair<Point3D, T>>();
         for (auto transformation: transformations) {
           auto transformed = transformation * point.first;
           auto already_there = false;
-          for (auto replicated: res) {
+          for (auto replicated: sub_res) {
             if (comparator.isEqual(replicated.first, transformed)) {
               if (!(replicated.second == point.second)) {
                 THROW_LOGIC_ERROR("in replicate: inconsistent data at " + std::to_string(point.first) +
@@ -45,9 +46,10 @@ namespace Geometry
             }
           }
           if (!already_there) {
-            res.push_back(std::make_pair(transformed, point.second));
+            sub_res.push_back(std::make_pair(transformed, point.second));
           }
         }
+        std::move(sub_res.begin(), sub_res.end(), std::back_inserter(res));
       }
       return res;
     }
