@@ -40,8 +40,6 @@ namespace
               if ((!already_covered[j]) && comparator.isEqual(*(begin + j - i), transformed)) {
                 already_covered[j] = true;
                 --still_false;
-                if (still_false == 0)
-                  return result;
               }
             }
           }
