@@ -82,6 +82,8 @@ namespace Geometry
   private:
     Cell3D cell;
     std::vector<Point3D> neighbors;
+    double r_in_for_sure;
+    double r_out_for_sure;
   };
 }
 

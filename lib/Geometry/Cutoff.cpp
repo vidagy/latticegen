@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "Cutoff.h"
 
 using namespace Geometry;
@@ -51,8 +52,8 @@ CutoffCube::CutoffCube(double a_)
 bool CutoffCube::is_included(const Point3D &point) const
 {
   return lessEqualsWithTolerance(fabs(point.x), a) &&
-         lessEqualsWithTolerance(fabs(point.y), a) &&
-         lessEqualsWithTolerance(fabs(point.z), a);
+    lessEqualsWithTolerance(fabs(point.y), a) &&
+    lessEqualsWithTolerance(fabs(point.z), a);
 }
 
 Cutoff::StepsToCover CutoffCube::steps_to_cover(const Cell3D &cell) const
@@ -89,8 +90,8 @@ bool CutoffUnitVectors::is_included(const Point3D &point) const
   long nx, ny, nz;
   std::tie(nx, ny, nz) = cell.get_offsets(point);
   return (size_t) labs(nx) <= a_max &&
-         (size_t) labs(ny) <= b_max &&
-         (size_t) labs(nz) <= c_max;
+    (size_t) labs(ny) <= b_max &&
+    (size_t) labs(nz) <= c_max;
 }
 
 Cutoff::StepsToCover CutoffUnitVectors::steps_to_cover(const Cell3D &cell) const
@@ -118,11 +119,23 @@ CutoffWSCell::CutoffWSCell(const Cell3D &cell_)
     a + b + c, a - b + c, a + b - c, -a + b + c,
     a - b - c, -a - b + c, -a + b - c, -a - b - c,
   };
+
+  auto minmax = std::minmax_element(neighbors.begin(), neighbors.end(),
+                                    [](const Point3D &lhs, const Point3D &rhs)
+                                    {
+                                      return lhs.length() < rhs.length();
+                                    });
+  r_in_for_sure = 0.5 * minmax.first->length();
+  r_out_for_sure = 0.5 * minmax.second->length();
 }
 
 bool CutoffWSCell::is_included(const Point3D &point) const
 {
   auto length = point.length();
+  if (strictlyLess(length, r_in_for_sure))
+    return true;
+  if (strictlyGreater(length, r_out_for_sure))
+    return false;
   for (auto neighbor: neighbors) {
     if (length > (point - neighbor).length())
       return false;

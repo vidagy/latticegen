@@ -100,19 +100,19 @@ TEST(TestStructureConstants, Reciprocal)
   }
 }
 
-namespace
-{
-  void log(const std::vector<std::pair<Point3D, std::complex<double>>> &R, const std::string &filename)
-  {
-    std::ofstream out_R;
-    out_R.open(filename + ".dat");
-    for (auto p : R)
-      out_R << std::setfill(' ') << std::setw(20) << std::setprecision(17) << std::fixed
-            << p.first.x << '\t' << p.first.y << '\t' << p.first.z << '\t'
-            << p.second.real() << '\t' << p.second.imag() << "\n";
-    out_R.close();
-  }
-}
+//namespace
+//{
+//  void log(const std::vector<std::pair<Point3D, std::complex<double>>> &R, const std::string &filename)
+//  {
+//    std::ofstream out_R;
+//    out_R.open(filename + ".dat");
+//    for (auto p : R)
+//      out_R << std::setfill(' ') << std::setw(20) << std::setprecision(17) << std::fixed
+//            << p.first.x << '\t' << p.first.y << '\t' << p.first.z << '\t'
+//            << p.second.real() << '\t' << p.second.imag() << "\n";
+//    out_R.close();
+//  }
+//}
 
 TEST(TestStructureConstants, GenerateSlice)
 {
