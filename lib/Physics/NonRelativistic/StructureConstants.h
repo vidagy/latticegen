@@ -4,6 +4,7 @@
 #include <complex>
 #include <Geometry/UnitCell3D.h>
 #include <Geometry/Shell.h>
+#include <map>
 
 using namespace Geometry;
 
@@ -11,6 +12,19 @@ namespace Physics
 {
   namespace NonRelativistic
   {
+    class RealStructureConstants
+    {
+    public:
+      RealStructureConstants(const UnitCell3D &unit_cell_) : unit_cell(unit_cell_) {}
+
+      std::complex<double> calculate(
+        unsigned int l, unsigned int m, unsigned int lprime, unsigned int mprime,
+        Coordinates3D n, Coordinates3D nprime, const std::complex<double> &z
+      ) const;
+
+      const UnitCell3D unit_cell;
+    };
+
     struct StructureConstantsConfig
     {
       StructureConstantsConfig(
@@ -40,37 +54,70 @@ namespace Physics
       constexpr static double default_steps_per_unit = 200.0;
     };
 
-    class StructureConstants
+    struct IntegralCache
+    {
+      IntegralCache(
+        const std::shared_ptr<const std::vector<Shell>> &direct_shells,
+        const std::shared_ptr<const StructureConstantsConfig> &config,
+        unsigned int l_max_,
+        std::complex<double> z
+      );
+
+      std::complex<double> get(unsigned int l, unsigned int n) const;
+
+      const unsigned int n_max;
+      const unsigned int l_max;
+      const std::vector<std::complex<double>> cache;
+    };
+
+    class ReciprocalStructureConstantsCalculator
     {
     public:
-      StructureConstants(
+      std::complex<double> calculate(unsigned int l, int m, unsigned int lprime, int mprime, const Vector3D &k) const;
+
+    private:
+      ReciprocalStructureConstantsCalculator(
+        const std::shared_ptr<const UnitCell3D> &unit_cell_,
+        const std::shared_ptr<const std::vector<Shell>> &direct_shells_,
+        const std::shared_ptr<const std::vector<Shell>> &reciprocal_shells_,
+        const std::shared_ptr<const StructureConstantsConfig> &config_,
+        const std::complex<double> &z_,
+        const IntegralCache &integral_cache_
+      ) : unit_cell(unit_cell_), direct_shells(direct_shells_), reciprocal_shells(reciprocal_shells_),
+          config(config_), z(z_), integral_cache(integral_cache_) {}
+
+      std::complex<double> D1(unsigned int l, int m, const Vector3D &k) const;
+
+      std::complex<double> D2(unsigned int l, int m, const Vector3D &k) const;
+
+      std::complex<double> D3(unsigned int l, int m) const;
+
+      const std::shared_ptr<const UnitCell3D> unit_cell;
+      const std::shared_ptr<const std::vector<Shell>> direct_shells;
+      const std::shared_ptr<const std::vector<Shell>> reciprocal_shells;
+      const std::shared_ptr<const StructureConstantsConfig> config;
+      const std::complex<double> z;
+      const IntegralCache integral_cache;
+
+      friend class ReciprocalStructureConstants;
+
+      friend class TestAccessor;
+    };
+
+    class ReciprocalStructureConstants
+    {
+    public:
+      ReciprocalStructureConstants(
         const UnitCell3D &unit_cell_,
         const StructureConstantsConfig config_ = StructureConstantsConfig()
       );
 
-      std::complex<double> calculate_real_space(
-        unsigned int l, unsigned int m, unsigned int lprime, unsigned int mprime,
-        Coordinates3D n, Coordinates3D nprime, const std::complex<double> &z
-      ) const;
+      ReciprocalStructureConstantsCalculator get_calculator(unsigned int l_max, const std::complex<double> &z) const;
 
-      std::complex<double> calculate_reciprocal_space(
-        unsigned int l, int m, unsigned int lprime, int mprime,
-        const Vector3D &k, const std::complex<double> &z
-      ) const;
-
-    private:
-      std::complex<double> D1(unsigned int l, int m, const Vector3D &k, const std::complex<double> &z) const;
-
-      std::complex<double> D2(unsigned int l, int m, const Vector3D &k, const std::complex<double> &z) const;
-
-      std::complex<double> D3(unsigned int l, int m, const Vector3D &k, const std::complex<double> &z) const;
-
-      const UnitCell3D unit_cell;
-      const std::vector<Shell> direct_shells;
-      const std::vector<Shell> reciprocal_shells;
-      const StructureConstantsConfig config;
-
-      friend class TestAccessor;
+      const std::shared_ptr<const UnitCell3D> unit_cell;
+      const std::shared_ptr<const std::vector<Shell>> direct_shells;
+      const std::shared_ptr<const std::vector<Shell>> reciprocal_shells;
+      const std::shared_ptr<const StructureConstantsConfig> config;
     };
   }
 }

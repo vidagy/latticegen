@@ -11,8 +11,8 @@ using namespace Math;
 
 ///@brief Zabloudil et al (15.6)
 std::complex<double>
-StructureConstants::calculate_real_space(unsigned int l, unsigned int m, unsigned int lprime, unsigned int mprime,
-                                         Coordinates3D n, Coordinates3D nprime, const std::complex<double> &z) const
+RealStructureConstants::calculate(unsigned int l, unsigned int m, unsigned int lprime, unsigned int mprime,
+                                  Coordinates3D n, Coordinates3D nprime, const std::complex<double> &z) const
 {
   if (m > l)
     THROW_INVALID_ARGUMENT(" m = " + std::to_string(m) + " is grater than l = " + std::to_string(l));
@@ -45,14 +45,22 @@ StructureConstants::calculate_real_space(unsigned int l, unsigned int m, unsigne
 
 ///@brief Zabloudil et al (15.75)
 std::complex<double>
-StructureConstants::calculate_reciprocal_space(unsigned int l, int m, unsigned int lprime, int mprime,
-                                               const Vector3D &k, const std::complex<double> &z) const
+ReciprocalStructureConstantsCalculator::calculate(unsigned int l, int m, unsigned int lprime, int mprime,
+                                                  const Vector3D &k) const
 {
-  if (abs(m) > l)
+  if (static_cast<unsigned int>(abs(m)) > l)
     THROW_INVALID_ARGUMENT(" m = " + std::to_string(m) + " is grater than l = " + std::to_string(l));
-  if (abs(mprime) > lprime)
+  if (static_cast<unsigned int>(abs(mprime)) > lprime)
     THROW_INVALID_ARGUMENT(
       " mprime = " + std::to_string(mprime) + " is grater than lprime = " + std::to_string(lprime));
+  if (l > integral_cache.l_max)
+    THROW_INVALID_ARGUMENT(
+      " l = " + std::to_string(l) + " is grater than l_max = " + std::to_string(integral_cache.l_max)
+      + ". Please create a calculator with greater l_max");
+  if (lprime > integral_cache.l_max)
+    THROW_INVALID_ARGUMENT(
+      " lprime = " + std::to_string(lprime) + " is grater than l_max = " + std::to_string(integral_cache.l_max)
+      + ". Please create a calculator with greater l_max");
 
   auto mpp = m + mprime;
   auto lpp_min = static_cast<unsigned int>(abs(lprime - l));
@@ -62,21 +70,21 @@ StructureConstants::calculate_reciprocal_space(unsigned int l, int m, unsigned i
   for (auto lpp = lpp_min; lpp <= lpp_max; ++lpp) {
     res += ipow(l - lprime - lpp)
            * Gaunt::calculate(l, m, lprime, mprime, lpp, mpp)
-           * (D1(lpp, mpp, k, z) + D2(lpp, mpp, k, z) + D3(lpp, mpp, k, z));
+           * (D1(lpp, mpp, k) + D2(lpp, mpp, k) + D3(lpp, mpp));
   }
   return 4.0 * pi * res;
 }
 
 ///@brief Zabloudil et al (15.77)
 std::complex<double>
-StructureConstants::D1(unsigned int l, int m, const Vector3D &k, const std::complex<double> &z) const
+ReciprocalStructureConstantsCalculator::D1(unsigned int l, int m, const Vector3D &k) const
 {
   auto p = std::sqrt(z);
-  const auto &ewald_param = config.ewald_param;
+  const auto &ewald_param = config->ewald_param;
 
   auto sum = 0i;
   // calculating the sum over reciprocal lattice positions
-  for (auto shell: reciprocal_shells) {
+  for (auto shell: *reciprocal_shells) {
     auto shell_diff = 0i;
     for (auto K: shell.points) {
       auto K_plus_k = K + k;
@@ -93,13 +101,13 @@ StructureConstants::D1(unsigned int l, int m, const Vector3D &k, const std::comp
                     * std::conj(Complex::spherical_harmonic(l, m, K_plus_k));
     }
     sum += shell_diff;
-    if (abs(shell_diff / sum) < config.integral_tolerance) {
+    if (abs(shell_diff / sum) < config->integral_tolerance) {
       break;
     }
   }
 
   return -4.0 * pi
-         / std::abs(unit_cell.v1 * cross_product(unit_cell.v2, unit_cell.v3))
+         / std::abs(unit_cell->v1 * cross_product(unit_cell->v2, unit_cell->v3))
          * ipow(l)
          * std::pow(p, -l)
          * std::exp(z / ewald_param)
@@ -135,29 +143,28 @@ namespace
 
 ///@brief Zabloudil et al (15.78)
 std::complex<double>
-StructureConstants::D2(unsigned int l, int m, const Vector3D &k, const std::complex<double> &z) const
+ReciprocalStructureConstantsCalculator::D2(unsigned int l, int m, const Vector3D &k) const
 {
   auto p = std::sqrt(z);
 
   auto sum = 0i;
   // calculating the sum over lattice positions
-  for (auto shell: direct_shells) {
-    auto shell_diff = 0i;
-    for (auto R: shell.points) {
-      auto R_R = R * R;
-      auto length = sqrt(R_R);
-      if (!nearlyZero(length)) {
+  auto i = 0u;
+  for (auto shell: *direct_shells) {
+    auto length = shell.r();
+    if (!nearlyZero(length)) {
+      auto integral = integral_cache.get(l, i++);
+      auto shell_diff = 0i;
+      for (auto R: shell.points) {
         shell_diff += Math::pow(length, l)
                       * std::exp(1i * (R * k))
                       * std::conj(Complex::spherical_harmonic(l, m, R))
-                      // TODO this integral takes up the 90% of the calculation. it can be optimized since it is
-                      // independent of k and m and only depend on R^2 instead of R
-                      * integral(l, config, R_R, z);
+                      * integral;
       }
-    }
-    sum += shell_diff;
-    if (abs(shell_diff / sum) < config.integral_tolerance) {
-      break;
+      sum += shell_diff;
+      if (abs(shell_diff / sum) < config->integral_tolerance) {
+        break;
+      }
     }
   }
 
@@ -166,13 +173,13 @@ StructureConstants::D2(unsigned int l, int m, const Vector3D &k, const std::comp
 
 ///@brief Zabloudil et al (15.79)
 std::complex<double>
-StructureConstants::D3(unsigned int l, int m, const Vector3D &k, const std::complex<double> &z) const
+ReciprocalStructureConstantsCalculator::D3(unsigned int l, int m) const
 {
   if ((l != 0) || (m != 0))
     return 0i;
 
-  auto ewald_param = config.ewald_param;
-  auto tol = config.integral_tolerance;
+  auto ewald_param = config->ewald_param;
+  auto tol = config->integral_tolerance;
   auto res = 0i;
   auto diff = 1.0;
   auto n = 0;
@@ -191,7 +198,7 @@ StructureConstants::D3(unsigned int l, int m, const Vector3D &k, const std::comp
 
 namespace
 {
-  std::vector<Shell> get_direct_shells(const Cell3D &cell, double cutoff_scale)
+  std::shared_ptr<const std::vector<Shell>> get_direct_shells(const Cell3D &cell, double cutoff_scale)
   {
     auto scaled_cutoff = cutoff_scale * std::max(
       std::max(
@@ -203,16 +210,71 @@ namespace
     auto mesh = LatticeMesh(cell).generate(CutoffSphere(scaled_cutoff));
     auto transformations = SymmetryTransformationFactory::generate(cell);
 
-    return Shell::get_shells(transformations, mesh);
+    return std::make_shared<const std::vector<Shell>>(Shell::get_shells(transformations, mesh));
   }
 
-  std::vector<Shell> get_reciprocal_shells(const UnitCell3D &unit_cell, double cutoff_scale)
+  std::shared_ptr<const std::vector<Shell>> get_reciprocal_shells(const UnitCell3D &unit_cell, double cutoff_scale)
   {
     auto reciprocal_unit_cell = ReciprocalUnitCell3D(unit_cell);
     return get_direct_shells(reciprocal_unit_cell, cutoff_scale);
   }
 }
 
-StructureConstants::StructureConstants(const UnitCell3D &unit_cell_, const StructureConstantsConfig config_)
-  : unit_cell(unit_cell_), direct_shells(get_direct_shells(unit_cell, config_.lattice_cutoff_scale)),
-    reciprocal_shells(get_reciprocal_shells(unit_cell, config_.lattice_cutoff_scale)), config(config_) {}
+ReciprocalStructureConstants::ReciprocalStructureConstants(
+  const UnitCell3D &unit_cell_, const StructureConstantsConfig config_
+) : unit_cell(std::make_shared<const UnitCell3D>(unit_cell_)),
+    direct_shells(get_direct_shells(unit_cell_, config_.lattice_cutoff_scale)),
+    reciprocal_shells(get_reciprocal_shells(unit_cell_, config_.lattice_cutoff_scale)),
+    config(std::make_shared<const StructureConstantsConfig>(config_)) {}
+
+ReciprocalStructureConstantsCalculator
+ReciprocalStructureConstants::get_calculator(unsigned int l_max, const std::complex<double> &z) const
+{
+  auto integral_cache = IntegralCache(direct_shells, config, 2 * l_max, z);
+  return ReciprocalStructureConstantsCalculator(unit_cell, direct_shells, reciprocal_shells, config, z, integral_cache);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace
+{
+  std::vector<std::complex<double>>
+  populate_integral_cache(const std::shared_ptr<const std::vector<Shell>> &direct_shells,
+                          const std::shared_ptr<const StructureConstantsConfig> &config,
+                          const int l_max,
+                          const std::complex<double> z)
+  {
+    auto cache = std::vector<std::complex<double>>();
+    cache.reserve(l_max * direct_shells->size());
+
+    for (auto l = 0; l <= l_max; ++l) {
+      for (auto shell: *direct_shells) {
+        auto r = shell.r();
+        // the integral is not defined for r == 0, so we leave that "shell" out.
+        // this means that the indexing of the shells are shifted by -1
+        if (!nearlyZero(r)) {
+          cache.push_back(integral(l, *config, r * r, z));
+        }
+      }
+    }
+    return cache;
+  }
+}
+
+IntegralCache::IntegralCache(const std::shared_ptr<const std::vector<Shell>> &direct_shells,
+                             const std::shared_ptr<const StructureConstantsConfig> &config,
+                             unsigned int l_max_, std::complex<double> z
+) : n_max((const unsigned int) direct_shells->size()), l_max(l_max_),
+    cache(populate_integral_cache(direct_shells, config, l_max, z))
+{
+}
+
+std::complex<double> IntegralCache::get(unsigned int l, unsigned int n) const
+{
+  if (l > l_max)
+    THROW_INVALID_ARGUMENT("l = " + std::to_string(l) + "while l_max = " + std::to_string(l_max));
+  if (n > n_max)
+    THROW_INVALID_ARGUMENT("n = " + std::to_string(n) + "while n_max = " + std::to_string(n_max));
+
+  return cache[l * n_max + n];
+}
