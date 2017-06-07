@@ -47,12 +47,13 @@ namespace Math
     }
   }
 
-  inline double pow(double base, int exponent)
+  template<typename T>
+  T pow(T base, int exponent)
   {
     if (exponent < 0)
       THROW_INVALID_ARGUMENT("Negative exponent = " + std::to_string(exponent));
 
-    double result = 1.0;
+    T result = 1.0;
 
     while (exponent) {
       if (exponent & 1)

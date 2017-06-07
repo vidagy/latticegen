@@ -18,7 +18,7 @@ namespace Geometry
       const SymmetryTransformationFactory::Transformations &transformations,
       double abs_tolerance = default_abs_tolerance);
 
-    static std::vector<Point3D> get_irreducible_wedge(const Cell3D &cell, size_t sample);
+    static std::vector<Point3D> get_irreducible_wedge(const Cell3D &cell, size_t sample, bool centered = false);
 
     static double get_tolerance(const Cell3D &cell);
 

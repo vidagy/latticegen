@@ -79,6 +79,9 @@ ReciprocalStructureConstantsCalculator::calculate(unsigned int l, int m, unsigne
 std::complex<double>
 ReciprocalStructureConstantsCalculator::D1(unsigned int l, int m, const Vector3D &k) const
 {
+  if (nearlyZero(k.length()))
+    THROW_INVALID_ARGUMENT("k cannot be zero, k = " + std::to_string(k));
+
   auto p = std::sqrt(z);
   const auto &ewald_param = config->ewald_param;
 
@@ -89,7 +92,8 @@ ReciprocalStructureConstantsCalculator::D1(unsigned int l, int m, const Vector3D
     for (auto K: shell.points) {
       auto K_plus_k = K + k;
       auto K_plus_k_squared = K_plus_k * K_plus_k;
-      if (nearlyZero(abs(K_plus_k_squared - z)))
+      auto K_plus_k_squared_minus_z = K_plus_k_squared - z;
+      if (nearlyZero(abs(K_plus_k_squared_minus_z)))
         THROW_LOGIC_ERROR(
           "division by zero: K = " + std::to_string(K)
           + " k = " + std::to_string(k)
@@ -97,7 +101,7 @@ ReciprocalStructureConstantsCalculator::D1(unsigned int l, int m, const Vector3D
 
       shell_diff += Math::pow(K_plus_k.length(), l)
                     * exp(-K_plus_k_squared / ewald_param)
-                    / (K_plus_k_squared - z)
+                    / (K_plus_k_squared_minus_z)
                     * std::conj(Complex::spherical_harmonic(l, m, K_plus_k));
     }
     sum += shell_diff;
@@ -109,7 +113,7 @@ ReciprocalStructureConstantsCalculator::D1(unsigned int l, int m, const Vector3D
   return -4.0 * pi
          / std::abs(unit_cell->v1 * cross_product(unit_cell->v2, unit_cell->v3))
          * ipow(l)
-         * std::pow(p, -l)
+         / Math::pow(p, l)
          * std::exp(z / ewald_param)
          * sum;
 }
@@ -168,7 +172,7 @@ ReciprocalStructureConstantsCalculator::D2(unsigned int l, int m, const Vector3D
     }
   }
 
-  return (((l + 1) & 1) == 0 ? 1.0 : -1.0) * (1 << (l + 1)) / sqrt(pi) * std::pow(p, -l) * sum;
+  return (((l + 1) & 1) == 0 ? 1.0 : -1.0) * (1 << (l + 1)) / sqrt(pi) / Math::pow(p, l) * sum;
 }
 
 ///@brief Zabloudil et al (15.79)

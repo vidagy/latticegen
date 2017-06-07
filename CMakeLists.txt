@@ -15,7 +15,7 @@ set (CMAKE_CXX_COMPILER g++)
 # Setting compiler flags for debug and release versions
 set(CMAKE_CXX_FLAGS         "-std=c++14 ${CMAKE_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage -g -pg -O0 -Wall -Werror")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2 ")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2 -g -pg")
 
 # install directory
 set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}")

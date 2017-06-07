@@ -102,7 +102,7 @@ double IrreducibleWedge::get_tolerance(const Cell3D &cell)
 }
 
 std::vector<Point3D>
-IrreducibleWedge::get_irreducible_wedge(const Cell3D &cell, size_t sample)
+IrreducibleWedge::get_irreducible_wedge(const Cell3D &cell, size_t sample, bool centered)
 {
   if (sample == 0)
     THROW_INVALID_ARGUMENT("sample is zero in IrreducibleWedge::get_irreducible_wedge");
@@ -129,5 +129,5 @@ IrreducibleWedge::get_irreducible_wedge(const Cell3D &cell, size_t sample)
   }
 
   double abs_tol = get_tolerance(mesh->cell);
-  return reduce_by_symmetries(mesh->generate(CutoffWSCell(cell)), transformations, abs_tol);
+  return reduce_by_symmetries(mesh->generate(CutoffWSCell(cell), centered), transformations, abs_tol);
 }
