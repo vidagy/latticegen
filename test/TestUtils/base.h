@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <cmath>
 
 MATCHER_P(NearWithTolerance, tolerance, "")
 {

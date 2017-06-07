@@ -37,8 +37,8 @@ TEST(TestBessel, CompareToBoost)
 
 TEST(TestBessel, Complex)
 {
-  auto explicit_res = Math::bessel<std::complex<double>>(3, 5.0 + 1i);
-  auto slow = Math::bessel_slow<std::complex<double>>(3, 5.0 + 1i);
+  auto explicit_res = Math::bessel<std::complex<double>>(3, 5.0 + 1.0i);
+  auto slow = Math::bessel_slow<std::complex<double>>(3, 5.0 + 1.0i);
   auto reference = 0.283003548719885467 - 0.0520917970290797114i;
   EXPECT_NEAR(explicit_res.real(), reference.real(), 1e-15);
   EXPECT_NEAR(explicit_res.imag(), reference.imag(), 1e-15);
@@ -72,8 +72,8 @@ TEST(TestNeumann, CompareToBoost)
 
 TEST(TestNeumann, Complex)
 {
-  auto explicit_res = Math::neumann<std::complex<double>>(3, 5.0 + 1i);
-  auto slow = Math::neumann_slow<std::complex<double>>(3, 5.0 + 1i);
+  auto explicit_res = Math::neumann<std::complex<double>>(3, 5.0 + 1.0i);
+  auto slow = Math::neumann_slow<std::complex<double>>(3, 5.0 + 1.0i);
   auto reference = 0.014791676815047422 + 0.18676911997446946i;
   EXPECT_NEAR(explicit_res.real(), reference.real(), 1e-15);
   EXPECT_NEAR(explicit_res.imag(), reference.imag(), 1e-15);

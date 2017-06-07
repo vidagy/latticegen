@@ -106,13 +106,13 @@ namespace Math
   std::complex<double> hankel_1(unsigned int n, const std::complex<double> &x)
   {
     using namespace std::complex_literals;
-    return bessel<std::complex<double>>(n, x) + 1i * neumann<std::complex<double>>(n, x);
+    return bessel<std::complex<double>>(n, x) + 1.0i * neumann<std::complex<double>>(n, x);
   }
 
   std::complex<double> hankel_2(unsigned int n, const std::complex<double> &x)
   {
     using namespace std::complex_literals;
-    return bessel<std::complex<double>>(n, x) - 1i * neumann<std::complex<double>>(n, x);
+    return bessel<std::complex<double>>(n, x) - 1.0i * neumann<std::complex<double>>(n, x);
   }
 }
 

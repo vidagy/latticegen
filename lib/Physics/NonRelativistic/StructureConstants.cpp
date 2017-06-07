@@ -32,7 +32,7 @@ RealStructureConstants::calculate(unsigned int l, unsigned int m, unsigned int l
   unsigned int lpp_min = static_cast<unsigned int>(abs(lprime - l));
   unsigned int lpp_max = lprime + l;
 
-  auto res = 0i;
+  auto res = 0.0i;
   for (auto lpp = lpp_min; lpp <= lpp_max; ++lpp) {
     res += ipow(l - lprime - lpp)
            * hankel_1(lpp, p * R.length())
@@ -40,7 +40,7 @@ RealStructureConstants::calculate(unsigned int l, unsigned int m, unsigned int l
            * Gaunt::calculate(l, m, lpp, mpp, lprime, mprime);
 
   }
-  return -4 * pi * p * 1i * res;
+  return -4 * pi * p * 1.0i * res;
 }
 
 ///@brief Zabloudil et al (15.75)
@@ -66,7 +66,7 @@ ReciprocalStructureConstantsCalculator::calculate(unsigned int l, int m, unsigne
   auto lpp_min = static_cast<unsigned int>(abs(lprime - l));
   auto lpp_max = lprime + l;
 
-  auto res = 0i;
+  auto res = 0.0i;
   for (auto lpp = lpp_min; lpp <= lpp_max; ++lpp) {
     res += ipow(l - lprime - lpp)
            * Gaunt::calculate(l, m, lprime, mprime, lpp, mpp)
@@ -85,10 +85,10 @@ ReciprocalStructureConstantsCalculator::D1(unsigned int l, int m, const Vector3D
   auto p = std::sqrt(z);
   const auto &ewald_param = config->ewald_param;
 
-  auto sum = 0i;
+  auto sum = 0.0i;
   // calculating the sum over reciprocal lattice positions
   for (auto shell: *reciprocal_shells) {
-    auto shell_diff = 0i;
+    auto shell_diff = 0.0i;
     for (auto K: shell.points) {
       auto K_plus_k = K + k;
       auto K_plus_k_squared = K_plus_k * K_plus_k;
@@ -126,8 +126,8 @@ namespace
     const int max_iter = config.max_step_count;
     const auto exponent = z / 4.0 - R_squared;
     const double step_size = sqrt(std::abs(1.0 / exponent)) / config.steps_per_unit;
-    auto res = 0i;
-    auto diff = 0i;
+    auto res = 0.0i;
+    auto diff = 0.0i;
     auto xi_0 = sqrt(config.ewald_param) / 2.0;
     auto iter = 0;
     do {
@@ -151,17 +151,17 @@ ReciprocalStructureConstantsCalculator::D2(unsigned int l, int m, const Vector3D
 {
   auto p = std::sqrt(z);
 
-  auto sum = 0i;
+  auto sum = 0.0i;
   // calculating the sum over lattice positions
   auto i = 0u;
   for (auto shell: *direct_shells) {
     auto length = shell.r();
     if (!nearlyZero(length)) {
       auto integral = integral_cache.get(l, i++);
-      auto shell_diff = 0i;
+      auto shell_diff = 0.0i;
       for (auto R: shell.points) {
         shell_diff += Math::pow(length, l)
-                      * std::exp(1i * (R * k))
+                      * std::exp(1.0i * (R * k))
                       * std::conj(Complex::spherical_harmonic(l, m, R))
                       * integral;
       }
@@ -180,11 +180,11 @@ std::complex<double>
 ReciprocalStructureConstantsCalculator::D3(unsigned int l, int m) const
 {
   if ((l != 0) || (m != 0))
-    return 0i;
+    return 0.0i;
 
   auto ewald_param = config->ewald_param;
   auto tol = config->integral_tolerance;
-  auto res = 0i;
+  auto res = 0.0i;
   auto diff = 1.0;
   auto n = 0;
   if (std::abs(z) < tol)

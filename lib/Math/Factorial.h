@@ -82,11 +82,11 @@ namespace Math
       case 0:
         return 1.0;
       case 1:
-        return 1i;
+        return 1.0i;
       case 2:
         return -1.0;
       case 3:
-        return -1i;
+        return -1.0i;
       default:
         THROW_LOGIC_ERROR("modulo 4 returned" + std::to_string(mod));
     }

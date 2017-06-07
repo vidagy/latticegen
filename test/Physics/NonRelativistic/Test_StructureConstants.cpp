@@ -17,7 +17,7 @@ TEST(TestStructureConstants, Real)
 {
   auto unit_cell = UnitCell3D::create_cubic_primitive(1.0);
   auto structure_constant = RealStructureConstants(unit_cell);
-  auto nothing = 0i;
+  auto nothing = 0.0i;
   for (auto rez = 0.01; rez < 1.0; rez += 0.1) {
     for (auto n = 0; n < 4; ++n) {
       for (auto m = 0; m < 4; ++m) {
@@ -73,7 +73,7 @@ TEST(TestStructureConstants, Reciprocal)
   auto unit_cell = UnitCell3D::create_cubic_primitive(1.0);
   auto reciprocal_unit_cell = ReciprocalUnitCell3D(unit_cell);
   auto irreduc_wedge = IrreducibleWedge::get_irreducible_wedge(reciprocal_unit_cell, 5, true);
-  auto nothing = 0i;
+  auto nothing = 0.0i;
 
   for (auto k: irreduc_wedge) {
     auto params = StructureConstantsConfig(
