@@ -161,11 +161,11 @@ namespace
 {
   void test_identity(const Vector3D& vector)
   {
-    Reflection reflection = Reflection(vector/vector.length());
-    Rotation rotation = Rotation(vector*pi*0.783);
-    Rotation inv_rotation = Rotation(-1.0 * vector*pi*0.783);
-    ImproperRotation improper_rotation = ImproperRotation(vector * 1.123);
-    ImproperRotation inv_improper_rotation = ImproperRotation(-1.0 * vector * 1.123);
+    const auto reflection = Reflection(vector / vector.length());
+    const auto rotation = Rotation(vector * pi * 0.783);
+    const auto inv_rotation = Rotation(-1.0 * vector * pi * 0.783);
+    const auto improper_rotation = ImproperRotation(vector * 1.123);
+    const auto inv_improper_rotation = ImproperRotation(-1.0 * vector * 1.123);
 
     const auto reflect2 = reflection * reflection;
     const auto rotinvrot = rotation * inv_rotation;
@@ -179,7 +179,7 @@ namespace
       {
         for (auto z = -2.0; z <= 2.0; z += 0.8)
         {
-          Vector3D v = Vector3D(x,y,z);
+          const auto v = Vector3D(x, y, z);
           EXPECT_EQ(reflect2 * v, Identity() * v);
 
           EXPECT_EQ(rotinvrot * v, Identity() * v);
@@ -225,4 +225,43 @@ TEST(TestTransformations,Identity)
   test_identity(Vector3D(-1.0,-1.0,-1.0));
 
   test_identity(Vector3D(1.0,2.0,3.0));
+}
+
+TEST(TestTransformations, Multiplication)
+{
+  auto vector = Vector3D{1.0, 2.0, 3.0};
+  vector /= vector.length();
+
+  const auto identity = Identity();
+  const auto inversion = Inversion();
+  const auto reflection = Reflection(vector);
+  const auto rotation = Rotation(vector * pi * 0.783);
+  const auto inv_rotation = Rotation(-1.0 * vector * pi * 0.783);
+  const auto improper_rotation = ImproperRotation(vector * 1.123);
+  const auto inv_improper_rotation = ImproperRotation(-1.0 * vector * 1.123);
+
+  // multiplication with identity
+  EXPECT_EQ(identity * identity, identity);
+  EXPECT_EQ(identity * inversion, inversion);
+  EXPECT_EQ(inversion * identity, inversion);
+  EXPECT_EQ(identity * rotation, rotation);
+  EXPECT_EQ(rotation * identity, rotation);
+  EXPECT_EQ(identity * reflection, reflection);
+  EXPECT_EQ(reflection * identity, reflection);
+  EXPECT_EQ(identity * improper_rotation, improper_rotation);
+  EXPECT_EQ(improper_rotation * identity, improper_rotation);
+
+  // multiplication with inverse
+  EXPECT_EQ(inversion * inversion, identity);
+  EXPECT_EQ(reflection * reflection, identity);
+  EXPECT_EQ(rotation * inv_rotation, identity);
+  EXPECT_EQ(improper_rotation * inv_improper_rotation, identity);
+
+  // with same kind
+  EXPECT_EQ(rotation * rotation, Rotation(2.0 * vector * pi * 0.783));
+  EXPECT_EQ(improper_rotation * improper_rotation, Rotation(2.0 * vector * 1.123));
+
+  // mixed
+  EXPECT_EQ(rotation * improper_rotation, ImproperRotation(vector * (1.123 + pi * 0.783)));
+  EXPECT_EQ((reflection * improper_rotation).type, Transformation::Rotation);
 }

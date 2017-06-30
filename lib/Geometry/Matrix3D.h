@@ -91,6 +91,11 @@ namespace Geometry
 
     return x * (cross_product(y,z));
   }
+
+  inline double trace(const Matrix3D &matrix)
+  {
+    return matrix[0][0] + matrix[1][1] + matrix[2][2];
+  }
 }
 
 namespace std
