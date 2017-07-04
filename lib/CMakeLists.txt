@@ -26,10 +26,12 @@ target_include_directories(Math PUBLIC .)
 # Physics
 
 file(GLOB all_physics_src
+        "Physics/Common/*.cpp"
         "Physics/Common/CoreElectrons/*.cpp"
         "Physics/NonRelativistic/*.cpp"
         "Physics/NonRelativistic/CoreElectrons/*.cpp")
 file(GLOB all_physics_hdr
+        "Physics/Common/*.h"
         "Physics/Common/CoreElectrons/*.h"
         "Physics/NonRelativistic/*.h"
         "Physics/NonRelativistic/CoreElectrons/*.h")

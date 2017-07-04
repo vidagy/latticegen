@@ -33,6 +33,7 @@ add_test(NAME Test_Math COMMAND Test_Math --gtest_output=xml:testresults_math.xm
 # Physics
 
 file(GLOB all_physics_test_src
+        "Physics/Common/*.cpp"
         "Physics/NonRelativistic/CoreElectrons/*.cpp"
         "Physics/NonRelativistic/*.cpp")
 add_executable(Test_Physics ${all_physics_test_src})
