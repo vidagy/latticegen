@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <Core/Exceptions.h>
 #include "ClebschGordan.h"
-#include "Factorial.h"
+#include "CommonFunctions.h"
 #include "SphericalHarmonics.h"
 
 using namespace Math;

@@ -52,7 +52,7 @@ namespace Math
     }
   }
 
-  // this function calculates \Gamma(n+1/2)
+  /// @brief this function calculates \Gamma(n+1/2)
   inline double gamma_plus_half(unsigned int n)
   {
     static const double gamma_cache[16] =

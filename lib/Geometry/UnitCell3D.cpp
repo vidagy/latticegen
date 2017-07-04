@@ -1,7 +1,7 @@
 #include "UnitCell3D.h" 
 
 #include "Transformations.h"
-#include <Math/Factorial.h>
+#include <Math/CommonFunctions.h>
 
 using namespace Geometry;
 using namespace Core;

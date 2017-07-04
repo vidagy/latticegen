@@ -3,7 +3,7 @@
 
 #include <cmath>
 #include <functional>
-#include <Math/Factorial.h>
+#include <Math/CommonFunctions.h>
 
 namespace Math
 {

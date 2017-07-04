@@ -1,7 +1,6 @@
 #include "Derivator.h"
 
-#include <Math/Factorial.h>
-#include <Core/Exceptions.h>
+#include <Math/CommonFunctions.h>
 
 using namespace Math;
 

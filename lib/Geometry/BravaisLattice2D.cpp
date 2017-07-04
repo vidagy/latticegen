@@ -1,6 +1,6 @@
 #include "BravaisLattice2D.h"
 #include <Core/Exceptions.h>
-#include <Math/Factorial.h>
+#include <Math/CommonFunctions.h>
 
 #include <algorithm>
 

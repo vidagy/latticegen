@@ -2,7 +2,7 @@
 #include <set>
 #include <iostream>
 #include "SymmetryTransformationFactory.h"
-#include <Math/Factorial.h>
+#include <Math/CommonFunctions.h>
 
 using namespace Geometry;
 

@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <Math/Derivator.h>
 #include <Math/LapackWrapper.h>
-#include <Math/Factorial.h>
+#include <Math/CommonFunctions.h>
 #include "AdamsIntegrator.h"
 
 using namespace Physics::NonRelativistic::CoreElectrons;

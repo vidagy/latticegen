@@ -1,5 +1,4 @@
 #include <Math/SphericalHarmonics.h>
-#include <Math/Factorial.h>
 #include <Math/Bessel.h>
 #include <Math/ClebschGordan.h>
 #include <Geometry/Mesh.h>

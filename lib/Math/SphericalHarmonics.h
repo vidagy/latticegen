@@ -2,7 +2,7 @@
 #define LATTICEGEN_SPHERICALHARMONICS_H
 
 #include <Core/Point3D.h>
-#include <Math/Factorial.h>
+#include <Math/CommonFunctions.h>
 
 #include <functional>
 #include <complex>
