@@ -9,10 +9,6 @@
 using namespace Physics::NonRelativistic;
 using namespace std::complex_literals;
 
-namespace
-{
-}
-
 TEST(TestStructureConstants, Real)
 {
   auto unit_cell = UnitCell3D::create_cubic_primitive(1.0);
