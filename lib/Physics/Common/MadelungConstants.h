@@ -20,11 +20,13 @@ namespace Physics
       RealMadelungConstants(const UnitCell3D &unit_cell_) : unit_cell(unit_cell_) {}
 
       ///@brief Zabloudil et al (19.28)
+      [[deprecated]]
       std::complex<double> calculate(
         unsigned int l, int m, unsigned int lprime, int mprime, Coordinates3D n, Coordinates3D nprime
       ) const;
 
       ///@brief Zabloudil et al (19.36)
+      [[deprecated]]
       std::complex<double> calculateReduced(unsigned int l, int m, Coordinates3D n, Coordinates3D nprime) const;
 
       const UnitCell3D unit_cell;
