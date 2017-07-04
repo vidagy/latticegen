@@ -31,8 +31,3 @@ include_directories("lib")
 enable_testing()
 
 add_subdirectory(test)
-
-##########################################################################
-#set( CTEST_MEMORYCHECK_COMMAND "/usr/bin/valgrind")
-#set( CTEST_MEMORYCHECK_COMMAND_OPTIONS "--tool=memcheck" ) # --xml=yes --xml-file=memtest.xml
-#include(CTest)

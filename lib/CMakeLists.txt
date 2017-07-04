@@ -28,13 +28,11 @@ target_include_directories(Math PUBLIC .)
 file(GLOB all_physics_src
         "Physics/Common/CoreElectrons/*.cpp"
         "Physics/NonRelativistic/*.cpp"
-        "Physics/NonRelativistic/CoreElectrons/*.cpp"
-        "Physics/Relativistic/CoreElectrons/*.cpp")
+        "Physics/NonRelativistic/CoreElectrons/*.cpp")
 file(GLOB all_physics_hdr
         "Physics/Common/CoreElectrons/*.h"
         "Physics/NonRelativistic/*.h"
-        "Physics/NonRelativistic/CoreElectrons/*.h"
-        "Physics/Relativistic/CoreElectrons/*.h")
+        "Physics/NonRelativistic/CoreElectrons/*.h")
 add_library(Physics SHARED ${all_physics_src} ${all_physics_hdr})
 target_link_libraries(Physics Core Math Geometry)
 target_include_directories(Physics PUBLIC .)
