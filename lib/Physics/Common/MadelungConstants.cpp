@@ -16,12 +16,19 @@ std::complex<double> RealMadelungConstants::calculate(
     THROW_INVALID_ARGUMENT(
       "n and nprime must be different n = " + std::to_string(n) + " nprime = " + std::to_string(nprime));
 
+  if (l == 0)
+    THROW_INVALID_ARGUMENT("l cannot be zero, most probably expression is incorrect");
+  if (lprime == 0)
+    THROW_INVALID_ARGUMENT("lprime cannot be zero, most probably expression is incorrect");
+
   auto R_minus_Rprime = n * unit_cell - nprime * unit_cell;
 
+  // TODO this expression might be wrong! (A.4) has different signs then the expression in (19.28), needs to be checked
   auto res =
     ((l & 1) == 0 ? 1.0 : -1.0)
-    * 4.0 * pi * double_factorial(2 * (l + lprime) - 1) / double_factorial(2 * l - 1) /
-    double_factorial(2 * lprime - 1)
+    * 4.0 * pi * double_factorial(((int) (2 * (l + lprime))) - 1)
+    / double_factorial(((int) (2 * l)) - 1)
+    / double_factorial(((int) (2 * lprime)) - 1)
     * ClebschGordan::calculate(l, m, l + lprime, mprime - m, lprime, mprime)
     * std::conj(Complex::spherical_harmonic(l + lprime, mprime - m, R_minus_Rprime))
     / Math::pow(R_minus_Rprime.length(), l + lprime + 1);
