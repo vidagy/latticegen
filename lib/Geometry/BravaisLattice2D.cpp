@@ -1,15 +1,11 @@
 #include "BravaisLattice2D.h"
 #include <Core/Exceptions.h>
+#include <Math/Factorial.h>
 
 #include <algorithm>
 
 using namespace Core;
 using namespace Geometry;
-
-namespace
-{
-  static const double pi = 3.14159265358979323846;
-}
 
 BravaisLattice2D::UnitCell::UnitCell(const Point2D& a_, const Point2D& b_)
   : a(a_), b(b_)

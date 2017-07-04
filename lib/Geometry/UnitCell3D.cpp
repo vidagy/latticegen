@@ -1,8 +1,7 @@
 #include "UnitCell3D.h" 
 
 #include "Transformations.h"
-
-#include <cmath>
+#include <Math/Factorial.h>
 
 using namespace Geometry;
 using namespace Core;
@@ -46,7 +45,6 @@ using namespace Core;
 
 namespace
 {
-  static const double pi = 3.14159265358979323846;
   static const Vector3D x = Vector3D(1.0,0.0,0.0);
   static const Vector3D y = Vector3D(0.0,1.0,0.0);
   static const Vector3D z = Vector3D(0.0,0.0,1.0);

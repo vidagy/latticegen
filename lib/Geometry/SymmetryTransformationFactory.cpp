@@ -2,13 +2,12 @@
 #include <set>
 #include <iostream>
 #include "SymmetryTransformationFactory.h"
+#include <Math/Factorial.h>
 
 using namespace Geometry;
 
 namespace
 {
-  static const double pi = 3.14159265358979323846;
-
   static const Vector3D x = {1.0, 0.0, 0.0};
   static const Vector3D y = {0.0, 1.0, 0.0};
   static const Vector3D z = {0.0, 0.0, 1.0};

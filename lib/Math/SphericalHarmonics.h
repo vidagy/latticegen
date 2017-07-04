@@ -1,17 +1,14 @@
 #ifndef LATTICEGEN_SPHERICALHARMONICS_H
 #define LATTICEGEN_SPHERICALHARMONICS_H
 
+#include <Core/Point3D.h>
+#include <Math/Factorial.h>
+
 #include <functional>
 #include <complex>
-#include <Core/Point3D.h>
 #include <boost/config/no_tr1/complex.hpp>
 
 using namespace Core;
-
-namespace
-{
-  static const double pi = 3.14159265358979323846;
-}
 
 namespace Math
 {

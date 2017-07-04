@@ -4,6 +4,11 @@
 #include <Core/Exceptions.h>
 #include <complex>
 
+namespace
+{
+  static const double pi = M_PI;
+}
+
 namespace Math
 {
   inline double factorial(int n)
@@ -44,6 +49,23 @@ namespace Math
         n -= 2;
       }
       return result * double_factorial_cache[n];
+    }
+  }
+
+  // this function calculates \Gamma(n+1/2)
+  inline double gamma_plus_half(unsigned int n)
+  {
+    static const double gamma_cache[16] =
+      {1.0 * sqrt(pi), 0.5 * sqrt(pi), 0.75 * sqrt(pi), 1.875 * sqrt(pi), 6.5625 * sqrt(pi), 29.53125 * sqrt(pi),
+       162.421875 * sqrt(pi), 1055.7421875 * sqrt(pi), 7918.06640625 * sqrt(pi), 67303.564453125 * sqrt(pi),
+       639383.8623046875 * sqrt(pi), 6.71353055419921875e6 * sqrt(pi), 7.7205601373291015625e7 * sqrt(pi),
+       9.650700171661376953125e8 * sqrt(pi), 1.302844523174285888671875e10 * sqrt(pi),
+       1.889124558602714538574219e11 * sqrt(pi)
+      };
+    if (n < 16)
+      return gamma_cache[n];
+    else {
+      return double_factorial(2 * n - 1) / static_cast<double>(1ull << n) * sqrt(pi);
     }
   }
 

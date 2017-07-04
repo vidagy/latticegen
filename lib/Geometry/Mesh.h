@@ -2,6 +2,7 @@
 #define LATTICEGEN_MESH_H
 
 #include <Core/Point3D.h>
+#include <Math/Factorial.h>
 #include <Geometry/UnitCell3D.h>
 #include <Geometry/Cutoff.h>
 #include <vector>
