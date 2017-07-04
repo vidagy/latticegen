@@ -254,3 +254,23 @@ TEST(UnitCell3D,GetOffset)
   test_get_offset(UnitCell3D::create_cubic_body(a_));
   test_get_offset(UnitCell3D::create_cubic_face(a_));
 }
+
+TEST(UnitCell3D, Volume)
+{
+  auto cell = UnitCell3D::create_orthorhombic_primitive(2.0, 3.0, 4.0);
+  EXPECT_DOUBLE_EQ(cell.volume(), 2.0 * 3.0 * 4.0);
+}
+
+TEST(UnitCell3D, Coordinates)
+{
+  auto cell = UnitCell3D::create_orthorhombic_primitive(1.0, 2.0, 3.0);
+  auto x = Point3D{1.0, 0.0, 0.0};
+  auto y = Point3D{0.0, 2.0, 0.0};
+  auto z = Point3D{0.0, 0.0, 3.0};
+
+  EXPECT_EQ(Coordinates3D(1, 0, 0) * cell, x);
+  EXPECT_EQ(Coordinates3D(0, 1, 0) * cell, y);
+  EXPECT_EQ(Coordinates3D(0, 0, 1) * cell, z);
+
+  EXPECT_EQ(Coordinates3D(11, 111, 1111) * cell, 11 * x + 111 * y + 1111 * z);
+}

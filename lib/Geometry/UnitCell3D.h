@@ -65,6 +65,11 @@ namespace Geometry
     {
       return coordinates.a * v1 + coordinates.b * v2 + coordinates.c * v3;
     }
+
+    double volume() const
+    {
+      return v1 * cross_product(v2, v3);
+    }
   protected:
     Cell3D(BravaisLattice3DType type_, const Point3D &v1_, const Point3D &v2_, const Point3D &v3_)
       : type(type_), v1(v1_), v2(v2_), v3(v3_)
@@ -121,6 +126,11 @@ namespace Geometry
   public:
     ReciprocalUnitCell3D(const UnitCell3D &unit_cell);
   };
+
+  inline Point3D operator*(const Coordinates3D &coordinates3D, const Cell3D &cell3D)
+  {
+    return coordinates3D.a * cell3D.v1 + coordinates3D.b * cell3D.v2 + coordinates3D.c * cell3D.v3;
+  }
 }
 
 namespace std
