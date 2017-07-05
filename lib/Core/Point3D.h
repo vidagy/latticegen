@@ -17,6 +17,11 @@ namespace Core
     Point3D(double x_ = 0.0, double y_ = 0.0, double z_ = 0.0)
       : x(x_), y(y_), z(z_)
     {}
+
+    static Point3D create_polar(double r, double theta, double phi)
+    {
+      return Point3D{r * sin(theta) * cos(phi), r * sin(theta) * sin(phi), r * cos(theta)};
+    }
     
     // operators
     Point3D& operator=(const Point3D& rhs)

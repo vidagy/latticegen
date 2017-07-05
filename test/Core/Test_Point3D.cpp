@@ -1,6 +1,7 @@
 #include <TestUtils/base.h>
 
 #include <Core/Point3D.h>
+#include <Math/CommonFunctions.h>
 
 using namespace Core;
 
@@ -10,6 +11,21 @@ TEST(TestPoint3D,Ctor)
   EXPECT_DOUBLE_EQ(1.0, p.x );
   EXPECT_DOUBLE_EQ(2.0, p.y );
   EXPECT_DOUBLE_EQ(3.0, p.z );
+}
+
+TEST(TestPoint3D, CreatPolar)
+{
+  auto xp = Point3D::create_polar(1.0, pi / 2.0, 0.0);
+  auto x = Point3D(1.0, 0.0, 0.0);
+  EXPECT_EQ(xp, x);
+
+  auto yp = Point3D::create_polar(1.0, pi / 2.0, pi / 2.0);
+  auto y = Point3D(0.0, 1.0, 0.0);
+  EXPECT_EQ(yp, y);
+
+  auto zp = Point3D::create_polar(1.0, 0.0, 0.0);
+  auto z = Point3D(0.0, 0.0, 1.0);
+  EXPECT_EQ(zp, z);
 }
 
 TEST(TestPoint3D,Swap)
