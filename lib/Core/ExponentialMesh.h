@@ -11,12 +11,12 @@ namespace Core
 {
   struct ExponentialMesh
   {
-    // Exponential mesh in the range of [a, b] having N points (endpoints included)
-    // x_i = multiplier * exp(dx * i) + shift
-    // where dx = ln(b/a) / (N-1) if scale == 1.0
-    // if scale is different, then dx = dx[scale = 1.0] * scale and
-    // the mesh is (linearly) rescaled to match endpoints
-
+    /// @brief Exponential mesh in the range of [a, b] having N points (endpoints included)
+    ///
+    /// x_i = multiplier * exp(dx * i) + shift
+    /// where dx = ln(b/a) / (N-1) if scale == 1.0
+    /// if scale is different, then dx = dx[scale = 1.0] * scale and
+    /// the mesh is (linearly) rescaled to match endpoints
     ExponentialMesh(double a_, double b_, size_t N_, double scale_ = 0.7)
       : a(a_), b(b_), scale(scale_),
         dx(get_dx(a_, b_, N_, scale_)),
