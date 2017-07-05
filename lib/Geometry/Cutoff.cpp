@@ -52,8 +52,8 @@ CutoffCube::CutoffCube(double a_)
 bool CutoffCube::is_included(const Point3D &point) const
 {
   return lessEqualsWithTolerance(fabs(point.x), a) &&
-    lessEqualsWithTolerance(fabs(point.y), a) &&
-    lessEqualsWithTolerance(fabs(point.z), a);
+         lessEqualsWithTolerance(fabs(point.y), a) &&
+         lessEqualsWithTolerance(fabs(point.z), a);
 }
 
 Cutoff::StepsToCover CutoffCube::steps_to_cover(const Cell3D &cell) const
@@ -90,8 +90,8 @@ bool CutoffUnitVectors::is_included(const Point3D &point) const
   long nx, ny, nz;
   std::tie(nx, ny, nz) = cell.get_offsets(point);
   return (size_t) labs(nx) <= a_max &&
-    (size_t) labs(ny) <= b_max &&
-    (size_t) labs(nz) <= c_max;
+         (size_t) labs(ny) <= b_max &&
+         (size_t) labs(nz) <= c_max;
 }
 
 Cutoff::StepsToCover CutoffUnitVectors::steps_to_cover(const Cell3D &cell) const
@@ -102,32 +102,53 @@ Cutoff::StepsToCover CutoffUnitVectors::steps_to_cover(const Cell3D &cell) const
     return {-(long) a_max, -(long) b_max, -(long) c_max, (long) a_max, (long) b_max, (long) c_max};
 }
 
-CutoffWSCell::CutoffWSCell(const Cell3D &cell_)
-  : cell(cell_)
+namespace
 {
-  const Point3D &a = cell_.v1;
-  const Point3D &b = cell_.v2;
-  const Point3D &c = cell_.v3;
+  std::vector<Point3D> get_neighbors(const Cell3D &cell)
+  {
+    const Point3D &a = cell.v1;
+    const Point3D &b = cell.v2;
+    const Point3D &c = cell.v3;
 
-  neighbors = {
-    a, -a, b, -b, c, -c,
+    auto neighbors = std::vector<Point3D>{
+      a, -a, b, -b, c, -c,
 
-    a + b, a - b, -a + b, -a - b,
-    a + c, a - c, -a + c, -a - c,
-    b + c, b - c, -b + c, -b - c,
+      a + b, a - b, -a + b, -a - b,
+      a + c, a - c, -a + c, -a - c,
+      b + c, b - c, -b + c, -b - c,
 
-    a + b + c, a - b + c, a + b - c, -a + b + c,
-    a - b - c, -a - b + c, -a + b - c, -a - b - c,
-  };
+      a + b + c, a - b + c, a + b - c, -a + b + c,
+      a - b - c, -a - b + c, -a + b - c, -a - b - c
+    };
+    return neighbors;
+  }
 
-  auto minmax = std::minmax_element(neighbors.begin(), neighbors.end(),
-                                    [](const Point3D &lhs, const Point3D &rhs)
-                                    {
-                                      return lhs.length() < rhs.length();
-                                    });
-  r_in_for_sure = 0.5 * minmax.first->length();
-  r_out_for_sure = 0.5 * minmax.second->length();
+  double get_min_r(const std::vector<Point3D> &points)
+  {
+    auto min = std::min_element(
+      points.begin(), points.end(),
+      [](const Point3D &lhs, const Point3D &rhs)
+      {
+        return lhs.length() < rhs.length();
+      });
+    return 0.5 * min->length();
+  }
+
+  double get_max_r(const std::vector<Point3D> &points)
+  {
+    auto max = std::max_element(
+      points.begin(), points.end(),
+      [](const Point3D &lhs, const Point3D &rhs)
+      {
+        return lhs.length() < rhs.length();
+      });
+    return 0.5 * max->length();
+  }
 }
+
+CutoffWSCell::CutoffWSCell(const Cell3D &cell_)
+  : cell(cell_), neighbors(get_neighbors(cell_)), r_in_for_sure(get_min_r(neighbors)),
+    r_out_for_sure(get_max_r(neighbors)) {}
 
 bool CutoffWSCell::is_included(const Point3D &point) const
 {

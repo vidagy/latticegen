@@ -17,12 +17,13 @@ namespace Geometry
         : x_min(x_min_), y_min(y_min_), z_min(z_min_)
         , x_max(x_max_), y_max(y_max_), z_max(z_max_)
       {}
-      long x_min;
-      long y_min;
-      long z_min;
-      long x_max;
-      long y_max;
-      long z_max;
+
+      const long x_min;
+      const long y_min;
+      const long z_min;
+      const long x_max;
+      const long y_max;
+      const long z_max;
     };
 
     virtual StepsToCover steps_to_cover(const Cell3D &cell_) const = 0;
@@ -37,7 +38,7 @@ namespace Geometry
 
     StepsToCover steps_to_cover(const Cell3D &cell_) const final override;
 
-    double a;
+    const double a;
   };
 
   class CutoffSphere : public Cutoff
@@ -49,7 +50,7 @@ namespace Geometry
 
     StepsToCover steps_to_cover(const Cell3D &cell_) const final override;
 
-    double r;
+    const double r;
   };
 
   class CutoffUnitVectors : public Cutoff
@@ -63,11 +64,11 @@ namespace Geometry
 
     StepsToCover steps_to_cover(const Cell3D &cell_) const final override;
 
-    Cell3D cell;
-    size_t a_max;
-    size_t b_max;
-    size_t c_max;
-    bool positive_only;
+    const Cell3D cell;
+    const size_t a_max;
+    const size_t b_max;
+    const size_t c_max;
+    const bool positive_only;
   };
 
   class CutoffWSCell : public Cutoff
@@ -79,11 +80,10 @@ namespace Geometry
 
     StepsToCover steps_to_cover(const Cell3D &cell_) const final override;
 
-  private:
-    Cell3D cell;
-    std::vector<Point3D> neighbors;
-    double r_in_for_sure;
-    double r_out_for_sure;
+    const Cell3D cell;
+    const std::vector<Point3D> neighbors;
+    const double r_in_for_sure;
+    const double r_out_for_sure;
   };
 }
 
