@@ -46,6 +46,15 @@ namespace Utils
     out_R.close();
   }
 
+  void log(const std::vector<std::complex<double>> &R, const std::string &filename)
+  {
+    std::ofstream out_R;
+    out_R.open(filename + ".dat");
+    for (auto r : R)
+      out_R << std::setw(20) << std::setprecision(17) << std::fixed << r.real() << "\t" << r.imag() << "\n";
+    out_R.close();
+  }
+
   void log(const std::vector<Core::Point3D> &R, const std::string &filename)
   {
     std::ofstream out_R;
