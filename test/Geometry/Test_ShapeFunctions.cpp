@@ -82,7 +82,7 @@ TEST(DISABLED_ShapeFunctions, Cubic)
   }
   Utils::log(r_points, "shape_functions_r");
 
-  auto l_max = 3u;
+  auto l_max = 4u;
   auto shape_functions = ShapeFunctions(unit_cell, l_max, r_points);
   for (auto l = 0u; l <= l_max; ++l) {
     for (auto m = -((int) l); m <= ((int) l); ++m) {

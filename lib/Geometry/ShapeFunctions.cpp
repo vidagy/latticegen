@@ -39,6 +39,8 @@ namespace
       return mesh_and_bounding_r;
     }
 
+    // TODO: this integration has huge error due to the fact that the mesh is not uniformly generated and more
+    // importantly it does not have the symmetry of WS cell. We should generate this mesh by respecting symmetries.
     std::vector<Point3D> generate_mesh(const ShapeFunctionsConfig &config) const
     {
       auto mesh = std::vector<Point3D>();
@@ -92,6 +94,8 @@ namespace
       auto res = lm_vector<std::vector<std::complex<double>>>(l_max);
       for (auto l = 0u; l <= l_max; ++l) {
         for (auto m = -((int) l); m <= ((int) l); ++m) {
+          // TODO based on the symmetry of the WS cell and (l,m) we should be able to figure out if the integral is
+          // zero. In order to do that, most probably, we will need Wigner D matrices, rotations and love :)
           auto spherical_harmonics_values = get_spherical_harmonics_values(l, m);
           res.at(l, m) = integrate(l, m, spherical_harmonics_values, r_points);
         }
@@ -102,7 +106,8 @@ namespace
     const UnitCell3D unit_cell;
     const CutoffWSCell cutoff;
     const ShapeFunctionsConfig config;
-    // note that mesh is ordered in increasing order of entry.second
+    /// the first element is a unit vector, the second element is the distance of the WS cell boundary in that direction
+    /// note that mesh is ordered in increasing order of its second element.
     const std::vector<std::pair<Point3D, double>> mesh;
 
   private:
