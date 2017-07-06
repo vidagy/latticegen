@@ -67,6 +67,11 @@ namespace Core
       return sqrt( x*x + y*y + z*z );
     }
 
+    double length2() const
+    {
+      return x * x + y * y + z * z;
+    }
+
 	  double x;
     double y;
     double z;
@@ -80,21 +85,21 @@ namespace Core
       equalsWithTolerance(lhs.y, rhs.y) && 
       equalsWithTolerance(lhs.z, rhs.z);
   }
-  inline Point3D operator+(Point3D lhs, const Point3D& rhs)
+
+  inline Point3D operator+(const Point3D &lhs, const Point3D &rhs)
   {
-    lhs += rhs;
-    return lhs;
+    return Point3D{lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z};
   }
-  inline Point3D operator-(Point3D lhs, const Point3D& rhs)
+
+  inline Point3D operator-(const Point3D &lhs, const Point3D &rhs)
   {
-    lhs -= rhs;
-    return lhs;
+    return Point3D{lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z};
   }
   inline Point3D operator-(Point3D lhs)
   {
-    lhs.x *= -1.0;
-    lhs.y *= -1.0;
-    lhs.z *= -1.0;
+    lhs.x = -lhs.x;
+    lhs.y = -lhs.y;
+    lhs.z = -lhs.z;
     return lhs;
   }
 

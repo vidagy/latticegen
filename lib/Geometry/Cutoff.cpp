@@ -129,7 +129,7 @@ namespace
       points.begin(), points.end(),
       [](const Point3D &lhs, const Point3D &rhs)
       {
-        return lhs.length() < rhs.length();
+        return lhs.length2() < rhs.length2();
       });
     return 0.5 * min->length();
   }
@@ -140,7 +140,7 @@ namespace
       points.begin(), points.end(),
       [](const Point3D &lhs, const Point3D &rhs)
       {
-        return lhs.length() < rhs.length();
+        return lhs.length2() < rhs.length2();
       });
     return 0.5 * max->length();
   }
@@ -152,13 +152,13 @@ CutoffWSCell::CutoffWSCell(const Cell3D &cell_)
 
 bool CutoffWSCell::is_included(const Point3D &point) const
 {
-  auto length = point.length();
-  if (strictlyLess(length, r_in_for_sure))
+  auto length2 = point.length2();
+  if (strictlyLess(length2, r_in_for_sure * r_in_for_sure))
     return true;
-  if (strictlyGreater(length, r_out_for_sure))
+  if (strictlyGreater(length2, r_out_for_sure * r_out_for_sure))
     return false;
   for (const auto &neighbor: neighbors) {
-    if (length > (point - neighbor).length())
+    if (length2 > (point - neighbor).length2())
       return false;
   }
   return true;
