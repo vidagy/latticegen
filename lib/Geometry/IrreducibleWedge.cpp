@@ -33,7 +33,7 @@ namespace
         --still_false;
 
         // account all points that are replicated by the transformation
-        for (auto transformation: transformations) {
+        for (const auto &transformation: transformations) {
           auto transformed = transformation * (*begin);
           if (!comparator.isEqual(transformed, *begin)) {
             for (size_t j = i + 1; j < size; ++j) {

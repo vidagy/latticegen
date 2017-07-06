@@ -9,7 +9,7 @@ namespace
     const Point3D &lhs, const Point3D &rhs, const SymmetryTransformationFactory::Transformations &transformations
   )
   {
-    for (auto transformation: transformations) {
+    for (const auto &transformation: transformations) {
       if (lhs == transformation * rhs)
         return true;
     }

@@ -19,7 +19,7 @@ namespace Geometry
       if (points.empty())
         THROW_INVALID_ARGUMENT("Cannot create shell with empty input");
       auto r = points[0].length();
-      for (auto p: points) {
+      for (const auto &p: points) {
         if (!equalsWithTolerance(r, p.length()))
           THROW_INVALID_ARGUMENT(
             "Shell with different distances: r = " + std::to_string(r) +

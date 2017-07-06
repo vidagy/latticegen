@@ -157,7 +157,7 @@ bool CutoffWSCell::is_included(const Point3D &point) const
     return true;
   if (strictlyGreater(length, r_out_for_sure))
     return false;
-  for (auto neighbor: neighbors) {
+  for (const auto &neighbor: neighbors) {
     if (length > (point - neighbor).length())
       return false;
   }
@@ -167,7 +167,7 @@ bool CutoffWSCell::is_included(const Point3D &point) const
 Cutoff::StepsToCover CutoffWSCell::steps_to_cover(const Cell3D &cell_) const
 {
   double r = 0.0;
-  for (auto neighbor: neighbors) {
+  for (const auto &neighbor: neighbors) {
     auto length = neighbor.length();
     if (length > r)
       r = length;
