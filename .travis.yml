@@ -39,5 +39,4 @@ before_script:
 
 script:
   - pwd
-  - make
-  - make test
+  - make && make test
