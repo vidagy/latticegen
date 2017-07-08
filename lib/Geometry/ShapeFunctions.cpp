@@ -17,44 +17,38 @@ namespace
       : unit_cell(unit_cell_), cutoff(unit_cell), config(config_), mesh(generate_mesh_and_bounding_r(config, cutoff)) {}
 
   private:
-    std::vector<std::pair<Point3D, double>>
+    struct MeshPoint
+    {
+      MeshPoint(const Point3D &point_, const double weight_, const double r_WS_)
+        : point(point_), weight(weight_), r_WS(r_WS_) {}
+
+      Point3D point;
+      double weight;
+      double r_WS;
+    };
+
+    std::vector<MeshPoint>
     generate_mesh_and_bounding_r(const ShapeFunctionsConfig &config, const CutoffWSCell &cutoff) const
     {
-      auto mesh = generate_mesh(config);
-      auto mesh_and_bounding_r = std::vector<std::pair<Point3D, double>>();
-      mesh_and_bounding_r.reserve(mesh.size());
-      std::transform(mesh.begin(), mesh.end(), std::back_inserter(mesh_and_bounding_r),
-                     [&cutoff, this](const Point3D &point)
-                     {
-                       auto bounding_r = this->get_bounding_r(point, cutoff);
-                       return std::make_pair(point, bounding_r);
-                     }
-      );
-      std::sort(mesh_and_bounding_r.begin(), mesh_and_bounding_r.end(),
-                [](const std::pair<Point3D, double> &lhs, const std::pair<Point3D, double> &rhs)
-                {
-                  return lhs.second < rhs.second;
-                }
-      );
-      return mesh_and_bounding_r;
-    }
-
-    // TODO: this integration has huge error due to the fact that the mesh is not uniformly generated and more
-    // importantly it does not have the symmetry of WS cell. We should generate this mesh by respecting symmetries.
-    std::vector<Point3D> generate_mesh(const ShapeFunctionsConfig &config) const
-    {
-      auto mesh = std::vector<Point3D>();
-      mesh.reserve((unsigned long) (config.theta_res * config.phi_res));
-      for (auto i = 0; i < config.theta_res; ++i) {
-        auto theta = i * pi / (config.theta_res - 1);
-        auto phi_res = 1 + std::lround(sin(theta) * config.phi_res);
-        for (auto j = 0l; j < phi_res; ++j) {
-          auto phi = (j + 0.5) * 2.0 * pi / phi_res;
-          mesh.push_back(Point3D::create_polar(1.0, theta, phi));
+      auto quadrature = LebedevQuadrature::generate(config.lebedev_order);
+      auto mesh_points = std::vector<MeshPoint>();
+      mesh_points.reserve(quadrature.size());
+      std::transform(
+        quadrature.begin(), quadrature.end(), std::back_inserter(mesh_points),
+        [&cutoff, this](const std::pair<Point3D, double> &point_and_weight)
+        {
+          auto bounding_r = this->get_bounding_r(point_and_weight.first, cutoff);
+          return MeshPoint(point_and_weight.first, point_and_weight.second, bounding_r);
         }
-      }
-      mesh.shrink_to_fit();
-      return mesh;
+      );
+      std::sort(
+        mesh_points.begin(), mesh_points.end(),
+        [](const MeshPoint &lhs, const MeshPoint &rhs)
+        {
+          return lhs.r_WS < rhs.r_WS;
+        }
+      );
+      return mesh_points;
     }
 
     double get_bounding_r(const Point3D &point, const CutoffWSCell &cutoff) const
@@ -82,11 +76,12 @@ namespace
     lm_vector<std::vector<std::complex<double>>>
     calculate(const unsigned int l_max, const std::vector<double> &r_points) const
     {
-      auto is_sorted = std::is_sorted(r_points.begin(), r_points.end(),
-                                      [](const Point3D &lhs, const Point3D &rhs)
-                                      {
-                                        return lhs.length() < rhs.length();
-                                      }
+      auto is_sorted = std::is_sorted(
+        r_points.begin(), r_points.end(),
+        [](const Point3D &lhs, const Point3D &rhs)
+        {
+          return lhs.length() < rhs.length();
+        }
       );
       if (!is_sorted)
         THROW_INVALID_ARGUMENT("r_points are not sorted");
@@ -106,20 +101,20 @@ namespace
     const UnitCell3D unit_cell;
     const CutoffWSCell cutoff;
     const ShapeFunctionsConfig config;
-    /// the first element is a unit vector, the second element is the distance of the WS cell boundary in that direction
-    /// note that mesh is ordered in increasing order of its second element.
-    const std::vector<std::pair<Point3D, double>> mesh;
+    /// note that mesh is ordered in increasing order of r_WS.
+    const std::vector<MeshPoint> mesh;
 
   private:
     std::vector<std::complex<double>> get_spherical_harmonics_values(const unsigned int l, const int m) const
     {
       auto res = std::vector<std::complex<double>>();
       res.reserve(mesh.size());
-      std::transform(mesh.begin(), mesh.end(), std::back_inserter(res),
-                     [l, m](const std::pair<Point3D, double> &p)
-                     {
-                       return std::conj(Complex::spherical_harmonic(l, m, p.first));
-                     });
+      std::transform(
+        mesh.begin(), mesh.end(), std::back_inserter(res),
+        [l, m](const MeshPoint &p)
+        {
+          return std::conj(Complex::spherical_harmonic(l, m, p.point)) * p.weight;
+        });
       return res;
     }
 
@@ -157,12 +152,12 @@ namespace
             *itRes = 0.0;
         } else {
           // we are in between
-          while (itMesh != itMeshEnd && itSH != itSHEnd && itMesh->second >= r) {
+          while (itMesh != itMeshEnd && itSH != itSHEnd && itMesh->r_WS >= r) {
             integral += *itSH;
             ++itMesh;
             ++itSH;
           }
-          *itRes = integral / static_cast<double>(mesh.size()) * 4.0 * pi;
+          *itRes = integral * 4.0 * pi;
         }
       }
       if (itR != r_points.crend() || itRes != itResEnd)

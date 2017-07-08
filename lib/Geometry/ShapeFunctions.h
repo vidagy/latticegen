@@ -2,12 +2,14 @@
 #define LATTICEGEN_SHAPEFUNCTIONS_H
 
 #include "UnitCell3D.h"
+#include <Math/LebedevQuadrature.h>
 #include <Core/lm_vector.h>
 #include <complex>
 
 namespace Geometry
 {
   using namespace Core;
+  using namespace Math;
 
   /// @brief theta and phi mesh configuration for spherical integration
   ///
@@ -16,26 +18,20 @@ namespace Geometry
   struct ShapeFunctionsConfig
   {
     ShapeFunctionsConfig(
-      int theta_res_ = default_theta_res, int phi_res_ = default_phi_res,
+      LebedevQuadrature::Order lebedev_order_ = default_lebedev_order,
       unsigned int bracketing_max_iter_ = default_bracketing_max_iter
     )
-      : theta_res(theta_res_), phi_res(phi_res_), bracketing_max_iter(bracketing_max_iter_)
+      : lebedev_order(lebedev_order_), bracketing_max_iter(bracketing_max_iter_)
     {
-      if (theta_res < 2)
-        THROW_INVALID_ARGUMENT("theta_res must be grater than 1, now theta_res = " + std::to_string(theta_res));
-      if (phi_res < 2)
-        THROW_INVALID_ARGUMENT("phi_res must be grater than 1, now theta_res = " + std::to_string(phi_res));
       if (bracketing_max_iter < 2u)
         THROW_INVALID_ARGUMENT("bracketing_max_iter must be grater than 1, now bracketing_max_iter = "
                                + std::to_string(bracketing_max_iter));
     }
 
-    const static int default_theta_res = 200;
-    const static int default_phi_res = 200;
+    const static LebedevQuadrature::Order default_lebedev_order = LebedevQuadrature::Order::LD5810;
     const static unsigned int default_bracketing_max_iter = 100;
 
-    const int theta_res;
-    const int phi_res;
+    const LebedevQuadrature::Order lebedev_order;
     const unsigned int bracketing_max_iter;
   };
 
