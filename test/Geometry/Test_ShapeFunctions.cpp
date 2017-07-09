@@ -70,12 +70,12 @@ TEST(DISABLED_ShapeFunctions, TooFar)
   }
 }
 
-// TODO enable this test if interpolation is implemented for Shape functions.
+// TODO enable this test if icosahedral mesh respects Oh and if lm optimization is implemented.
 TEST(DISABLED_ShapeFunctions, Cubic)
 {
   const auto unit_cell = UnitCell3D::create_cubic_primitive(1.0);
 
-  auto l_max = 4u;
+  auto l_max = 7u;
   auto shape_functions = ShapeFunctions(unit_cell, l_max);
   for (auto l = 0u; l <= l_max; ++l) {
     for (auto m = -((int) l); m <= ((int) l); ++m) {

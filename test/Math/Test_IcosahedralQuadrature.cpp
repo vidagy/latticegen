@@ -22,7 +22,7 @@ namespace
   }
 }
 
-TEST(DISABLE_IcosahedralQuadrature, Print)
+TEST(DISABLED_IcosahedralQuadrature, Print)
 {
   static const auto n = 8u;
   for (auto i = 0u; i <= n; ++i) {

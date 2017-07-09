@@ -1,7 +1,7 @@
 #include <boost/math/tools/roots.hpp>
 #include <Math/CommonFunctions.h>
 #include <Math/SphericalHarmonics.h>
-#include <fstream>
+#include <Math/IcosahedralQuadrature.h>
 #include "ShapeFunctions.h"
 #include "Cutoff.h"
 
@@ -31,10 +31,7 @@ namespace
     std::vector<MeshPoint>
     generate_mesh_and_bounding_r(const ShapeFunctionsConfig &config, const CutoffWSCell &cutoff) const
     {
-      // TODO we should replace Lebedev quadrature to something that can have more than 5810 points. I was thinking
-      // about the icosahedral mesh. Not that complex to implement, and quite uniform. However, calculating weights
-      // might be tricky. Weights should correspond to the Voronoi cell's area.
-      auto quadrature = LebedevQuadrature::generate(config.lebedev_order);
+      auto quadrature = IcosahedralQuadrature::generate(config.quadrature_order);
       auto mesh_points = std::vector<MeshPoint>();
       mesh_points.reserve(quadrature.size());
       std::transform(
