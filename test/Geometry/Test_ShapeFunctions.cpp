@@ -8,7 +8,8 @@
 using namespace Core;
 using namespace Geometry;
 
-TEST(ShapeFunctions, TooClose)
+// TODO enable this test if interpolation is implemented for Shape functions.
+TEST(DISABLED_ShapeFunctions, TooClose)
 {
   const auto unit_cell = UnitCell3D::create_orthorhombic_body(1.0, 2.0, 3.0);
   const auto min_r = CutoffWSCell(unit_cell).r_in_for_sure;
@@ -21,7 +22,7 @@ TEST(ShapeFunctions, TooClose)
   }
 
   auto l_max = 3u;
-  auto shape_functions = ShapeFunctions(unit_cell, l_max, r_points);
+  auto shape_functions = ShapeFunctions(unit_cell, l_max);
 
   // l == 0
   {
@@ -43,7 +44,8 @@ TEST(ShapeFunctions, TooClose)
   }
 }
 
-TEST(ShapeFunctions, TooFar)
+// TODO enable this test if interpolation is implemented for Shape functions.
+TEST(DISABLED_ShapeFunctions, TooFar)
 {
   const auto unit_cell = UnitCell3D::create_monoclinic_base(1.0, 2.0, 3.0, pi / 3.0);
   const auto max_r = CutoffWSCell(unit_cell).r_out_for_sure;
@@ -56,7 +58,7 @@ TEST(ShapeFunctions, TooFar)
   }
 
   auto l_max = 3u;
-  auto shape_functions = ShapeFunctions(unit_cell, l_max, r_points);
+  auto shape_functions = ShapeFunctions(unit_cell, l_max);
   for (auto l = 0u; l <= l_max; ++l) {
     for (auto m = -((int) l); m <= ((int) l); ++m) {
       auto sf = shape_functions.shape_functions.at(l, m);
@@ -68,22 +70,13 @@ TEST(ShapeFunctions, TooFar)
   }
 }
 
+// TODO enable this test if interpolation is implemented for Shape functions.
 TEST(DISABLED_ShapeFunctions, Cubic)
 {
   const auto unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-  const auto max_r = CutoffWSCell(unit_cell).r_out_for_sure;
-  const auto min_r = CutoffWSCell(unit_cell).r_in_for_sure;
-  auto r_points = std::vector<double>();
-  auto n = 100;
-  r_points.reserve((unsigned long) n);
-  for (auto i = 0; i < n; ++i) {
-    auto r = min_r * 0.9 + (max_r * 1.1 - min_r) * i / n;
-    r_points.push_back(r);
-  }
-  Utils::log(r_points, "shape_functions_r");
 
   auto l_max = 4u;
-  auto shape_functions = ShapeFunctions(unit_cell, l_max, r_points);
+  auto shape_functions = ShapeFunctions(unit_cell, l_max);
   for (auto l = 0u; l <= l_max; ++l) {
     for (auto m = -((int) l); m <= ((int) l); ++m) {
       auto sf = shape_functions.shape_functions.at(l, m);

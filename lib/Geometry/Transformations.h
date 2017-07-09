@@ -11,10 +11,6 @@ using namespace Core;
 
 namespace Geometry
 {
-  class Transformation;
-
-  Transformation Geometry::operator*(const Transformation &, const Transformation &);
-
   class Transformation
   {
   public:
