@@ -50,6 +50,24 @@ TEST(LebedevQuadrature, NumberOfPoints)
   );
 }
 
+TEST(LebedevQuadrature, LengthOfPoints)
+{
+  std::for_each(
+    all_quadratures.begin(), all_quadratures.end(),
+    [](LebedevQuadrature::Order order)
+    {
+      auto res = LebedevQuadrature::generate(order);
+      std::for_each(
+        res.begin(), res.end(),
+        [](const std::pair<Point3D, double> &p)
+        {
+          EXPECT_DOUBLE_EQ(p.first.length(), 1.0);
+        }
+      );
+    }
+  );
+}
+
 TEST(LebedevQuadrature, SumWeights)
 {
   std::for_each(
