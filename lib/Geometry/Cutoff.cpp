@@ -123,6 +123,7 @@ namespace
     return neighbors;
   }
 
+  // TODO this is incorrect! min_r can be smaller than the half distance to the closest neighbor.
   double get_min_r(const std::vector<Point3D> &points)
   {
     auto min = std::min_element(
@@ -134,6 +135,7 @@ namespace
     return 0.5 * min->length();
   }
 
+  // TODO this is incorrect! max_r can be larger than the half distance to the furthest neighbor.
   double get_max_r(const std::vector<Point3D> &points)
   {
     auto max = std::max_element(
@@ -157,6 +159,8 @@ bool CutoffWSCell::is_included(const Point3D &point) const
     return true;
   if (strictlyGreater(length2, r_out_for_sure * r_out_for_sure))
     return false;
+  // TODO this should be optimized! we should not iterate over all the neighbors, only those that give faces to the
+  // Voronoi cell! (could speed up is_included ~35% in best case scenario)
   for (const auto &neighbor: neighbors) {
     if (length2 > (point - neighbor).length2())
       return false;
