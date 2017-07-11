@@ -229,15 +229,15 @@ namespace
 CutoffWSCell::CutoffWSCell(const Cell3D &cell_)
   : cell(cell_),
     face_points(get_face_points(cell_)),
-    r_in_for_sure(get_min_r(face_points)),
-    r_out_for_sure(get_max_r(face_points)) {}
+    r_mt(get_min_r(face_points)),
+    r_bs(get_max_r(face_points)) {}
 
 bool CutoffWSCell::is_included(const Point3D &point) const
 {
   auto length2 = point.length2();
-  if (strictlyLess(length2, r_in_for_sure * r_in_for_sure))
+  if (strictlyLess(length2, r_mt * r_mt))
     return true;
-  if (strictlyGreater(length2, r_out_for_sure * r_out_for_sure))
+  if (strictlyGreater(length2, r_bs * r_bs))
     return false;
   for (const auto &face_point: face_points) {
     if (strictlyGreater(fabs(point * face_point.first), face_point.second))
@@ -248,5 +248,5 @@ bool CutoffWSCell::is_included(const Point3D &point) const
 
 Cutoff::StepsToCover CutoffWSCell::steps_to_cover(const Cell3D &cell_) const
 {
-  return get_steps_to_cover(cell_, r_out_for_sure);
+  return get_steps_to_cover(cell_, r_bs);
 }

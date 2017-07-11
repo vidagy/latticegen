@@ -12,7 +12,7 @@ using namespace Geometry;
 TEST(DISABLED_ShapeFunctions, TooClose)
 {
   const auto unit_cell = UnitCell3D::create_orthorhombic_body(1.0, 2.0, 3.0);
-  const auto min_r = CutoffWSCell(unit_cell).r_in_for_sure;
+  const auto min_r = CutoffWSCell(unit_cell).r_mt;
   auto r_points = std::vector<double>();
   auto n = 100;
   r_points.reserve((unsigned long) n);
@@ -48,7 +48,7 @@ TEST(DISABLED_ShapeFunctions, TooClose)
 TEST(DISABLED_ShapeFunctions, TooFar)
 {
   const auto unit_cell = UnitCell3D::create_monoclinic_base(1.0, 2.0, 3.0, pi / 3.0);
-  const auto max_r = CutoffWSCell(unit_cell).r_out_for_sure;
+  const auto max_r = CutoffWSCell(unit_cell).r_bs;
   auto r_points = std::vector<double>();
   auto n = 100;
   r_points.reserve((unsigned long) n);

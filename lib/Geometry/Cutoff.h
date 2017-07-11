@@ -84,8 +84,8 @@ namespace Geometry
     // face_points are pairs of unit vectors and lengths: unit vector is the perpendicular direction from the plane
     // length is the distance of the plane from the origin
     const std::vector<std::pair<Point3D, double>> face_points;
-    const double r_in_for_sure;
-    const double r_out_for_sure;
+    const double r_mt; /// muffin tin radius
+    const double r_bs; /// radius of bounding sphere
   };
 }
 

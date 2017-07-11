@@ -59,8 +59,8 @@ namespace
         return cutoff.is_included(scale * point) ? 1.0 : -1.0;
       };
       // epsilons added/subtracted to make sure that bracketing is OK
-      auto lower_guess = cutoff.r_in_for_sure - std::numeric_limits<double>::epsilon();
-      auto upper_guess = cutoff.r_out_for_sure + std::numeric_limits<double>::epsilon();
+      auto lower_guess = cutoff.r_mt - std::numeric_limits<double>::epsilon();
+      auto upper_guess = cutoff.r_bs + std::numeric_limits<double>::epsilon();
 
       using namespace boost::math::tools;
       uintmax_t max_iter = (uintmax_t) config.bracketing_max_iter;
