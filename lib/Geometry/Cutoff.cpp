@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <Math/LapackWrapper.h>
 #include "Cutoff.h"
 
 using namespace Geometry;
@@ -104,53 +105,132 @@ Cutoff::StepsToCover CutoffUnitVectors::steps_to_cover(const Cell3D &cell) const
 
 namespace
 {
-  std::vector<Point3D> get_neighbors(const Cell3D &cell)
+  std::vector<std::pair<Point3D, double>> get_all_face_points(const Cell3D &cell)
   {
-    const Point3D &a = cell.v1;
-    const Point3D &b = cell.v2;
-    const Point3D &c = cell.v3;
+    const Point3D a = 0.5 * cell.v1;
+    const Point3D b = 0.5 * cell.v2;
+    const Point3D c = 0.5 * cell.v3;
 
-    auto neighbors = std::vector<Point3D>{
-      a, -a, b, -b, c, -c,
+    // we count on inversion symmetry so we can store one vector in each direction
+    const auto face_points = std::vector<Point3D>{
+      // note that the order of these points matter, check get_face_points() function
+      a, b, c,
 
-      a + b, a - b, -a + b, -a - b,
-      a + c, a - c, -a + c, -a - c,
-      b + c, b - c, -b + c, -b - c,
+      a + b, a - b,
+      a + c, a - c,
+      b + c, b - c,
 
-      a + b + c, a - b + c, a + b - c, -a + b + c,
-      a - b - c, -a - b + c, -a + b - c, -a - b - c
+      a + b + c, a - b + c, a + b - c, -a + b + c
     };
-    return neighbors;
+    auto res = std::vector<std::pair<Point3D, double>>();
+    res.reserve(face_points.size());
+    std::transform(
+      face_points.begin(), face_points.end(), std::back_inserter(res),
+      [](const Point3D &p)
+      {
+        auto len = p.length();
+        return std::make_pair(p / len, len);
+      }
+    );
+
+    return res;
   }
 
-  // TODO this is incorrect! min_r can be smaller than the half distance to the closest neighbor.
-  double get_min_r(const std::vector<Point3D> &points)
+  std::vector<std::pair<Point3D, double>> get_face_points(const Cell3D &cell)
+  {
+    auto all_face_points = get_all_face_points(cell);
+    auto face_points = std::vector<std::pair<Point3D, double>>();
+    face_points.reserve(all_face_points.size());
+
+    for (auto &candidate: all_face_points) {
+      auto is_included = true;
+      for (const auto &face_point: face_points) {
+        if (greaterEqualsWithTolerance(
+          candidate.second * fabs(candidate.first * face_point.first), face_point.second)
+          ) {
+          is_included = false;
+          break;
+        }
+      }
+      if (is_included) {
+        // if there is a point that is outside of the new point, then that point should be eliminated
+        face_points.erase(
+          std::remove_if(
+            face_points.begin(), face_points.end(),
+            [&candidate](const std::pair<Point3D, double> &p)
+            {
+              return greaterEqualsWithTolerance(p.second * fabs(p.first * candidate.first), candidate.second);
+            }
+          ), face_points.end()
+        );
+        // finally add new point
+        face_points.push_back(candidate);
+      }
+    }
+
+    face_points.shrink_to_fit();
+    return face_points;
+  }
+
+  double get_min_r(const std::vector<std::pair<Point3D, double>> &points)
   {
     auto min = std::min_element(
       points.begin(), points.end(),
-      [](const Point3D &lhs, const Point3D &rhs)
+      [](const std::pair<Point3D, double> &lhs, const std::pair<Point3D, double> &rhs)
       {
-        return lhs.length2() < rhs.length2();
+        return lhs.second < rhs.second;
       });
-    return 0.5 * min->length();
+    return min->second;
   }
 
-  // TODO this is incorrect! max_r can be larger than the half distance to the furthest neighbor.
-  double get_max_r(const std::vector<Point3D> &points)
+  double get_max_r(const std::vector<std::pair<Point3D, double>> &face_points)
   {
-    auto max = std::max_element(
-      points.begin(), points.end(),
-      [](const Point3D &lhs, const Point3D &rhs)
-      {
-        return lhs.length2() < rhs.length2();
-      });
-    return 0.5 * max->length();
+    auto possible_distances = std::vector<double>();
+    possible_distances.reserve(face_points.size());
+    // we go over all face-face intersections where the face vector are acute.
+    for (auto i = 0u; i < face_points.size(); ++i) {
+      for (auto j = i + 1; j < face_points.size(); ++j) {
+        for (auto k = j + 1; k < face_points.size(); ++k) {
+          auto a1 = face_points[i];
+          auto a2 = face_points[j];
+          auto a3 = face_points[k];
+
+          if (!nearlyZero(fabs(cross_product(a1.first, a2.first) * a3.first))) {
+            if (a1.first * a2.first < 0.0)
+              a2 = std::make_pair(-1.0 * a2.first, a2.second);
+            if ((a1.first * a3.first) * (a2.first * a3.first) < 0.0)
+              THROW_LOGIC_ERROR(
+                "We should not end up with intersecting planes that have non-acute perpendicular vectors");
+            if (a1.first * a3.first < 0.0) {
+              a3 = std::make_pair(-1.0 * a3.first, a3.second);
+            }
+            auto m = std::vector<double> {
+              a1.first.x, a2.first.x, a3.first.x,
+              a1.first.y, a2.first.y, a3.first.y,
+              a1.first.z, a2.first.z, a3.first.z
+            };
+            Math::LapackWrapper::invert_matrix(m);
+
+            auto r_x = a1.second * m[0] + a2.second * m[3] + a3.second * m[6];
+            auto r_y = a1.second * m[1] + a2.second * m[4] + a3.second * m[7];
+            auto r_z = a1.second * m[2] + a2.second * m[5] + a3.second * m[8];
+
+            possible_distances.push_back(sqrt(r_x * r_x + r_y * r_y + r_z * r_z));
+          }
+        }
+      }
+    }
+
+    auto max = std::max_element(possible_distances.begin(), possible_distances.end());
+    return *max;
   }
 }
 
 CutoffWSCell::CutoffWSCell(const Cell3D &cell_)
-  : cell(cell_), neighbors(get_neighbors(cell_)), r_in_for_sure(get_min_r(neighbors)),
-    r_out_for_sure(get_max_r(neighbors)) {}
+  : cell(cell_),
+    face_points(get_face_points(cell_)),
+    r_in_for_sure(get_min_r(face_points)),
+    r_out_for_sure(get_max_r(face_points)) {}
 
 bool CutoffWSCell::is_included(const Point3D &point) const
 {
@@ -159,10 +239,8 @@ bool CutoffWSCell::is_included(const Point3D &point) const
     return true;
   if (strictlyGreater(length2, r_out_for_sure * r_out_for_sure))
     return false;
-  // TODO this should be optimized! we should not iterate over all the neighbors, only those that give faces to the
-  // Voronoi cell! (could speed up is_included ~35% in best case scenario)
-  for (const auto &neighbor: neighbors) {
-    if (length2 > (point - neighbor).length2())
+  for (const auto &face_point: face_points) {
+    if (strictlyGreater(fabs(point * face_point.first), face_point.second))
       return false;
   }
   return true;
@@ -170,11 +248,5 @@ bool CutoffWSCell::is_included(const Point3D &point) const
 
 Cutoff::StepsToCover CutoffWSCell::steps_to_cover(const Cell3D &cell_) const
 {
-  double r = 0.0;
-  for (const auto &neighbor: neighbors) {
-    auto length = neighbor.length();
-    if (length > r)
-      r = length;
-  }
-  return get_steps_to_cover(cell_, r);
+  return get_steps_to_cover(cell_, r_out_for_sure);
 }

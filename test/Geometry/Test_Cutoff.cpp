@@ -282,3 +282,15 @@ TEST(TestCutoff,WSCellCutoffFalse)
   EXPECT_FALSE(cutoff.is_included(-a +b -c ));
   EXPECT_FALSE(cutoff.is_included(-a -b -c ));
 }
+
+TEST(TestCutoff, WSCellRadius)
+{
+  //CutoffWSCell cutoff_cube = CutoffWSCell(UnitCell3D::create_cubic_primitive(1.0));
+  //EXPECT_DOUBLE_EQ(cutoff_cube.r_in_for_sure, 0.5);
+  //EXPECT_DOUBLE_EQ(cutoff_cube.r_out_for_sure, 0.5*sqrt(3.0));
+
+  CutoffWSCell cutoff_hexagonal_short = CutoffWSCell(UnitCell3D::create_hexagonal_primitive(1.0, 1e-10));
+  EXPECT_DOUBLE_EQ(cutoff_hexagonal_short.r_in_for_sure, 5e-11);
+  EXPECT_DOUBLE_EQ(cutoff_hexagonal_short.r_out_for_sure, 1.0 / sqrt(3.0));
+
+}

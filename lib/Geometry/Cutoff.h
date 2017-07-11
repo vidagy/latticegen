@@ -81,7 +81,9 @@ namespace Geometry
     StepsToCover steps_to_cover(const Cell3D &cell_) const final override;
 
     const Cell3D cell;
-    const std::vector<Point3D> neighbors;
+    // face_points are pairs of unit vectors and lengths: unit vector is the perpendicular direction from the plane
+    // length is the distance of the plane from the origin
+    const std::vector<std::pair<Point3D, double>> face_points;
     const double r_in_for_sure;
     const double r_out_for_sure;
   };
