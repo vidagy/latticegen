@@ -1,5 +1,5 @@
 #include <algorithm>
-#include <Math/LapackWrapper.h>
+#include <Eigen/Dense>
 #include "Cutoff.h"
 
 using namespace Geometry;
@@ -204,18 +204,15 @@ namespace
             if (a1.first * a3.first < 0.0) {
               a3 = std::make_pair(-1.0 * a3.first, a3.second);
             }
-            auto m = std::vector<double> {
-              a1.first.x, a2.first.x, a3.first.x,
-              a1.first.y, a2.first.y, a3.first.y,
-              a1.first.z, a2.first.z, a3.first.z
-            };
-            Math::LapackWrapper::invert_matrix(m);
 
-            auto r_x = a1.second * m[0] + a2.second * m[3] + a3.second * m[6];
-            auto r_y = a1.second * m[1] + a2.second * m[4] + a3.second * m[7];
-            auto r_z = a1.second * m[2] + a2.second * m[5] + a3.second * m[8];
+            Eigen::Matrix3d m(3, 3);
+            m <<
+              a1.first.x, a1.first.y, a1.first.z,
+              a2.first.x, a2.first.y, a2.first.z,
+              a3.first.x, a3.first.y, a3.first.z;
 
-            possible_distances.push_back(sqrt(r_x * r_x + r_y * r_y + r_z * r_z));
+            Eigen::Vector3d v(a1.second, a2.second, a3.second);
+            possible_distances.push_back(m.colPivHouseholderQr().solve(v).norm());
           }
         }
       }
