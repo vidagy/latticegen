@@ -25,7 +25,7 @@ std::complex<double> RealMadelungConstants::calculate(
 
   // TODO this expression might be wrong! (A.4) has different signs then the expression in (19.28), needs to be checked
   auto res =
-    ((l & 1) == 0 ? 1.0 : -1.0)
+    Math::sign(l)
     * 4.0 * pi * double_factorial(((int) (2 * (l + lprime))) - 1)
     / double_factorial(((int) (2 * l)) - 1)
     / double_factorial(((int) (2 * lprime)) - 1)
@@ -46,7 +46,7 @@ std::complex<double> RealMadelungConstants::calculateReduced(
   auto R_minus_Rprime = n * unit_cell - nprime * unit_cell;
 
   auto res =
-    ((l & 1) == 0 ? 1.0 : -1.0) * 4.0 * pi / (2.0 * l + 1)
+    Math::sign(l) * 4.0 * pi / (2.0 * l + 1)
     * std::conj(Complex::spherical_harmonic(l, m, R_minus_Rprime))
     / Math::pow(R_minus_Rprime.length(), l + 1);
   return res;
@@ -142,7 +142,7 @@ namespace
           }
         }
       }
-      return sum * 2.0 * pi * ((l & 1) == 0 ? 1.0 : -1.0) / Math::gamma_plus_half(l + 1);
+      return sum * 2.0 * pi * Math::sign(l) / Math::gamma_plus_half(l + 1);
     }
 
     ///@brief Zabloudil et al (19.88)

@@ -1,6 +1,5 @@
 #include <Math/SphericalHarmonics.h>
 #include <Math/Legendre.h>
-#include <Core/Exceptions.h>
 
 using namespace Math::Real;
 
@@ -108,7 +107,7 @@ std::complex<double> Math::Complex::spherical_harmonic_slow(unsigned int l, int 
   if (m < 0) {
     return 1.0 / sqrt(2.0) * std::complex<double>(Y_lpm, -Y_lmm);
   } else {
-    return ((m & 1) ? -1.0 : 1.0) / sqrt(2.0) * std::complex<double>(Y_lpm, Y_lmm);
+    return Math::sign(m) / sqrt(2.0) * std::complex<double>(Y_lpm, Y_lmm);
   }
 
 }

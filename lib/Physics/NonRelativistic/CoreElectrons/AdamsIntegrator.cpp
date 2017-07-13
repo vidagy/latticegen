@@ -250,7 +250,7 @@ namespace
   double get_adams_parameter(int n, int i)
   {
     // i = 0 ... n
-    double prefactor = (((n - i) & 1) ? -1.0 : 1.0) / Math::factorial(i) / Math::factorial(n - i);
+    double prefactor = Math::sign(n - i) / Math::factorial(i) / Math::factorial(n - i);
 
     std::vector<double> factors(n, 0.0);
     factors[0] = 1.0;

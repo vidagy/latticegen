@@ -6,7 +6,7 @@ double Math::legendre_polynomial_slow(int l, int m, double x)
 {
   // l >= 0, -l <= m <= l, , -1 <= x <= 1
   double pmm = 1.0;
-  double sign = ((m & 1) == 0 ? 1 : -1);
+  double sign = Math::sign(m);
   if (m < 0) {
     m = -m;
     pmm = sign * factorial(l - m) / factorial(l + m);

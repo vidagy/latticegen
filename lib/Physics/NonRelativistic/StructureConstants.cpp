@@ -171,7 +171,7 @@ ReciprocalStructureConstantsCalculator::D2(unsigned int l, int m, const Vector3D
     }
   }
 
-  return (((l + 1) & 1) == 0 ? 1.0 : -1.0) * (1 << (l + 1)) / sqrt(pi) / Math::pow(p, l) * sum;
+  return Math::sign(l + 1) * (1 << (l + 1)) / sqrt(pi) / Math::pow(p, l) * sum;
 }
 
 ///@brief Zabloudil et al (15.79)

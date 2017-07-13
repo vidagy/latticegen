@@ -31,7 +31,7 @@ std::vector<std::vector<double>> Derivator::lagrange_quadrature(int n)
     auto sum = 0.0;
     for (auto j = 0; j < n; ++j) {
       if (i != j) {
-        auto result_ij = ((i - j + 1) % 2 ? -1.0 : 1.0) / (j - i) * A[i] / A[j];
+        auto result_ij = Math::sign(i - j + 1) / (j - i) * A[i] / A[j];
         result[i][j] = result_ij;
         sum += result_ij;
       }

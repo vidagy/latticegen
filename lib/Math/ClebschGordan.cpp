@@ -44,9 +44,9 @@ double ClebschGordan::calculate(double j1, double m1, double j2, double m2, doub
     return 0.0;
 
   if (double_M < 0)
-    return ((((double_J - double_j1 - double_j2) / 2) & 1) ? -1.0 : 1.0) * calculate(j1, -m1, j2, -m2, J, -M);
+    return Math::sign((double_J - double_j1 - double_j2) / 2) * calculate(j1, -m1, j2, -m2, J, -M);
   if (double_j1 < double_j2)
-    return ((((double_J - double_j1 - double_j2) / 2) & 1) ? -1.0 : 1.0) * calculate(j2, m2, j1, m1, J, M);
+    return Math::sign((double_J - double_j1 - double_j2) / 2) * calculate(j2, m2, j1, m1, J, M);
 
   double sum = 0.0;
   int k_min = 0;

@@ -113,5 +113,10 @@ namespace Math
         THROW_LOGIC_ERROR("modulo 4 returned" + std::to_string(mod));
     }
   }
+
+  inline double sign(int n)
+  {
+    return n % 2 == 0 ? 1.0 : -1.0;
+  }
 }
 #endif //LATTICEGEN_FACTORIAL_H
