@@ -26,7 +26,7 @@ add_test(NAME Test_Geometry COMMAND Test_Geometry --gtest_output=xml:testresults
 
 file(GLOB all_math_test_src "Math/*.cpp")
 add_executable(Test_Math ${all_math_test_src})
-target_link_libraries(Test_Math Math TestUtils)
+target_link_libraries(Test_Math Math Geometry TestUtils)
 install(TARGETS Test_Math DESTINATION tests/)
 add_test(NAME Test_Math COMMAND Test_Math --gtest_output=xml:testresults_math.xml)
 
