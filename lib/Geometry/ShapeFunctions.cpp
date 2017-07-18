@@ -1,7 +1,7 @@
 #include <boost/math/tools/roots.hpp>
 #include <Math/CommonFunctions.h>
 #include <Math/SphericalHarmonics.h>
-#include <Math/IcosahedralQuadrature.h>
+#include <Math/PolyhedralQuadrature.h>
 #include "ShapeFunctions.h"
 #include "Cutoff.h"
 
@@ -59,8 +59,8 @@ namespace
         return cutoff.is_included(scale * point) ? 1.0 : -1.0;
       };
       // epsilons added/subtracted to make sure that bracketing is OK
-      auto lower_guess = cutoff.r_mt - std::numeric_limits<double>::epsilon();
-      auto upper_guess = cutoff.r_bs + std::numeric_limits<double>::epsilon();
+      auto lower_guess = cutoff.r_mt - 1e4 * std::numeric_limits<double>::epsilon();
+      auto upper_guess = cutoff.r_bs + 1e4 * std::numeric_limits<double>::epsilon();
 
       using namespace boost::math::tools;
       uintmax_t max_iter = (uintmax_t) config.bracketing_max_iter;
@@ -83,7 +83,7 @@ namespace
       for (auto l = 0u; l <= l_max; ++l) {
         for (auto m = -((int) l); m <= ((int) l); ++m) {
           // TODO based on the symmetry of the WS cell and (l,m) we should be able to figure out if the integral is
-          // zero. In order to do that, most probably, we will need Wigner D matrices, rotations and love :)
+          // zero. In order to do that, most probably, we will need Wigner D matrices, euler rotations and love :)
           auto spherical_harmonics_values = get_spherical_harmonics_values(l, m);
           res.at(l, m) = integrate(l, m, spherical_harmonics_values);
         }

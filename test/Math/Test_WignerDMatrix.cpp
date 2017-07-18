@@ -2,7 +2,7 @@
 
 #include <Math/WignerDMatrix.h>
 #include <Math/CommonFunctions.h>
-#include <Math/IcosahedralQuadrature.h>
+#include <Math/PolyhedralQuadrature.h>
 #include <Geometry/Transformations.h>
 #include <Math/SphericalHarmonics.h>
 
@@ -158,8 +158,6 @@ namespace
       };
     }
   };
-
-
 }
 
 TEST(WignerDMatrix, fullDRotateSphericalHarmonics)
