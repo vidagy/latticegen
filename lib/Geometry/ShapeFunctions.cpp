@@ -31,7 +31,7 @@ namespace
     std::vector<MeshPoint>
     generate_mesh_and_bounding_r(const ShapeFunctionsConfig &config, const CutoffWSCell &cutoff) const
     {
-      auto quadrature = IcosahedralQuadrature::generate(config.quadrature_order);
+      auto quadrature = OctahedralQuadrature::generate(config.quadrature_order);
       auto mesh_points = std::vector<MeshPoint>();
       mesh_points.reserve(quadrature.size());
       std::transform(
@@ -59,8 +59,8 @@ namespace
         return cutoff.is_included(scale * point) ? 1.0 : -1.0;
       };
       // epsilons added/subtracted to make sure that bracketing is OK
-      auto lower_guess = cutoff.r_mt - 1e4 * std::numeric_limits<double>::epsilon();
-      auto upper_guess = cutoff.r_bs + 1e4 * std::numeric_limits<double>::epsilon();
+      auto lower_guess = cutoff.r_mt - 1e8 * std::numeric_limits<double>::epsilon();
+      auto upper_guess = cutoff.r_bs + 1e8 * std::numeric_limits<double>::epsilon();
 
       using namespace boost::math::tools;
       uintmax_t max_iter = (uintmax_t) config.bracketing_max_iter;
@@ -76,8 +76,7 @@ namespace
     }
 
   public:
-    lm_vector<std::vector<std::complex<double>>>
-    calculate(const unsigned int l_max) const
+    lm_vector<std::vector<std::complex<double>>> calculate(const unsigned int l_max) const
     {
       auto res = lm_vector<std::vector<std::complex<double>>>(l_max);
       for (auto l = 0u; l <= l_max; ++l) {
@@ -126,7 +125,7 @@ namespace
 
       auto pre_r_ws = itMesh->r_WS;
       for (; itMesh != itMeshEnd && itSH != itSHEnd; ++itMesh, ++itSH) {
-        if (!equalsWithTolerance(itMesh->r_WS, pre_r_ws)) {
+        if (pre_r_ws - itMesh->r_WS > 1e-8) {
           res.push_back(integral * 4.0 * pi);
           pre_r_ws = itMesh->r_WS;
         }
