@@ -11,7 +11,7 @@ namespace Geometry
   class SymmetryTransformationFactory
   {
   public:
-    typedef std::vector<Matrix3D> Transformations;
+    typedef std::vector<Transformation> Transformations;
 
     static Transformation get(CrystallographicPointGroup::SymmetryElement symmetry_element);
     static Transformations get(const CrystallographicPointGroup::Elements& elements);

@@ -177,11 +177,12 @@ SymmetryTransformationFactory::Transformations SymmetryTransformationFactory::ge
   Transformations transformations;
   transformations.reserve(elements.size());
 
-  std::transform(elements.begin(), elements.end(), std::back_inserter(transformations),
-                 [](const CrystallographicPointGroup::SymmetryElement symmetryElement)
-                 {
-                   return SymmetryTransformationFactory::get(symmetryElement).transformation_matrix;;
-                 }
+  std::transform(
+    elements.begin(), elements.end(), std::back_inserter(transformations),
+    [](const CrystallographicPointGroup::SymmetryElement symmetryElement)
+    {
+      return SymmetryTransformationFactory::get(symmetryElement);;
+    }
   );
   return transformations;
 }
@@ -189,19 +190,19 @@ SymmetryTransformationFactory::Transformations SymmetryTransformationFactory::ge
 SymmetryTransformationFactory::Transformations SymmetryTransformationFactory::generate(
   const CrystallographicPointGroup::Elements &generators)
 {
-  Transformations new_elements = get(generators);
-  Transformations elements{Identity()};
-  Transformations buffer;
+  auto new_elements = get(generators);
+  auto elements = Transformations{Identity()};
+  auto buffer = Transformations();
   buffer.reserve(48);
 
   while (new_elements.size()) {
-    Matrix3D new_element = new_elements.back();
+    auto new_element = new_elements.back();
     for (auto it = elements.begin(); it != elements.end(); ++it) {
-      Matrix3D new_transformation = *it * new_element;
+      auto new_transformation = *it * new_element;
       auto it2 = std::find_if(
         elements.begin(),
         elements.end(),
-        [&new_transformation](const Matrix3D &trafo)
+        [&new_transformation](const Transformation &trafo)
         {
           return trafo == new_transformation;
         });

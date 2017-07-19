@@ -86,57 +86,33 @@ namespace Geometry
 
   inline Transformation operator*(const Transformation &lhs, const Transformation &rhs)
   {
-    // identity
+    // identity shortcuts
     if (lhs.type == Transformation::Identity)
       return rhs;
     if (rhs.type == Transformation::Identity)
       return lhs;
-    // inversion
-    if (rhs.type == Transformation::Inversion || lhs.type == Transformation::Inversion) {
-      if (rhs.type == Transformation::Inversion && lhs.type == Transformation::Inversion)
-        return Geometry::Identity();
-      auto res = lhs.transformation_matrix * rhs.transformation_matrix;
-      if (rhs.type == Transformation::Reflection || lhs.type == Transformation::Reflection)
-        return Geometry::Transformation(Transformation::Rotation, res);
-      if (rhs.type == Transformation::Rotation || lhs.type == Transformation::Rotation)
-        return Geometry::Transformation(Transformation::ImproperRotation, res);
-      if (rhs.type == Transformation::ImproperRotation || lhs.type == Transformation::ImproperRotation)
-        return Geometry::Transformation(Transformation::Rotation, res);
-    }
-    // rotation
-    if (rhs.type == Transformation::Rotation || lhs.type == Transformation::Rotation) {
-      auto res = lhs.transformation_matrix * rhs.transformation_matrix;
-      if (rhs.type == Transformation::Rotation && lhs.type == Transformation::Rotation) {
-        if (equalsWithTolerance(trace(res), 3.0))
-          return Geometry::Identity();
-        else
-          return Geometry::Transformation(Transformation::Rotation, res);
-      }
-      if (rhs.type == Transformation::Reflection || lhs.type == Transformation::Reflection) {
-        return Geometry::Transformation(Transformation::ImproperRotation, res);
-      }
-      if (rhs.type == Transformation::ImproperRotation || lhs.type == Transformation::ImproperRotation) {
-        if (equalsWithTolerance(trace(res), 1.0))
-          return Geometry::Transformation(Transformation::Reflection, res);
-        if (equalsWithTolerance(trace(res), -3.0))
-          return Geometry::Inversion();
-        else
-          return Geometry::Transformation(Transformation::ImproperRotation, res);
-      }
-    }
-    // reflection or improper rotation
-    if ((rhs.type == Transformation::Reflection || rhs.type == Transformation::ImproperRotation) &&
-        (lhs.type == Transformation::Reflection || lhs.type == Transformation::ImproperRotation)) {
-      auto res = lhs.transformation_matrix * rhs.transformation_matrix;
-      if (equalsWithTolerance(trace(res), 3.0))
-        return Geometry::Identity();
-      else
-        return Geometry::Transformation(Transformation::Rotation, res);
-    }
 
-    THROW_LOGIC_ERROR(
-      "invalid Transformation types: lhs = " + std::to_string(lhs.type) + " rhs = " + std::to_string(rhs.type)
-    );
+    auto res = lhs.transformation_matrix * rhs.transformation_matrix;
+    auto tr = trace(res);
+    if (equalsWithTolerance(tr, 3.0))
+      return Geometry::Identity();
+    if (equalsWithTolerance(tr, -3.0))
+      return Geometry::Inversion();
+
+    auto det = determinant(res);
+    if (equalsWithTolerance(det, 1.0))
+      return Transformation(Transformation::Rotation, res);
+    else if (equalsWithTolerance(det, -1.0)) {
+      if (equalsWithTolerance(tr, 1.0))
+        return Transformation(Transformation::Reflection, res);
+      else
+        return Transformation(Transformation::ImproperRotation, res);
+    } else {
+      THROW_LOGIC_ERROR(
+        "invalid Transformation types: lhs = " + std::to_string(lhs.type) + " rhs = " + std::to_string(rhs.type) +
+        " determinant is not +- 1.0 but " + std::to_string(det)
+      );
+    }
   }
 }
 
