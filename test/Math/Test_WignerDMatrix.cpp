@@ -128,38 +128,6 @@ TEST(WignerDMatrix, smallDRotateSphericalHarmonics)
   }
 }
 
-namespace
-{
-  struct EulerRotation
-  {
-    EulerRotation(double alpha, double beta, double gamma) : r(get_rotation(alpha, beta, gamma)) {}
-
-    Point3D operator()(const Point3D &p) const
-    {
-      return r * p;
-    }
-
-    Matrix3D r;
-
-    static Matrix3D get_rotation(double alpha, double beta, double gamma)
-    {
-      const auto c1 = cos(gamma);
-      const auto c2 = cos(beta);
-      const auto c3 = cos(alpha);
-
-      const auto s1 = sin(gamma);
-      const auto s2 = sin(beta);
-      const auto s3 = sin(alpha);
-
-      return Matrix3D{
-        c1 * c2 * c3 - s1 * s3, -c3 * s1 - c1 * c2 * s3, c1 * s2,
-        c1 * s3 + c2 * c3 * s1, c1 * c3 - c2 * s1 * s3, s1 * s2,
-        -c3 * s2, s2 * s3, c2
-      };
-    }
-  };
-}
-
 TEST(WignerDMatrix, fullDRotateSphericalHarmonics)
 {
   auto mesh = IcosahedralQuadrature::generate(0);
@@ -174,11 +142,11 @@ TEST(WignerDMatrix, fullDRotateSphericalHarmonics)
         Eigen::MatrixXcd d2 = WignerDMatrix::calculate(alpha, beta, gamma, 2);
         Eigen::MatrixXcd d3 = WignerDMatrix::calculate(alpha, beta, gamma, 3);
 
-        const auto rotation = EulerRotation(alpha, beta, gamma);
+        const auto rotation = Rotation(alpha, beta, gamma);
 
         for (const auto &mp: mesh) {
           const auto p = mp.first;
-          const auto rotated_p = rotation(p);
+          const auto rotated_p = rotation * p;
           check_spherical_harmonics_rotation(p, rotated_p, 1, d1, 1e-14);
           check_spherical_harmonics_rotation(p, rotated_p, 2, d2, 1e-14);
           check_spherical_harmonics_rotation(p, rotated_p, 3, d3, 1e-14);

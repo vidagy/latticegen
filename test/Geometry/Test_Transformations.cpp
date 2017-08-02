@@ -265,3 +265,47 @@ TEST(TestTransformations, Multiplication)
   EXPECT_EQ(rotation * improper_rotation, ImproperRotation(vector * (1.123 + pi * 0.783)));
   EXPECT_EQ((reflection * improper_rotation).type, Transformation::Rotation);
 }
+
+TEST(TestTransformations, RotationsAsEulerMultiplied)
+{
+  const double step = pi / 12.0;
+  for (double alpha = step; alpha <= 2.0 * pi; alpha += step) {
+    for (double beta = step; beta <= 2.0 * pi; beta += step) {
+      for (double gamma = step; gamma <= 2.0 * pi; gamma += step) {
+        auto rot_euler = Rotation(alpha, beta, gamma);
+
+        auto rot_alpha = Rotation(alpha * Point3D{0.0, 0.0, 1.0});
+        auto rot_beta = Rotation(beta * Point3D{0.0, 1.0, 0.0});
+        auto rot_gamma = Rotation(gamma * Point3D{0.0, 0.0, 1.0});
+
+        auto rot_components = rot_gamma * rot_beta * rot_alpha;
+        EXPECT_TRUE(rot_components.transformation_matrix == rot_euler.transformation_matrix)
+                << " for alpha = " << alpha / pi << " beta = " << beta / pi << " gamma = " << gamma / pi
+                << "\nrot_euler = " << rot_euler << "\nrot_components = " << rot_components;
+      }
+    }
+  }
+}
+
+
+TEST(TestTransformations, RotationEulerMatrices)
+{
+  const double step = pi / 12.0;
+  for (double alpha = 0.0 * pi; alpha <= 2.0 * pi; alpha += step) {
+    for (double beta = 0.0 * pi; beta <= 2.0 * pi; beta += step) {
+      for (double gamma = 0.0 * pi; gamma <= 2.0 * pi; gamma += step) {
+        auto rot = Rotation(alpha, beta, gamma);
+        auto euler = rot.get_euler_angles();
+        auto rot2 = Rotation(euler.alpha, euler.beta, euler.gamma);
+        auto euler2 = rot2.get_euler_angles();
+
+        EXPECT_TRUE(rot == rot2)
+                << "Rot original = \n" << rot << "\nRot new = \n" << rot2
+                << "\nOriginal euler angles = "
+                << "alpha " << euler.alpha / pi << " beta " << euler.beta / pi << " gamma " << euler.gamma / pi
+                << "\nNew euler angles = "
+                << "alpha " << euler2.alpha / pi << " beta2 " << euler.beta / pi << " gamma2 " << euler.gamma / pi;
+      }
+    }
+  }
+}

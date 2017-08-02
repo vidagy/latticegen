@@ -32,8 +32,8 @@ namespace Geometry
       return transformation_matrix * vector;
     }
 
-    const Type type;
-    const Matrix3D transformation_matrix;
+    Type type;
+    Matrix3D transformation_matrix;
 
   protected:
     Transformation(const Type type_, const Matrix3D& matrix_)
@@ -62,6 +62,20 @@ namespace Geometry
   {
   public:
     explicit Rotation(const Vector3D& rotation_vector);
+
+    /// create from euler angles using the z-y-z convention
+    /// R = R_z(gamma) * R_z(beta) * R_z(alpha)
+    Rotation(double alpha, double beta, double gamma);
+
+    struct EulerAngles
+    {
+      EulerAngles(double alpha, double beta, double gamma)
+        : alpha(alpha), beta(beta), gamma(gamma) {}
+
+      double alpha, beta, gamma;
+    };
+
+    EulerAngles get_euler_angles() const;
   };
 
 
