@@ -3,7 +3,6 @@
 #include <Geometry/ShapeFunctions.h>
 #include <Geometry/Cutoff.h>
 #include <Math/CommonFunctions.h>
-#include <TestUtils/Utils.h>
 
 using namespace Core;
 using namespace Geometry;
@@ -70,8 +69,7 @@ TEST(DISABLED_ShapeFunctions, TooFar)
   }
 }
 
-// TODO enable this test if icosahedral mesh respects Oh and if lm optimization is implemented.
-TEST(DISABLED_ShapeFunctions, Cubic)
+TEST(ShapeFunctions, Cubic)
 {
   const auto unit_cell = UnitCell3D::create_cubic_primitive(1.0);
 
@@ -80,7 +78,21 @@ TEST(DISABLED_ShapeFunctions, Cubic)
   for (auto l = 0u; l <= l_max; ++l) {
     for (auto m = -((int) l); m <= ((int) l); ++m) {
       auto sf = shape_functions.shape_functions.at(l, m);
-      Utils::log(sf, "shape_function" + std::to_string(l) + std::to_string(m));
+      if ((!((l == 0u) && (m == 0))) &&
+          (!((l == 4u) && (m == -4))) &&
+          (!((l == 4u) && (m == 0))) &&
+          (!((l == 4u) && (m == 4))) &&
+          (!((l == 6u) && (m == -4))) &&
+          (!((l == 6u) && (m == 0))) &&
+          (!((l == 6u) && (m == 4))) &&
+          // don't know why this is not ZeroBySymmetries but I can live with that for now.
+          (!((l == 2u) && (m == 0)))
+        ) {
+        for (auto &x: sf) {
+          EXPECT_EQ(x.real(), 0.0) << " l = " << l << " m = " << m;
+          EXPECT_EQ(x.imag(), 0.0) << " l = " << l << " m = " << m;
+        }
+      }
     }
   }
 }

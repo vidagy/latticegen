@@ -2,8 +2,10 @@
 #include <Math/CommonFunctions.h>
 #include <Math/SphericalHarmonics.h>
 #include <Math/PolyhedralQuadrature.h>
+#include <Math/WignerDMatrix.h>
 #include "ShapeFunctions.h"
 #include "Cutoff.h"
+#include "SymmetryTransformationFactory.h"
 
 using namespace Geometry;
 using namespace Math;
@@ -75,16 +77,26 @@ namespace
       return (res.first + res.second) / 2.0;
     }
 
+    // workaround because ref to boolean vector element is deleted
+    enum class ZeroBySymmetries
+    {
+      True, False
+    };
+
   public:
     lm_vector<std::vector<std::complex<double>>> calculate(const unsigned int l_max) const
     {
+      auto zero_by_symmetries = get_zero_by_symmetries(l_max);
+
       auto res = lm_vector<std::vector<std::complex<double>>>(l_max);
       for (auto l = 0u; l <= l_max; ++l) {
         for (auto m = -((int) l); m <= ((int) l); ++m) {
-          // TODO based on the symmetry of the WS cell and (l,m) we should be able to figure out if the integral is
-          // zero. In order to do that, most probably, we will need Wigner D matrices, euler rotations and love :)
-          auto spherical_harmonics_values = get_spherical_harmonics_values(l, m);
-          res.at(l, m) = integrate(l, m, spherical_harmonics_values);
+          if (zero_by_symmetries.at(l, m) == ZeroBySymmetries::True) {
+            res.at(l, m) = std::vector<std::complex<double>>(mesh.size(), 0.0);
+          } else {
+            auto spherical_harmonics_values = get_spherical_harmonics_values(l, m);
+            res.at(l, m) = integrate(l, m, spherical_harmonics_values);
+          }
         }
       }
       return res;
@@ -96,6 +108,75 @@ namespace
     const std::vector<MeshPoint> mesh;
 
   private:
+    lm_vector<ZeroBySymmetries> get_zero_by_symmetries(const unsigned int l_max) const
+    {
+      // initialize result to uniform False
+      auto res = lm_vector<ZeroBySymmetries>(l_max);
+      for (auto l = 0u; l <= l_max; ++l) {
+        for (auto m = -((int) l); m <= ((int) l); ++m) {
+          res.at(l, m) = ZeroBySymmetries::False;
+        }
+      }
+
+      // get symmetries
+      auto symmetries = SymmetryTransformationFactory::generate(cutoff.cell);
+
+      // if we have inversion then we can use the parity of Spherical harmonics
+      if (std::find(symmetries.begin(), symmetries.end(), Inversion()) != symmetries.end()) {
+        for (auto l = 1u; l <= l_max; l += 2) {
+          for (auto m = -((int) l); m <= ((int) l); ++m) {
+            res.at(l, m) = ZeroBySymmetries::True;
+          }
+        }
+      }
+
+
+      // get rotations
+      symmetries.erase(
+        std::remove_if(
+          symmetries.begin(), symmetries.end(),
+          [](const Transformation &t)
+          {
+            return t.type != Transformation::Rotation;
+          }),
+        symmetries.end()
+      );
+
+      // handle rotations
+      for (auto l = 0u; l <= l_max; ++l) {
+        for (auto &rotation: symmetries) {
+          auto euler_angles = reinterpret_cast<Rotation *>(&rotation)->get_euler_angles();
+          auto wignerD = WignerDMatrix::calculate(euler_angles.alpha, euler_angles.beta, euler_angles.gamma, l);
+          for (auto m = 0; m <= ((int) l); ++m) {
+            auto isZero = ZeroBySymmetries::False;
+            // we go through multiple symmetries, only have to do the math if it is still non-zero
+            if (res.at(l, m) == ZeroBySymmetries::False) {
+              for (auto i = -((int) l); i <= ((int) l); ++i) {
+                if (i == m) { // we should have -1.0 in the diagonal
+                  if (equalsWithTolerance(wignerD(l + m, l + i), -1.0 + 0.0i))
+                    isZero = ZeroBySymmetries::True;
+                  else {
+                    isZero = ZeroBySymmetries::False;
+                    break;
+                  }
+                } else if (!nearlyZero(std::abs(wignerD(l + m, l + i)))) { // and zeros everywhere else
+                  isZero = ZeroBySymmetries::False;
+                  break;
+                }
+              }
+            }
+            // we only update if it is false
+            if (res.at(l, m) != ZeroBySymmetries::True) {
+              res.at(l, m) = isZero;
+              // since the integrand is real => we are symmetric in m.
+              res.at(l, -static_cast<int>(m)) = isZero;
+            }
+          }
+        }
+      }
+      return res;
+    }
+
     std::vector<std::complex<double>> get_spherical_harmonics_values(const unsigned int l, const int m) const
     {
       auto res = std::vector<std::complex<double>>();

@@ -2,6 +2,7 @@
 #define LATTICEGEN_COMPARISONHELPERS_H_
 
 #include <math.h>
+#include <complex>
 
 namespace Core
 {
@@ -19,6 +20,14 @@ namespace Core
     double sum = (lhs + rhs) / 2.0;
     return sum < abs_tolerance || diff / sum <= rel_tolerance;
       
+  }
+
+  inline bool equalsWithTolerance(
+    const std::complex<double> &lhs, const std::complex<double> &rhs,
+    double abs_tolerance = default_abs_tolerance, double rel_tolerance = default_rel_tolerance)
+  {
+    return equalsWithTolerance(lhs.real(), rhs.real(), abs_tolerance, rel_tolerance) &&
+           equalsWithTolerance(lhs.imag(), rhs.imag(), abs_tolerance, rel_tolerance);
   }
 
   inline bool nearlyZero(double x, double abs_tolerance = default_abs_tolerance)
