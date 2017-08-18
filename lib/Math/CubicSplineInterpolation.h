@@ -15,7 +15,7 @@ namespace Math
     {
       if (x.size() != y.size())
         THROW_INVALID_ARGUMENT(
-          "knot_points_x = " + std::to_string(x.size()) +
+          "knot_points_x.size() = " + std::to_string(x.size()) +
           " knot_points_y.size() = " + std::to_string(y.size())
         );
 

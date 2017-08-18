@@ -35,11 +35,14 @@ namespace Geometry
   class ShapeFunctions
   {
   public:
-    // TODO we should implement interpolation from going to r_WS mesh to custom input r mesh
     ShapeFunctions(
-      const UnitCell3D &unit_cell_, unsigned int l_max, const ShapeFunctionsConfig &config_ = ShapeFunctionsConfig());
+      const UnitCell3D &unit_cell_, unsigned int l_max, const std::vector<double> &mesh_,
+      const ShapeFunctionsConfig &config_ = ShapeFunctionsConfig()
+    );
 
     const UnitCell3D unit_cell;
+    const unsigned int l_max;
+    const std::vector<double> mesh;
     const lm_vector<std::vector<std::complex<double>>> shape_functions;
   };
 }
