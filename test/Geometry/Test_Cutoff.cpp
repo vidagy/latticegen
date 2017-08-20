@@ -1,14 +1,10 @@
 #include <TestUtils/base.h>
 
 #include <Geometry/Cutoff.h>
+#include <Geometry/Mesh.h>
 
 using namespace Core;
 using namespace Geometry;
-
-namespace
-{
-    static const double pi = 3.14159265358979323846;
-}
 
 TEST(TestCutoff,CubeCtorThrows)
 {
@@ -285,12 +281,59 @@ TEST(TestCutoff,WSCellCutoffFalse)
 
 TEST(TestCutoff, WSCellRadius)
 {
-  //CutoffWSCell cutoff_cube = CutoffWSCell(UnitCell3D::create_cubic_primitive(1.0));
-  //EXPECT_DOUBLE_EQ(cutoff_cube.r_mt, 0.5);
-  //EXPECT_DOUBLE_EQ(cutoff_cube.r_bs, 0.5*sqrt(3.0));
+  CutoffWSCell cutoff_cube = CutoffWSCell(UnitCell3D::create_cubic_primitive(1.0));
+  EXPECT_DOUBLE_EQ(cutoff_cube.r_mt, 0.5);
+  EXPECT_DOUBLE_EQ(cutoff_cube.r_bs, 0.5 * sqrt(3.0));
 
   CutoffWSCell cutoff_hexagonal_short = CutoffWSCell(UnitCell3D::create_hexagonal_primitive(1.0, 1e-10));
   EXPECT_DOUBLE_EQ(cutoff_hexagonal_short.r_mt, 5e-11);
   EXPECT_DOUBLE_EQ(cutoff_hexagonal_short.r_bs, 1.0 / sqrt(3.0));
+}
 
+namespace
+{
+  void test_WS_radii_consistency(const UnitCell3D &cell)
+  {
+    auto cutoff = CutoffWSCell(cell);
+    EXPECT_TRUE(strictlyPositive(cutoff.r_mt)) << " r_mt = " << cutoff.r_mt;
+    EXPECT_TRUE(strictlyPositive(cutoff.r_bs)) << " r_bs = " << cutoff.r_bs;
+    EXPECT_TRUE(strictlyGreater(cutoff.r_bs, cutoff.r_mt)) << " r_mt = " << cutoff.r_mt << " r_bs = " << cutoff.r_bs;
+
+    const auto &a = cutoff.cell.v1;
+    const auto &b = cutoff.cell.v2;
+    const auto &c = cutoff.cell.v3;
+
+    EXPECT_TRUE(lessEqualsWithTolerance(cutoff.r_mt, a.length() / 2.0));
+    EXPECT_TRUE(lessEqualsWithTolerance(cutoff.r_mt, b.length() / 2.0));
+    EXPECT_TRUE(lessEqualsWithTolerance(cutoff.r_mt, c.length() / 2.0));
+
+    EXPECT_TRUE(lessEqualsWithTolerance(cutoff.r_bs, (a + b + c).length() / 2.0));
+  };
+}
+
+TEST(TestCutoff, WSCellRadiusConsistency)
+{
+
+  const double a_ = 1.0;
+  const double b_ = 2.0;
+  const double c_ = 3.0;
+
+  const double alpha_ = pi / 3.0;
+  const double beta_ = pi / 4.0;
+  const double gamma_ = pi / 6.0;
+
+  test_WS_radii_consistency(UnitCell3D::create_triclinic_primitive(a_, b_, c_, alpha_, beta_, gamma_));
+  test_WS_radii_consistency(UnitCell3D::create_monoclinic_primitive(a_, b_, c_, beta_));
+  test_WS_radii_consistency(UnitCell3D::create_monoclinic_base(a_, b_, c_, beta_));
+  test_WS_radii_consistency(UnitCell3D::create_orthorhombic_primitive(a_, b_, c_));
+  test_WS_radii_consistency(UnitCell3D::create_orthorhombic_base(a_, b_, c_));
+  test_WS_radii_consistency(UnitCell3D::create_orthorhombic_body(a_, b_, c_));
+  test_WS_radii_consistency(UnitCell3D::create_orthorhombic_face(a_, b_, c_));
+  test_WS_radii_consistency(UnitCell3D::create_tetragonal_primitive(a_, c_));
+  test_WS_radii_consistency(UnitCell3D::create_tetragonal_body(a_, c_));
+  test_WS_radii_consistency(UnitCell3D::create_rhombohedral_centered(a_, alpha_));
+  test_WS_radii_consistency(UnitCell3D::create_hexagonal_primitive(a_, c_));
+  test_WS_radii_consistency(UnitCell3D::create_cubic_primitive(a_));
+  test_WS_radii_consistency(UnitCell3D::create_cubic_body(a_));
+  test_WS_radii_consistency(UnitCell3D::create_cubic_face(a_));
 }

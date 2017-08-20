@@ -74,7 +74,7 @@ namespace Geometry
   class CutoffWSCell : public Cutoff
   {
   public:
-    CutoffWSCell(const Cell3D &cell_);
+    explicit CutoffWSCell(const Cell3D &cell_);
 
     bool is_included(const Point3D& point) const final override;
 

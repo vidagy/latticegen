@@ -138,33 +138,48 @@ namespace
 
   std::vector<std::pair<Point3D, double>> get_face_points(const Cell3D &cell)
   {
-    auto all_face_points = get_all_face_points(cell);
-    auto face_points = std::vector<std::pair<Point3D, double>>();
-    face_points.reserve(all_face_points.size());
+    auto face_points = get_all_face_points(cell);
 
-    for (auto &candidate: all_face_points) {
-      auto is_included = true;
-      for (const auto &face_point: face_points) {
-        if (greaterEqualsWithTolerance(
-          candidate.second * fabs(candidate.first * face_point.first), face_point.second)
-          ) {
-          is_included = false;
-          break;
-        }
+    std::sort(
+      face_points.begin(), face_points.end(),
+      [](const std::pair<Point3D, double> &lhs, const std::pair<Point3D, double> &rhs)
+      {
+        return lhs.second < rhs.second;
       }
-      if (is_included) {
-        // if there is a point that is outside of the new point, then that point should be eliminated
-        face_points.erase(
-          std::remove_if(
-            face_points.begin(), face_points.end(),
-            [&candidate](const std::pair<Point3D, double> &p)
-            {
-              return greaterEqualsWithTolerance(p.second * fabs(p.first * candidate.first), candidate.second);
-            }
-          ), face_points.end()
-        );
-        // finally add new point
-        face_points.push_back(candidate);
+    );
+
+    if (face_points.size() < 3u)
+      THROW_LOGIC_ERROR("face_points.size() = " + std::to_string(face_points.size()) + " < 3");
+    if (face_points.size() == 3u)
+      return face_points;
+
+    // we have more than 3 face points, we can potentially remove a few
+    for (auto it1 = 0u; it1 < face_points.size() - 2; ++it1) {
+      for (auto it2 = it1 + 1u; it2 < face_points.size() - 1; ++it2) {
+        for (auto it3 = it2 + 1u; it3 < face_points.size(); ++it3) {
+          const auto a = face_points[it1];
+          const auto b = face_points[it2];
+          const auto c = face_points[it3];
+          if (strictlyPositive(fabs(cross_product(a.first, b.first) * c.first))) {
+            face_points.erase(
+              std::remove_if(
+                face_points.begin(), face_points.end(),
+                [&a, &b, &c](const std::pair<Point3D, double> &p)
+                {
+                  auto outside_of_parallelepiped =
+                    greaterEqualsWithTolerance(p.second * fabs(p.first * a.first), a.second) ||
+                    greaterEqualsWithTolerance(p.second * fabs(p.first * b.first), b.second) ||
+                    greaterEqualsWithTolerance(p.second * fabs(p.first * c.first), c.second);
+                  auto is_current_point =
+                    (a.first == p.first && a.second == p.second) ||
+                    (b.first == p.first && b.second == p.second) ||
+                    (c.first == p.first && c.second == p.second);
+                  return outside_of_parallelepiped && !is_current_point;
+                }
+              ), face_points.end()
+            );
+          }
+        }
       }
     }
 
@@ -185,26 +200,24 @@ namespace
 
   double get_max_r(const std::vector<std::pair<Point3D, double>> &face_points)
   {
+    // we have to include the inversion of all face points, too
+    auto all_face_points = std::vector<std::pair<Point3D, double>>();
+    all_face_points.reserve(face_points.size() * 2);
+    for (const auto &p : face_points) {
+      all_face_points.push_back(p);
+      all_face_points.push_back(std::make_pair(-1.0 * p.first, p.second));
+    }
+
     auto possible_distances = std::vector<double>();
-    possible_distances.reserve(face_points.size());
-    // we go over all face-face intersections where the face vector are acute.
-    for (auto i = 0u; i < face_points.size(); ++i) {
-      for (auto j = i + 1; j < face_points.size(); ++j) {
-        for (auto k = j + 1; k < face_points.size(); ++k) {
-          auto a1 = face_points[i];
-          auto a2 = face_points[j];
-          auto a3 = face_points[k];
+    possible_distances.reserve(all_face_points.size());
+    for (auto i = 0u; i < all_face_points.size(); ++i) {
+      for (auto j = i + 1; j < all_face_points.size(); ++j) {
+        for (auto k = j + 1; k < all_face_points.size(); ++k) {
+          auto a1 = all_face_points[i];
+          auto a2 = all_face_points[j];
+          auto a3 = all_face_points[k];
 
-          if (!nearlyZero(fabs(cross_product(a1.first, a2.first) * a3.first))) {
-            if (a1.first * a2.first < 0.0)
-              a2 = std::make_pair(-1.0 * a2.first, a2.second);
-            if ((a1.first * a3.first) * (a2.first * a3.first) < 0.0)
-              THROW_LOGIC_ERROR(
-                "We should not end up with intersecting planes that have non-acute perpendicular vectors");
-            if (a1.first * a3.first < 0.0) {
-              a3 = std::make_pair(-1.0 * a3.first, a3.second);
-            }
-
+          if (!nearlyZero(fabs(cross_product(a1.first, a2.first) * a3.first))) { // non co-planar
             Eigen::Matrix3d m(3, 3);
             m <<
               a1.first.x, a1.first.y, a1.first.z,
@@ -212,7 +225,19 @@ namespace
               a3.first.x, a3.first.y, a3.first.z;
 
             Eigen::Vector3d v(a1.second, a2.second, a3.second);
-            possible_distances.push_back(m.colPivHouseholderQr().solve(v).norm());
+            Eigen::Vector3d res = m.colPivHouseholderQr().solve(v);
+
+            // we only add it to the intersections if the point is on the surface
+            auto is_included = true;
+            for (const auto &p : face_points) {
+              const auto scalar_prod = res(0) * p.first.x + res(1) * p.first.y + res(2) * p.first.z;
+              if (strictlyGreater(fabs(scalar_prod), p.second)) {
+                is_included = false;
+                break;
+              }
+            }
+            if (is_included)
+              possible_distances.push_back(res.norm());
           }
         }
       }
