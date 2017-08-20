@@ -254,6 +254,7 @@ namespace
     }
   };
 
+  /// This one implements interpolation between r_mt and r_bs, and it implements the < r_mt abdnd > r_bs range, too
   class ShapeFunctionsCalculator
   {
   public:
@@ -267,6 +268,7 @@ namespace
       auto res = lm_vector<std::vector<std::complex<double>>>(l_max);
       for (auto l = 0u; l <= l_max; ++l) {
         for (auto m = -((int) l); m <= ((int) l); ++m) {
+          // TODO we could save ZeroBySymmetries and don't even interpolate in those cases.
           auto interpolator =
             CubicSplineInterpolation<double, std::complex<double>>(calculatorImpl.unique_mesh, resImpl.at(l, m));
           auto interpolated_res = std::vector<std::complex<double>>();
