@@ -149,8 +149,8 @@ double IntegratorEquidistant::trapezoidal(const std::vector<double> &f, double d
 double IntegratorExponential::simpson(const std::vector<double> &f, const Core::ExponentialMesh &x)
 {
   auto f_size = f.size();
-  const auto &d_points = x.d_points;
-  const auto &dx = x.dx;
+  const auto &d_points = x.get_d_points();
+  const auto &dx = x.get_dx();
 
   if (f_size != d_points.size())
     THROW_INVALID_ARGUMENT(
@@ -192,8 +192,8 @@ double IntegratorExponential::simpson(const std::vector<double> &f, const Core::
 double IntegratorExponential::simpson_alt(const std::vector<double> &f, const Core::ExponentialMesh &x)
 {
   auto f_size = f.size();
-  const auto &d_points = x.d_points;
-  const auto &dx = x.dx;
+  const auto &d_points = x.get_d_points();
+  const auto &dx = x.get_dx();
 
   if (f_size != d_points.size())
     THROW_INVALID_ARGUMENT(

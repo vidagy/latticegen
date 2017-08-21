@@ -33,15 +33,15 @@ namespace Physics
             r(r_), R(R_), dR_dr(dR_dr_),
             E(E_), practical_infinity(practical_infinity_), number_of_iteration(number_of_iteration_)
         {
-          if (R.size() != r->points.size())
+          if (R.size() != r->get_points().size())
             THROW_INVALID_ARGUMENT("in RadialSolution R.size()=" + std::to_string(R.size()) +
-                                   " while r->points.size()=" + std::to_string(r->points.size()));
+                                   " while r->get_points().size()=" + std::to_string(r->get_points().size()));
           if (R.size() != dR_dr.size())
             THROW_INVALID_ARGUMENT("in RadialSolution R.size()=" + std::to_string(R.size()) +
                                    " while dR_dr.size()=" + std::to_string(dR_dr.size()));
-          if (practical_infinity_ >= static_cast<int>(r->points.size()))
+          if (practical_infinity_ >= static_cast<int>(r->get_points().size()))
             THROW_INVALID_ARGUMENT("in RadialSolution practical_infinity=" + std::to_string(practical_infinity) +
-                                   " while r->points.size()=" + std::to_string(r->points.size()));
+                                   " while r->get_points().size()=" + std::to_string(r->get_points().size()));
         }
 
         const int n;                                    /// principal quantum number

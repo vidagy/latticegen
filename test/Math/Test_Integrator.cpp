@@ -136,7 +136,7 @@ TEST(TestIntegratorGeneric, Constant)
 {
   const auto n = 100u;
   auto const_n_f = std::vector<double>(n, 1.0);
-  auto points = ExponentialMesh(0.01, 1.0, n, 1.0).points;
+  auto points = ExponentialMesh(0.01, 1.0, n, 1.0).get_points();
   EXPECT_NEAR(IntegratorGeneric::integrate(const_n_f, points), 1.0 - 0.01, 2.0 * epsilon);
 }
 
@@ -146,7 +146,7 @@ TEST(TestIntegratorGeneric, Exponential)
   auto a = 0.00001;
   auto b = 20.0;
 
-  std::vector<double> points = ExponentialMesh(a, b, n, 1.0).points;
+  std::vector<double> points = ExponentialMesh(a, b, n, 1.0).get_points();
 
   std::vector<double> polynomial;
   polynomial.reserve(points.size());
@@ -164,7 +164,7 @@ TEST(TestIntegratorExponential, SimpsonExponential)
   auto b = 20.0;
 
   const auto mesh = ExponentialMesh(a, b, n, 1.0);
-  const auto &points = mesh.points;
+  const auto &points = mesh.get_points();
 
   std::vector<double> polynomial;
   polynomial.reserve(points.size());
@@ -182,7 +182,7 @@ TEST(TestIntegratorExponential, SimpsonAltExponential)
   auto b = 20.0;
 
   const auto mesh = ExponentialMesh(a, b, n, 1.0);
-  const auto &points = mesh.points;
+  const auto &points = mesh.get_points();
 
   std::vector<double> polynomial;
   polynomial.reserve(points.size());

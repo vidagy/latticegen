@@ -39,8 +39,8 @@ void AdamsIntegrator::adams_moulton_method(
   if (quadrature >= MAX_ADAMS_MOULTON_QUADRATURE_ORDER)
     THROW_LOGIC_ERROR("quadrature must be smaller than " + std::to_string(MAX_ADAMS_MOULTON_QUADRATURE_ORDER));
 
-  const auto &r_points = r->points;
-  const auto &dr_di = r->d_points;
+  const auto &r_points = r->get_points();
+  const auto &dr_di = r->get_d_points();
 
   auto diff = from > to ? -1 : 1;
   const auto ang = 0.5 * l * (l + 1);
@@ -49,7 +49,7 @@ void AdamsIntegrator::adams_moulton_method(
   auto params = get_adams_parameters(quadrature);
 
   for (auto i = 0; i <= quadrature; ++i) {
-    params[i] *= r->dx;
+    params[i] *= r->get_dx();
   }
 
   /// set up f with initial values
@@ -91,7 +91,7 @@ void AdamsIntegrator::start_inward(std::vector<double> &R, std::vector<double> &
                            + " is not less than" + std::to_string(MAX_INWARD_ASYMPTOTIC_EXPANSION_ORDER));
 
   const auto &cutoff = config.inward_asymptotic_expansion_cutoff;
-  const auto &r_points = r->points;
+  const auto &r_points = r->get_points();
 
   double alam = sqrt(-2.0 * energy);
   double sigma = z[practical_infinity] / alam;
@@ -150,9 +150,9 @@ void AdamsIntegrator::start_outward(std::vector<double> &R, std::vector<double> 
   // For that we would need interpolation for Z as well.
 
   const auto &outward_scheme = config.outward_quadrature_order;
-  const auto &r_points = r->points;
-  const auto &dr_di = r->d_points;
-  const auto &dx = r->dx;
+  const auto &r_points = r->get_points();
+  const auto &dr_di = r->get_d_points();
+  const auto &dx = r->get_dx();
 
   double u0 = 1.0;
   double v0 = -z[0] / (l + 1.0);

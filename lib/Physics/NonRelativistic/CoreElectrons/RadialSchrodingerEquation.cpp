@@ -21,9 +21,9 @@ RadialSolution RadialSchrodingerEquation::solve(
     THROW_INVALID_ARGUMENT("in RadialSchrodingerEquation::solve energy guess must be negative energy = "
                            + std::to_string(energy));
 
-  const auto &r = effective_charge.r->points; // safe because class always has a strong reference on it
-  const auto &dr_di = effective_charge.r->d_points;
-  const auto dx = effective_charge.r->dx;
+  const auto &r = effective_charge.r->get_points(); // safe because class always has a strong reference on it
+  const auto &dr_di = effective_charge.r->get_d_points();
+  const auto dx = effective_charge.r->get_dx();
   const auto &z = effective_charge.z;
   const auto required_number_of_nodes = n - l - 1;
   auto update_energy = EnergyUpdate(required_number_of_nodes, energy_tolerance);

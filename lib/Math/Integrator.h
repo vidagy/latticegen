@@ -2,7 +2,7 @@
 #define LATTICEGEN_INTEGRATOR_H
 
 #include <vector>
-#include <Core/ExponentialMesh.h>
+#include <Core/RadialMesh.h>
 
 namespace Math
 {

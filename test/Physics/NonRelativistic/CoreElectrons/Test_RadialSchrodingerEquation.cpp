@@ -11,7 +11,7 @@ namespace
   struct CoulombReferenceSolutions
   {
     CoulombReferenceSolutions(const std::shared_ptr<const ExponentialMesh> &mesh, double Q_)
-      : z(std::vector<double>(mesh->points.size(), Q_), mesh), Q(Q_)
+      : z(std::vector<double>(mesh->get_points().size(), Q_), mesh), Q(Q_)
     {
       reference_R10 = this->generate([this](double r) { return R10(r); });
       reference_dR_dr_10 = this->generate([this](double r) { return dR_dr_10(r); });
@@ -97,8 +97,8 @@ namespace
     std::vector<double> generate(std::function<double(double)> f) const
     {
       std::vector<double> res;
-      res.reserve(z.r->points.size());
-      for (auto r: z.r->points) {
+      res.reserve(z.r->get_points().size());
+      for (auto r: z.r->get_points()) {
         res.push_back(f(r));
       }
       return res;
@@ -223,7 +223,7 @@ TEST(TestAdamsIntegrator, AdamsMoultonMethod)
 
   auto R = reference.reference_R10;
   auto dR_dR = reference.reference_dR_dr_10;
-  auto z = std::vector<double>(mesh->points.size(), 1.0);
+  auto z = std::vector<double>(mesh->get_points().size(), 1.0);
 
   auto ai = AdamsIntegrator(mesh, z, reference.energy(1), 0, 97, 77, AdamsIntegratorConfig());
 
@@ -288,14 +288,15 @@ namespace
   )
   {
     auto reference = CoulombReferenceSolutions(mesh, Z);
-    auto sch = RadialSchrodingerEquation(EffectiveCharge(std::vector<double>(mesh->points.size(), Z), mesh));
+    auto sch = RadialSchrodingerEquation(EffectiveCharge(std::vector<double>(mesh->get_points().size(), Z), mesh));
     auto solution = sch.solve(n, l, reference.energy(n));
 
     if (print_logs) {
       Utils::log(solution.R,
-                 "ScaledSolution_R" + std::to_string(n) + std::to_string(l) + "_" + std::to_string(mesh->scale));
+                 "ScaledSolution_R" + std::to_string(n) + std::to_string(l) + "_" + std::to_string(mesh->get_scale()));
       Utils::log(solution.dR_dr,
-                 "ScaledSolution_dR_dr" + std::to_string(n) + std::to_string(l) + "_" + std::to_string(mesh->scale));
+                 "ScaledSolution_dR_dr" + std::to_string(n) + std::to_string(l) + "_" +
+                 std::to_string(mesh->get_scale()));
     }
 
     auto reference_R = reference.get_R(n, l);
@@ -303,10 +304,10 @@ namespace
 
     if (print_logs) {
       Utils::log(reference_R, "ScaledReferenceSolution_reference_R" + std::to_string(n) + std::to_string(l) + "_" +
-                              std::to_string(mesh->scale));
+                              std::to_string(mesh->get_scale()));
       Utils::log(reference_dR_dr,
                  "ScaledReferenceSolution_reference_dR_dr" + std::to_string(n) + std::to_string(l) + "_" +
-                 std::to_string(mesh->scale));
+                 std::to_string(mesh->get_scale()));
     }
 
     EXPECT_LE(solution.number_of_iteration, 2) << "for n = " << n << " l = " << l;
@@ -326,7 +327,8 @@ namespace
         if (fabs(solution.R[i] - reference_R[i]) > max_dR)
           max_dR = fabs(solution.dR_dr[i] - reference_dR_dr[i]);
       }
-      std::cout << "for n = " << n << " l = " << l << " scale " << mesh->scale << " max_R = " << std::setprecision(16)
+      std::cout << "for n = " << n << " l = " << l << " scale " << mesh->get_scale() << " max_R = "
+                << std::setprecision(16)
                 << std::scientific
                 << std::setw(21) << max_R << " msx_dr " << max_dR << std::endl;
     }
@@ -349,7 +351,7 @@ TEST(TestRadialSchrodingerEquation, CompareToCoulombReferenceScaledMesh)
 {
   auto mesh = std::make_shared<const ExponentialMesh>(0.00001, 200, 200, 0.7);
   double Z = 1.0;
-  Utils::log(mesh->points, "NotScaledSolution_r");
+  Utils::log(mesh->get_points(), "NotScaledSolution_r");
   compare_to_reference(Z, mesh, 1, 0, 9e-10);
   compare_to_reference(Z, mesh, 2, 0, 7e-9);
   compare_to_reference(Z, mesh, 2, 1, 4e-9);
@@ -362,7 +364,7 @@ TEST(DISABLED_TestRadialSchrodingerEquation, GenerateInputForParametrizedExponen
 {
   for (auto scale = 0.1; scale < 1.05; scale += 0.1) {
     auto mesh = std::make_shared<const ExponentialMesh>(0.00001, 200, 200, scale);
-    Utils::log(mesh->points, "ScaledSolution_r_" + std::to_string(scale));
+    Utils::log(mesh->get_points(), "ScaledSolution_r_" + std::to_string(scale));
     double Z = 1.0;
     compare_to_reference(Z, mesh, 1, 0, 3e-1, true);
     compare_to_reference(Z, mesh, 2, 0, 2e-1, true);

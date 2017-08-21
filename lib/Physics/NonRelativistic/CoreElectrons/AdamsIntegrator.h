@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 
-#include <Core/ExponentialMesh.h>
+#include <Core/RadialMesh.h>
 #include <Core/Exceptions.h>
 
 using namespace Core;

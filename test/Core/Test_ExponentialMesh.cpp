@@ -1,13 +1,13 @@
 #include <TestUtils/base.h>
 
-#include <Core/ExponentialMesh.h>
+#include <Core/RadialMesh.h>
 
 using namespace Core;
 
 TEST(TestExponentialMesh, Simple)
 {
   auto mesh = ExponentialMesh(0.01, 1.0, 5, 1.0);
-  auto &points = mesh.points;
+  const auto &points = mesh.get_points();
 
   // for(auto p: points)
   //   std::cout << std::setprecision(18) << p << std::endl;
@@ -25,7 +25,7 @@ TEST(TestExponentialMesh, Simple)
 TEST(TestExponentialMesh, Scaled)
 {
   auto mesh = ExponentialMesh(0.01, 1.0, 5, 0.5);
-  auto &points = mesh.points;
+  const auto &points = mesh.get_points();
 
   // for(auto p: points)
   //   std::cout << std::setprecision(18) << p << ',' << std::endl;
