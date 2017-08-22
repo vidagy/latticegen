@@ -63,6 +63,7 @@ namespace Physics
 
       const UnitCell3D unit_cell;
       const lm_vector<std::complex<double>> madelung_constants;
+      const MadelungConstantsConfig config;
     };
   }
 }

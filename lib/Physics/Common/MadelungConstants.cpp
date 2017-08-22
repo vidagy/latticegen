@@ -163,4 +163,5 @@ namespace
 
 ReducedMadelungConstants::ReducedMadelungConstants(
   const UnitCell3D &unit_cell_, const unsigned int l_max, const MadelungConstantsConfig &config_)
-  : unit_cell(unit_cell_), madelung_constants(MadelungConstantCalculator(unit_cell_, config_).calculate(l_max)) {}
+  : unit_cell(unit_cell_), madelung_constants(MadelungConstantCalculator(unit_cell_, config_).calculate(l_max)),
+    config(config_) {}
