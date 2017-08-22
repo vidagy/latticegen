@@ -193,3 +193,46 @@ TEST(TestIntegratorExponential, SimpsonAltExponential)
   EXPECT_NEAR(IntegratorExponential::simpson_alt(polynomial, mesh), /*(a+1.0)*exp(-a)*/ 1.0 - (b + 1.0) * exp(-b),
               2.1e-11);
 }
+
+
+TEST(TestIntegratorExponential, SimpsonExponentialComplex)
+{
+  auto n = 500u;
+  auto a = 0.000001;
+  auto b = 20.0;
+
+  const auto mesh = ExponentialMesh(a, b, n, 1.0);
+  const auto &points = mesh.get_points();
+
+  using namespace std::complex_literals;
+  std::vector<std::complex<double>> polynomial;
+  polynomial.reserve(points.size());
+  for (auto x: points) {
+    polynomial.push_back(x * exp(-x) * 1.0i);
+  }
+
+  auto res = IntegratorExponential::simpson(polynomial, mesh);
+  EXPECT_NEAR(res.imag(), /*(a+1.0)*exp(-a)*/ 1.0 - (b + 1.0) * exp(-b), 1e-9);
+  EXPECT_DOUBLE_EQ(res.real(), 0.0);
+}
+
+TEST(TestIntegratorExponential, SimpsonAltExponentialComplex)
+{
+  auto n = 500u;
+  auto a = 0.000001;
+  auto b = 20.0;
+
+  const auto mesh = ExponentialMesh(a, b, n, 1.0);
+  const auto &points = mesh.get_points();
+
+  using namespace std::complex_literals;
+  std::vector<std::complex<double>> polynomial;
+  polynomial.reserve(points.size());
+  for (auto x: points) {
+    polynomial.push_back(x * exp(-x) * 1.0i);
+  }
+
+  auto res = IntegratorExponential::simpson_alt(polynomial, mesh);
+  EXPECT_NEAR(res.imag(), /*(a+1.0)*exp(-a)*/ 1.0 - (b + 1.0) * exp(-b), 2.1e-11);
+  EXPECT_DOUBLE_EQ(res.real(), 0.0);
+}
