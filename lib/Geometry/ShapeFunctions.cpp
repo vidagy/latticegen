@@ -254,7 +254,7 @@ namespace
     }
   };
 
-  /// This one implements interpolation between r_mt and r_bs, and it implements the < r_mt abdnd > r_bs range, too
+  /// This one implements interpolation between r_mt and r_bs, and it implements the < r_mt and > r_bs range, too
   class ShapeFunctionsCalculator
   {
   public:
@@ -301,7 +301,7 @@ namespace
 }
 
 ShapeFunctions::ShapeFunctions(
-  const UnitCell3D &unit_cell_, unsigned int l_max_, const std::vector<double> &mesh_,
+  const UnitCell3D &unit_cell_, unsigned int l_max_, const std::shared_ptr<RadialMesh> &mesh_,
   const ShapeFunctionsConfig &config_
 ) : unit_cell(unit_cell_), l_max(l_max_), mesh(mesh_),
-    shape_functions(ShapeFunctionsCalculator(unit_cell, config_).calculate(l_max_, mesh_)) {}
+    shape_functions(ShapeFunctionsCalculator(unit_cell, config_).calculate(l_max_, mesh_->get_points())) {}

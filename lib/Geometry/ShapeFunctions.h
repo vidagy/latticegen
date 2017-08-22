@@ -4,6 +4,7 @@
 #include "UnitCell3D.h"
 #include <Core/lm_vector.h>
 #include <complex>
+#include <Core/RadialMesh.h>
 
 namespace Geometry
 {
@@ -36,13 +37,13 @@ namespace Geometry
   {
   public:
     ShapeFunctions(
-      const UnitCell3D &unit_cell_, unsigned int l_max, const std::vector<double> &mesh_,
+      const UnitCell3D &unit_cell_, unsigned int l_max, const std::shared_ptr<RadialMesh> &mesh_,
       const ShapeFunctionsConfig &config_ = ShapeFunctionsConfig()
     );
 
     const UnitCell3D unit_cell;
     const unsigned int l_max;
-    const std::vector<double> mesh;
+    const std::shared_ptr<RadialMesh> mesh;
     const lm_vector<std::vector<std::complex<double>>> shape_functions;
   };
 }

@@ -20,7 +20,8 @@ TEST(ShapeFunctions, TooClose)
   }
 
   auto l_max = 3u;
-  auto shape_functions = ShapeFunctions(unit_cell, l_max, r_points, ShapeFunctionsConfig(3));
+  auto shape_functions = ShapeFunctions(unit_cell, l_max, std::make_shared<GenericMesh>(r_points),
+                                        ShapeFunctionsConfig(3));
 
   // l == 0
   {
@@ -44,8 +45,6 @@ TEST(ShapeFunctions, TooClose)
 
 TEST(ShapeFunctions, TooFar)
 {
-  // TODO this unit cell CutoffWS is buggy for this unit cell
-  //const auto unit_cell = UnitCell3D::create_monoclinic_base(1.0, 2.0, 3.0, pi / 3.0);
   const auto unit_cell = UnitCell3D::create_orthorhombic_body(1.0, 2.0, 3.0);
   const auto max_r = CutoffWSCell(unit_cell).r_bs;
   auto r_points = std::vector<double>();
@@ -57,7 +56,8 @@ TEST(ShapeFunctions, TooFar)
   }
 
   auto l_max = 3u;
-  auto shape_functions = ShapeFunctions(unit_cell, l_max, r_points, ShapeFunctionsConfig(3));
+  auto shape_functions = ShapeFunctions(unit_cell, l_max, std::make_shared<GenericMesh>(r_points),
+                                        ShapeFunctionsConfig(3));
   for (auto l = 0u; l <= l_max; ++l) {
     for (auto m = -((int) l); m <= ((int) l); ++m) {
       auto sf = shape_functions.shape_functions.at(l, m);
@@ -83,7 +83,8 @@ TEST(ShapeFunctions, CubicZero)
   }
 
   auto l_max = 7u;
-  auto shape_functions = ShapeFunctions(unit_cell, l_max, r_points, ShapeFunctionsConfig(4));
+  auto shape_functions = ShapeFunctions(unit_cell, l_max, std::make_shared<GenericMesh>(r_points),
+                                        ShapeFunctionsConfig(4));
   for (auto l = 0u; l <= l_max; ++l) {
     for (auto m = -((int) l); m <= ((int) l); ++m) {
       auto sf = shape_functions.shape_functions.at(l, m);
