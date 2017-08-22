@@ -4,11 +4,11 @@
 #include <vector>
 #include <memory>
 
-#include <Physics/Common/CoreElectrons/EffectiveCharge.h>
+#include <Physics/Common/EffectiveCharge.h>
 #include "AdamsIntegrator.h"
 
 using namespace Core;
-using namespace Physics::Common::CoreElectrons;
+using namespace Physics::Common;
 
 namespace Physics
 {

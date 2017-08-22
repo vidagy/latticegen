@@ -27,12 +27,10 @@ target_include_directories(Geometry PUBLIC .)
 
 file(GLOB all_physics_src
         "Physics/Common/*.cpp"
-        "Physics/Common/CoreElectrons/*.cpp"
         "Physics/NonRelativistic/*.cpp"
         "Physics/NonRelativistic/CoreElectrons/*.cpp")
 file(GLOB all_physics_hdr
         "Physics/Common/*.h"
-        "Physics/Common/CoreElectrons/*.h"
         "Physics/NonRelativistic/*.h"
         "Physics/NonRelativistic/CoreElectrons/*.h")
 add_library(Physics SHARED ${all_physics_src} ${all_physics_hdr})
