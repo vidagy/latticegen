@@ -19,14 +19,14 @@ namespace
   {
     Triangle(const Point3D &a_, const Point3D &b_, const Point3D &c_) : a(a_), b(b_), c(c_) {}
 
-    void remap() override final
+    virtual void remap() override final
     {
       a /= a.length();
       b /= b.length();
       c /= c.length();
     };
 
-    void refine(std::vector<Triangle> &range) const override
+    virtual void refine(std::vector<Triangle> &range) const override
     {
       auto ab = (a + b) / 2.0;
       auto ac = (a + c) / 2.0;
@@ -38,7 +38,7 @@ namespace
       range.push_back(Triangle{ab, ac, bc});
     }
 
-    std::pair<Point3D, double> center_and_weight() const override
+    virtual std::pair<Point3D, double> center_and_weight() const override
     {
       auto p = (a + b + c) / 3.0;
       auto w = cross_product(b - a, c - a).length() / 2.0;
@@ -55,7 +55,7 @@ namespace
     Rectangle(const Point3D &a_, const Point3D &b_, const Point3D &c_, const Point3D &d_)
       : a(a_), b(b_), c(c_), d(d_) {}
 
-    void remap() override final
+    virtual void remap() override final
     {
       a /= a.length();
       b /= b.length();
@@ -63,7 +63,7 @@ namespace
       d /= d.length();
     };
 
-    void refine(std::vector<Rectangle> &range) const override
+    virtual void refine(std::vector<Rectangle> &range) const override
     {
       auto ab = (a + b) / 2.0;
       auto bc = (b + c) / 2.0;
@@ -78,7 +78,7 @@ namespace
       range.push_back(Rectangle{da, abcd, cd, d});
     }
 
-    std::pair<Point3D, double> center_and_weight() const override
+    virtual std::pair<Point3D, double> center_and_weight() const override
     {
       auto p = (a + b + c + d) / 4.0;
       auto w = cross_product(c - a, b - d).length() / 2.0;
