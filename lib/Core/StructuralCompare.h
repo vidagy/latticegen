@@ -151,7 +151,7 @@ namespace Core
   {
     inline Cmp_Result structural_compare(const T &other) const
     {
-      auto members = T::get_members();
+      constexpr auto members = T::get_members();
       return structural_compare_impl(other, members);
     }
 

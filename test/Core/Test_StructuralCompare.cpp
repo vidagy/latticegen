@@ -28,7 +28,7 @@ namespace
   {
     A(int a) : a(a) {};
 
-    static auto get_members()
+    static constexpr auto get_members()
     {
       return std::make_tuple(&A::a);
     }
@@ -53,7 +53,7 @@ namespace
   {
     B(double b, A a) : b(b), a(a) {};
 
-    static auto get_members()
+    static constexpr auto get_members()
     {
       return std::make_tuple(&B::b, &B::a);
     }
@@ -68,7 +68,7 @@ namespace
     C(bool c, B b) : c(c), b(b) {};
 
 
-    static auto get_members()
+    static constexpr auto get_members()
     {
       return std::make_tuple(&C::c, &C::b);
     }
