@@ -81,11 +81,6 @@ namespace Core
       return log(b_ / a_) / (N_ - 1) * scale;
     }
 
-    static double get_multiplier(double a, double b, double dx, size_t N)
-    {
-      return (b - a) / (exp(dx * (N - 1)) - 1);
-    }
-
     static std::vector<double> generate_d_points(double multiplier_, double dx_, size_t N_)
     {
       std::vector<double> d_points;
