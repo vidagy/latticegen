@@ -72,8 +72,8 @@ namespace Math
   template<typename T>
   T pow(T base, int exponent)
   {
-    if (exponent < 0)
-      THROW_INVALID_ARGUMENT("Negative exponent = " + std::to_string(exponent));
+    bool is_negative = exponent < 0;
+    exponent = abs(exponent);
 
     T result = 1.0;
 
@@ -84,7 +84,7 @@ namespace Math
       base *= base;
     }
 
-    return result;
+    return is_negative ? 1.0 / result : result;
   }
 
   inline unsigned int modulo(int num, unsigned int base)
