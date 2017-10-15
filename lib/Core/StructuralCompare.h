@@ -149,7 +149,6 @@ namespace Core
   template<typename T>
   struct StructuralComparable
   {
-
     inline Cmp_Result structural_compare(const T &other) const
     {
       auto members = T::get_members();
@@ -186,7 +185,7 @@ namespace Core
       return Cmp_Result::Cmp_Less != structural_compare(other);
     }
 
-  protected:
+  private:
     // helper function #1 to unwrap the member tuple
     template<typename... MV, typename Indices = std::make_index_sequence<std::tuple_size<std::tuple<MV...>>::value>>
     inline Cmp_Result structural_compare_impl(const T &right, const std::tuple<MV...> &tuple) const
