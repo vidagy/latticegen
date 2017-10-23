@@ -24,9 +24,12 @@ find_package(Eigen3 REQUIRED NO_MODULE)
 # TODO generalize this somehow, it looks extremely lame...
 include_directories(/usr/include/eigen3/)
 
+# Setting default compiler
+set(CMAKE_CXX_COMPILER g++)
+
 # Setting compiler flags for debug and release versions
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -std=c++14")
-set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage -g -pg -O0 -Wall -Werror")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage -g -O0 -Wall -Werror")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2 -g -Wall -Werror")
 
 # install directory
