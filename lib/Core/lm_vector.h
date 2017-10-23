@@ -22,7 +22,7 @@ namespace Core
     explicit lm_vector(unsigned int l_)
       : l_max(l_), data(std::vector<T>((l_max + 1) * (l_max + 1), T())) {}
 
-    lm_vector(const std::vector<T> &data_)
+    explicit lm_vector(const std::vector<T> &data_)
       : l_max((const unsigned int) (lround(sqrt(data_.size())) - 1)), data(data_)
     {
       if ((l_max + 1) * (l_max + 1) != data_.size())

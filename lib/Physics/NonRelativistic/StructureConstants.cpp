@@ -245,7 +245,7 @@ namespace
   populate_integral_cache(const std::shared_ptr<const std::vector<Shell>> &direct_shells,
                           const std::shared_ptr<const StructureConstantsConfig> &config,
                           const int l_max,
-                          const std::complex<double> z)
+                          const std::complex<double> &z)
   {
     auto cache = std::vector<std::complex<double>>();
     cache.reserve(l_max * direct_shells->size());

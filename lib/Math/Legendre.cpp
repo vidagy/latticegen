@@ -13,7 +13,7 @@ double Math::legendre_polynomial_slow(int l, int m, double x)
   }
 
   if (m > 0) {
-    pmm *= sign * double_factorial(2 * m - 1) * Math::pow(1.0 - x * x, m / 2) * (m & 1 ? sqrt(1.0 - x * x) : 1.0);
+    pmm *= sign * double_factorial(2 * m - 1) * Math::pow(1.0 - x * x, m / 2) * ((m & 1) ? sqrt(1.0 - x * x) : 1.0);
   }
   if (l == m) {
     return pmm;

@@ -32,7 +32,7 @@ namespace Geometry
   class CutoffCube : public Cutoff
   {
   public:
-    CutoffCube(double a_);
+    explicit CutoffCube(double a_);
 
     bool is_included(const Point3D& point) const final override;
 
@@ -44,7 +44,7 @@ namespace Geometry
   class CutoffSphere : public Cutoff
   {
   public:
-    CutoffSphere(double r_);
+    explicit CutoffSphere(double r_);
 
     bool is_included(const Point3D& point) const final override;
 

@@ -17,7 +17,7 @@ namespace Physics
     class RealMadelungConstants
     {
     public:
-      RealMadelungConstants(const UnitCell3D &unit_cell_) : unit_cell(unit_cell_) {}
+      explicit RealMadelungConstants(const UnitCell3D &unit_cell_) : unit_cell(unit_cell_) {}
 
       ///@brief Zabloudil et al (19.28)
       [[deprecated]]

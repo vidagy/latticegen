@@ -13,7 +13,7 @@ namespace Physics
     {
     public:
       ///@brief Zabloudil et al (19.21)
-      MultipoleMoments(const ShapeTruncatedChargeDensity &charge_density);
+      explicit MultipoleMoments(const ShapeTruncatedChargeDensity &charge_density);
 
       lm_vector<std::complex<double>> moments;
     };

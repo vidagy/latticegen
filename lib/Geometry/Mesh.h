@@ -19,20 +19,20 @@ namespace Geometry
 
     const Cell3D cell;
   protected:
-    Mesh(const Cell3D &cell_) : cell(cell_) {}
+    explicit Mesh(const Cell3D &cell_) : cell(cell_) {}
   };
 
   class LatticeMesh : public Mesh
   {
   public:
-    LatticeMesh(const Cell3D &cell_) : Mesh(cell_)
+    explicit LatticeMesh(const Cell3D &cell_) : Mesh(cell_)
     {}
   };
 
   class TrigonalMesh : public Mesh
   {
   public:
-    TrigonalMesh(double a_, double c_)
+    explicit TrigonalMesh(double a_, double c_)
       : Mesh(UnitCell3D::create_hexagonal_primitive(a_, c_))
     {}
   };
@@ -40,7 +40,7 @@ namespace Geometry
   class TetrahedronMesh : public Mesh
   {
   public:
-    TetrahedronMesh(double a_)
+    explicit TetrahedronMesh(double a_)
       : Mesh(UnitCell3D::create_rhombohedral_centered(a_, pi / 3.0))
     {}
   };
@@ -48,7 +48,7 @@ namespace Geometry
   class CubicMesh : public Mesh
   {
   public:
-    CubicMesh(double a_)
+    explicit CubicMesh(double a_)
       : Mesh(UnitCell3D::create_cubic_primitive(a_))
     {}
   };

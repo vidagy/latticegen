@@ -57,7 +57,7 @@ namespace Physics
       class RadialSchrodingerEquation
       {
       public:
-        RadialSchrodingerEquation(const EffectiveCharge &effective_charge_)
+        explicit RadialSchrodingerEquation(const EffectiveCharge &effective_charge_)
           : effective_charge(effective_charge_) {}
 
         constexpr static const double default_energy_tolerance = 1e-11;

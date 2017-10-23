@@ -124,7 +124,7 @@ namespace Geometry
   class ReciprocalUnitCell3D : public Cell3D
   {
   public:
-    ReciprocalUnitCell3D(const UnitCell3D &unit_cell);
+    explicit ReciprocalUnitCell3D(const UnitCell3D &unit_cell);
   };
 
   inline Point3D operator*(const Coordinates3D &coordinates3D, const Cell3D &cell3D)

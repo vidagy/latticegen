@@ -26,7 +26,7 @@ namespace
 {
   struct A : public StructuralComparable<A>
   {
-    A(int a) : a(a) {};
+    explicit A(int a) : a(a) {};
 
     static constexpr auto get_members()
     {

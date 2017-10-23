@@ -15,7 +15,7 @@ namespace Physics
     class RealStructureConstants
     {
     public:
-      RealStructureConstants(const UnitCell3D &unit_cell_) : unit_cell(unit_cell_) {}
+      explicit RealStructureConstants(const UnitCell3D &unit_cell_) : unit_cell(unit_cell_) {}
 
       std::complex<double> calculate(
         unsigned int l, int m, unsigned int lprime, int mprime,
