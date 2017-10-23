@@ -14,7 +14,7 @@ namespace Geometry
   class Shell
   {
   public:
-    Shell(const std::vector<Point3D> &points_) : points(points_)
+    explicit Shell(const std::vector<Point3D> &points_) : points(points_)
     {
       if (points.empty())
         THROW_INVALID_ARGUMENT("Cannot create shell with empty input");

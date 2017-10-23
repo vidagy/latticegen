@@ -7,8 +7,10 @@
 
 namespace Utils
 {
+  // TODO: add [[maybe_unused]] when on c++17
   void print_square_matrix(const std::vector<double> &matrix, bool is_row_ordered);
 
+  // TODO: add [[maybe_unused]] when on c++17
   void print_matrix(const std::vector<std::vector<double>> &matrix);
 
   void log(const std::vector<double> &R, const std::string &filename);
