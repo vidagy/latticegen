@@ -67,7 +67,7 @@ namespace Core
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // primary entry point for structural_scompare
+  // primary entry point for structural_compare
   template<typename T>
   inline Cmp_Result structural_compare(const T &lhs, const T &rhs)
   {
@@ -93,11 +93,11 @@ namespace Core
   template<typename T1, typename T2>
   inline Cmp_Result structural_compare(const std::pair<T1, T2> &lhs, const std::pair<T1, T2> &rhs)
   {
-    auto res = structural_compare(lhs.first, rhs.first);
+    auto res = Core::structural_compare(lhs.first, rhs.first);
     if (res != Cmp_Result::Cmp_Eq)
       return res;
     else
-      return structural_compare(lhs.second, rhs.second);
+      return Core::structural_compare(lhs.second, rhs.second);
   }
 
   namespace detail

@@ -88,7 +88,7 @@ namespace Physics
                   for (auto mpp = -((int) lpp); mpp <= ((int) lpp); ++mpp) {
                     auto cg = ClebschGordan::calculate(l, m, lpp, mpp, lp, mp);
                     if (!nearlyZero(cg))
-                      for (auto i = 0; i < charge_density.mesh->get_points().size(); ++i)
+                      for (auto i = 0u; i < charge_density.mesh->get_points().size(); ++i)
                         d[i] +=
                           cg * charge_density.density.at(lp, mp)[i] * shape_functions.shape_functions.at(lpp, mpp)[i];
                   }
