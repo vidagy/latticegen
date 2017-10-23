@@ -136,8 +136,8 @@ TEST(TestStructuralCompare, Vector)
   EXPECT_EQ(structural_compare(b1, b2), Cmp_Result::Cmp_Greater);
   EXPECT_EQ(structural_compare(b2, b1), Cmp_Result::Cmp_Less);
 
-  auto c1 = std::vector<A>{3, 1, 2};
-  auto c2 = std::vector<A>{3, 1, 3};
+  auto c1 = std::vector<A>{A(3), A(1), A(2)};
+  auto c2 = std::vector<A>{A(3), A(1), A(3)};
   EXPECT_EQ(structural_compare(c1, c2), Cmp_Result::Cmp_Less);
 
   EXPECT_EQ(structural_compare(c1, c1), Cmp_Result::Cmp_Eq);
