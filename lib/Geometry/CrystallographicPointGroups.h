@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <Core/Mute.h>
 
 namespace Geometry
 {
@@ -145,6 +146,12 @@ namespace Geometry
     }
   };
 
+  // clang complains that these templated static vars might not be initialized.
+  // for a fact we know that they all are in the corresponding cpp file.
+  // if not we get a linker error, that's the reason of the mute.
+  LATTICEGEN_MUTE_BEGIN
+  LATTICEGEN_MUTE_UNDEFINED_VAR_TEMPLATE
+
   template<class>
   class CrystallographicPointGroupX : public CrystallographicPointGroup
   {
@@ -167,6 +174,8 @@ namespace Geometry
     static const Elements generators;
     static const Elements elements;
   };
+
+  LATTICEGEN_MUTE_END
 
   class C1 : public CrystallographicPointGroupX<C1> {};
   class Ci : public CrystallographicPointGroupX<Ci> {};

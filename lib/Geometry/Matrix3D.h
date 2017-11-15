@@ -18,11 +18,11 @@ namespace Geometry
 
   inline Matrix3D operator*(double alpha, const Matrix3D &matrix)
   {
-    return Matrix3D {
-      matrix[0][0] * alpha, matrix[0][1] * alpha, matrix[0][2] * alpha,
-      matrix[1][0] * alpha, matrix[1][1] * alpha, matrix[1][2] * alpha,
-      matrix[2][0] * alpha, matrix[2][1] * alpha, matrix[2][2] * alpha
-    };
+    return Matrix3D {{
+                       {{matrix[0][0] * alpha, matrix[0][1] * alpha, matrix[0][2] * alpha}},
+                       {{matrix[1][0] * alpha, matrix[1][1] * alpha, matrix[1][2] * alpha}},
+                       {{matrix[2][0] * alpha, matrix[2][1] * alpha, matrix[2][2] * alpha}}
+                     }};
   }
 
   inline Point3D operator*(const Matrix3D& matrix, const Vector3D& vector)
@@ -36,37 +36,37 @@ namespace Geometry
 
   inline Matrix3D operator*(const Matrix3D& lhs, const Matrix3D& rhs)
   {
-    return Matrix3D {
-    lhs[0][0] * rhs[0][0] + lhs[0][1] * rhs[1][0] + lhs[0][2] * rhs[2][0],
-    lhs[0][0] * rhs[0][1] + lhs[0][1] * rhs[1][1] + lhs[0][2] * rhs[2][1],
-    lhs[0][0] * rhs[0][2] + lhs[0][1] * rhs[1][2] + lhs[0][2] * rhs[2][2],
+    return Matrix3D {{
+                       {{lhs[0][0] * rhs[0][0] + lhs[0][1] * rhs[1][0] + lhs[0][2] * rhs[2][0],
+                          lhs[0][0] * rhs[0][1] + lhs[0][1] * rhs[1][1] + lhs[0][2] * rhs[2][1],
+                          lhs[0][0] * rhs[0][2] + lhs[0][1] * rhs[1][2] + lhs[0][2] * rhs[2][2]}},
 
-    lhs[1][0] * rhs[0][0] + lhs[1][1] * rhs[1][0] + lhs[1][2] * rhs[2][0],
-    lhs[1][0] * rhs[0][1] + lhs[1][1] * rhs[1][1] + lhs[1][2] * rhs[2][1],
-    lhs[1][0] * rhs[0][2] + lhs[1][1] * rhs[1][2] + lhs[1][2] * rhs[2][2],
+                       {{lhs[1][0] * rhs[0][0] + lhs[1][1] * rhs[1][0] + lhs[1][2] * rhs[2][0],
+                          lhs[1][0] * rhs[0][1] + lhs[1][1] * rhs[1][1] + lhs[1][2] * rhs[2][1],
+                          lhs[1][0] * rhs[0][2] + lhs[1][1] * rhs[1][2] + lhs[1][2] * rhs[2][2]}},
 
-    lhs[2][0] * rhs[0][0] + lhs[2][1] * rhs[1][0] + lhs[2][2] * rhs[2][0],
-    lhs[2][0] * rhs[0][1] + lhs[2][1] * rhs[1][1] + lhs[2][2] * rhs[2][1],
-    lhs[2][0] * rhs[0][2] + lhs[2][1] * rhs[1][2] + lhs[2][2] * rhs[2][2]
-    };
+                       {{lhs[2][0] * rhs[0][0] + lhs[2][1] * rhs[1][0] + lhs[2][2] * rhs[2][0],
+                          lhs[2][0] * rhs[0][1] + lhs[2][1] * rhs[1][1] + lhs[2][2] * rhs[2][1],
+                          lhs[2][0] * rhs[0][2] + lhs[2][1] * rhs[1][2] + lhs[2][2] * rhs[2][2]}}
+                     }};
   }
 
   inline Matrix3D operator+(const Matrix3D& lhs, const Matrix3D& rhs)
   {
-    return Matrix3D {
-    lhs[0][0] + rhs[0][0],  lhs[0][1] + rhs[0][1],  lhs[0][2] + rhs[0][2],
-    lhs[1][0] + rhs[1][0],  lhs[1][1] + rhs[1][1],  lhs[1][2] + rhs[1][2],
-    lhs[2][0] + rhs[2][0],  lhs[2][1] + rhs[2][1],  lhs[2][2] + rhs[2][2]
-    };
+    return Matrix3D {{
+                       {{lhs[0][0] + rhs[0][0], lhs[0][1] + rhs[0][1], lhs[0][2] + rhs[0][2]}},
+                       {{lhs[1][0] + rhs[1][0], lhs[1][1] + rhs[1][1], lhs[1][2] + rhs[1][2]}},
+                       {{lhs[2][0] + rhs[2][0], lhs[2][1] + rhs[2][1], lhs[2][2] + rhs[2][2]}}
+                     }};
   }
 
   inline Matrix3D operator-(const Matrix3D& lhs, const Matrix3D& rhs)
   {
-    return Matrix3D {
-      lhs[0][0] - rhs[0][0],  lhs[0][1] - rhs[0][1],  lhs[0][2] - rhs[0][2],
-      lhs[1][0] - rhs[1][0],  lhs[1][1] - rhs[1][1],  lhs[1][2] - rhs[1][2],
-      lhs[2][0] - rhs[2][0],  lhs[2][1] - rhs[2][1],  lhs[2][2] - rhs[2][2]
-    };
+    return Matrix3D {{
+                       {{lhs[0][0] - rhs[0][0], lhs[0][1] - rhs[0][1], lhs[0][2] - rhs[0][2]}},
+                       {{lhs[1][0] - rhs[1][0], lhs[1][1] - rhs[1][1], lhs[1][2] - rhs[1][2]}},
+                       {{lhs[2][0] - rhs[2][0], lhs[2][1] - rhs[2][1], lhs[2][2] - rhs[2][2]}}
+                     }};
   }
 
   inline bool operator==(const Matrix3D& lhs, const Matrix3D& rhs)

@@ -11,6 +11,10 @@ using namespace Core;
 
 namespace Geometry
 {
+  class Transformation;
+
+  Transformation operator*(const Transformation &lhs, const Transformation &rhs);
+
   class Transformation
   {
   public:
@@ -97,37 +101,6 @@ namespace Geometry
   public:
     Inversion();
   };
-
-  inline Transformation operator*(const Transformation &lhs, const Transformation &rhs)
-  {
-    // identity shortcuts
-    if (lhs.type == Transformation::Identity)
-      return rhs;
-    if (rhs.type == Transformation::Identity)
-      return lhs;
-
-    auto res = lhs.transformation_matrix * rhs.transformation_matrix;
-    auto tr = trace(res);
-    if (equalsWithTolerance(tr, 3.0))
-      return Geometry::Identity();
-    if (equalsWithTolerance(tr, -3.0))
-      return Geometry::Inversion();
-
-    auto det = determinant(res);
-    if (equalsWithTolerance(det, 1.0))
-      return Transformation(Transformation::Rotation, res);
-    else if (equalsWithTolerance(det, -1.0)) {
-      if (equalsWithTolerance(tr, 1.0))
-        return Transformation(Transformation::Reflection, res);
-      else
-        return Transformation(Transformation::ImproperRotation, res);
-    } else {
-      THROW_LOGIC_ERROR(
-        "invalid Transformation types: lhs = " + std::to_string(lhs.type) + " rhs = " + std::to_string(rhs.type) +
-        " determinant is not +- 1.0 but " + std::to_string(det)
-      );
-    }
-  }
 }
 
 namespace std
