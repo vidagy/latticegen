@@ -1,5 +1,6 @@
-#include <algorithm>
 #include "PolyhedralQuadrature.h"
+#include <numeric>
+#include <algorithm>
 
 using namespace Math;
 

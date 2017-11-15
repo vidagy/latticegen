@@ -2,7 +2,13 @@
 #define LATTICEGEN_WIGNERDMATRIX_H
 
 #include <complex>
+#include <Core/Mute.h>
+
+LATTICEGEN_MUTE_BEGIN
+LATTICEGEN_MUTE_EIGEN
 #include <Eigen/Dense>
+
+LATTICEGEN_MUTE_END
 
 namespace Math
 {

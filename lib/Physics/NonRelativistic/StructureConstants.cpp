@@ -28,7 +28,7 @@ RealStructureConstants::calculate(unsigned int l, int m, unsigned int lprime, in
                + (nprime.c - n.c) * unit_cell.v3;
 
   int mpp = mprime - m;
-  unsigned int lpp_min = static_cast<unsigned int>(abs(lprime - l));
+  unsigned int lpp_min = static_cast<unsigned int>(static_cast<int>(lprime) - static_cast<int>(l));
   unsigned int lpp_max = lprime + l;
 
   auto res = 0.0i;
@@ -62,7 +62,7 @@ ReciprocalStructureConstantsCalculator::calculate(unsigned int l, int m, unsigne
       + ". Please create a calculator with greater l_max");
 
   auto mpp = m + mprime;
-  auto lpp_min = static_cast<unsigned int>(abs(lprime - l));
+  unsigned int lpp_min = static_cast<unsigned int>(static_cast<int>(lprime) - static_cast<int>(l));
   auto lpp_max = lprime + l;
 
   auto res = 0.0i;

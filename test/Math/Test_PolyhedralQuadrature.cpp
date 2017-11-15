@@ -2,6 +2,7 @@
 
 #include <Math/PolyhedralQuadrature.h>
 #include <fstream>
+#include <numeric>
 #include <Math/CommonFunctions.h>
 #include <Math/SphericalHarmonics.h>
 #include <boost/math/special_functions/spherical_harmonic.hpp>

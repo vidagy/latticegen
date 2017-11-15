@@ -2,6 +2,7 @@
 
 #include <Math/LebedevQuadrature.h>
 #include <fstream>
+#include <numeric>
 
 using namespace Math;
 
