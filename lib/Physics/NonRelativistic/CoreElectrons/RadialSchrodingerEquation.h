@@ -1,6 +1,7 @@
 #ifndef LATTICEGEN_RADIALSCHRODINGEREQUATION_H
 #define LATTICEGEN_RADIALSCHRODINGEREQUATION_H
 
+#include <utility>
 #include <vector>
 #include <memory>
 
@@ -26,11 +27,11 @@ namespace Physics
       public:
         RadialSolution(
           int n_, int l_,
-          const std::shared_ptr<const ExponentialMesh> &r_, std::vector<double> R_, std::vector<double> dR_dr_,
+          std::shared_ptr<const ExponentialMesh> r_, std::vector<double> &R_, std::vector<double> &dR_dr_,
           double E_, int practical_infinity_, int number_of_iteration_
         )
           : n(n_), l(l_),
-            r(r_), R(R_), dR_dr(dR_dr_),
+            r(std::move(r_)), R(R_), dR_dr(dR_dr_),
             E(E_), practical_infinity(practical_infinity_), number_of_iteration(number_of_iteration_)
         {
           if (R.size() != r->get_points().size())
@@ -57,8 +58,8 @@ namespace Physics
       class RadialSchrodingerEquation
       {
       public:
-        explicit RadialSchrodingerEquation(const EffectiveCharge &effective_charge_)
-          : effective_charge(effective_charge_) {}
+        explicit RadialSchrodingerEquation(EffectiveCharge effective_charge_)
+          : effective_charge(std::move(effective_charge_)) {}
 
         constexpr static const double default_energy_tolerance = 1e-11;
         static const int default_max_iter = 50;

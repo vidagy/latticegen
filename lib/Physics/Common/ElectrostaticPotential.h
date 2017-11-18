@@ -2,6 +2,7 @@
 #define LATTICEGEN_ELECTROSTATICPOTENTIAL_H
 
 #include <boost/shared_ptr.hpp>
+#include <utility>
 #include <Core/RadialMesh.h>
 #include <Core/lm_vector.h>
 
@@ -15,8 +16,11 @@ namespace Physics
     struct ElectrostaticPotential
     {
       ElectrostaticPotential(const Core::lm_vector<std::vector<std::complex<double>>> &v_,
-                             const std::shared_ptr<ExponentialMesh> &mesh_)
-        : mesh(mesh_), v(v_)
+      std::shared_ptr <ExponentialMesh> mesh_
+      )
+      :
+
+      mesh (std::move(mesh_)), v(v_)
       {
         for (auto l = 0u; l <= v_.l_max; ++l) {
           for (auto m = -((int) l); m <= ((int) l); ++m) {

@@ -78,8 +78,8 @@ namespace
   class MadelungConstantCalculator
   {
   public:
-    MadelungConstantCalculator(const UnitCell3D &unit_cell_, const MadelungConstantsConfig &config_)
-      : unit_cell(unit_cell_), config(config_),
+    MadelungConstantCalculator(UnitCell3D unit_cell_, const MadelungConstantsConfig &config_)
+      : unit_cell(std::move(unit_cell_)), config(config_),
         direct_shells(get_direct_shells(unit_cell, config.lattice_cutoff_scale)),
         reciprocal_shells(get_reciprocal_shells(unit_cell, config.lattice_cutoff_scale)) {}
 

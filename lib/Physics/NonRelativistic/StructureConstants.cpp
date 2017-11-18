@@ -28,7 +28,7 @@ RealStructureConstants::calculate(unsigned int l, int m, unsigned int lprime, in
                + (nprime.c - n.c) * unit_cell.v3;
 
   int mpp = mprime - m;
-  unsigned int lpp_min = static_cast<unsigned int>(static_cast<int>(lprime) - static_cast<int>(l));
+  auto lpp_min = static_cast<unsigned int>(static_cast<int>(lprime) - static_cast<int>(l));
   unsigned int lpp_max = lprime + l;
 
   auto res = 0.0i;
@@ -62,7 +62,7 @@ ReciprocalStructureConstantsCalculator::calculate(unsigned int l, int m, unsigne
       + ". Please create a calculator with greater l_max");
 
   auto mpp = m + mprime;
-  unsigned int lpp_min = static_cast<unsigned int>(static_cast<int>(lprime) - static_cast<int>(l));
+  auto lpp_min = static_cast<unsigned int>(static_cast<int>(lprime) - static_cast<int>(l));
   auto lpp_max = lprime + l;
 
   auto res = 0.0i;
@@ -119,7 +119,8 @@ ReciprocalStructureConstantsCalculator::D1(unsigned int l, int m, const Vector3D
 
 namespace
 {
-  std::complex<double> integral(int l, const StructureConstantsConfig &config, double R_squared, std::complex<double> z)
+  std::complex<double>
+  integral(int l, const StructureConstantsConfig &config, double R_squared, std::complex<double> &z)
   {
     const double tol = config.integral_tolerance;
     const int max_iter = config.max_step_count;
@@ -184,11 +185,11 @@ ReciprocalStructureConstantsCalculator::D3(unsigned int l, int m) const
   auto ewald_param = config->ewald_param;
   auto tol = config->integral_tolerance;
   auto res = 0.0i;
-  auto diff = 1.0;
   auto n = 0;
   if (std::abs(z) < tol)
     res = -1;
   else {
+    auto diff = 1.0;
     while (diff > tol) {
       auto d = pow(z / ewald_param, n) / (2.0 * n - 1.0) / factorial(n);
       res += d;
@@ -266,7 +267,7 @@ namespace
 
 IntegralCache::IntegralCache(const std::shared_ptr<const std::vector<Shell>> &direct_shells,
                              const std::shared_ptr<const StructureConstantsConfig> &config,
-                             unsigned int l_max_, std::complex<double> z
+                             unsigned int l_max_, const std::complex<double> &z
 ) : n_max((const unsigned int) direct_shells->size()), l_max(l_max_),
     cache(populate_integral_cache(direct_shells, config, l_max, z)) {}
 

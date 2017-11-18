@@ -2,6 +2,7 @@
 #define LATTICEGEN_EFFECTIVECHARGE_H
 
 #include <Core/RadialMesh.h>
+#include <utility>
 
 using namespace Core;
 
@@ -14,8 +15,8 @@ namespace Physics
     class EffectiveCharge
     {
     public:
-      EffectiveCharge(const std::vector<double> &z_, const std::shared_ptr<const ExponentialMesh> &r_)
-        : z(z_), r(r_)
+      EffectiveCharge(std::vector<double> z_, std::shared_ptr<const ExponentialMesh> r_)
+        : z(std::move(z_)), r(std::move(r_))
       {
         if (z.size() != r->get_points().size())
           THROW_INVALID_ARGUMENT("in EffectiveCharge z.size()=" + std::to_string(z.size()) +

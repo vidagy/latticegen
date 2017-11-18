@@ -2,6 +2,7 @@
 #define LATTICEGEN_CHARGEDENSITY_H
 
 #include <boost/shared_ptr.hpp>
+#include <utility>
 #include <Core/RadialMesh.h>
 #include <Core/lm_vector.h>
 #include <Math/ClebschGordan.h>
@@ -18,8 +19,8 @@ namespace Physics
     struct ChargeDensity
     {
       ChargeDensity(
-        const std::shared_ptr<ExponentialMesh> &mesh_, const lm_vector<std::vector<std::complex<double>>> &density_
-      ) : mesh(mesh_), density(density_)
+        std::shared_ptr<ExponentialMesh> mesh_, const lm_vector<std::vector<std::complex<double>>> &density_
+      ) : mesh(std::move(mesh_)), density(density_)
       {
         for (auto l = 0u; l <= density_.l_max; ++l) {
           for (auto m = -((int) l); m <= ((int) l); ++m) {

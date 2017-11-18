@@ -20,7 +20,7 @@ namespace Physics
 #define MAX_ADAMS_MOULTON_QUADRATURE_ORDER 16
 #define MAX_INWARD_ASYMPTOTIC_EXPANSION_ORDER 32
 
-        AdamsIntegratorConfig(
+        explicit AdamsIntegratorConfig(
           int adams_moulton_quadrature_order_ = default_adams_moulton_quadrature_order,
           int inward_asymptotic_expansion_order_ = default_inward_asymptotic_expansion_order,
           double inward_asymptotic_expansion_cutoff_ = default_inward_asymptotic_expansion_cutoff,

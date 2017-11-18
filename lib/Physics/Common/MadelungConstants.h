@@ -3,6 +3,7 @@
 
 #include <Geometry/UnitCell3D.h>
 #include <complex>
+#include <utility>
 #include <Geometry/Shell.h>
 #include <Core/lm_vector.h>
 
@@ -17,7 +18,7 @@ namespace Physics
     class RealMadelungConstants
     {
     public:
-      explicit RealMadelungConstants(const UnitCell3D &unit_cell_) : unit_cell(unit_cell_) {}
+      explicit RealMadelungConstants(UnitCell3D unit_cell_) : unit_cell(std::move(unit_cell_)) {}
 
       ///@brief Zabloudil et al (19.28)
       [[deprecated]]
@@ -34,7 +35,7 @@ namespace Physics
 
     struct MadelungConstantsConfig
     {
-      MadelungConstantsConfig(
+      explicit MadelungConstantsConfig(
         const double ewald_param_ = default_ewald_param,
         const double lattice_cutoff_scale_ = default_lattice_cutoff_scale,
         const double reciprocal_lattice_cutoff_ = default_reciprocal_lattice_cutoff
@@ -57,7 +58,7 @@ namespace Physics
     public:
       ReducedMadelungConstants(
         const UnitCell3D &unit_cell_,
-        const unsigned int l_max,
+        unsigned int l_max,
         const MadelungConstantsConfig &config_ = MadelungConstantsConfig()
       );
 

@@ -5,6 +5,7 @@
 #include <Geometry/UnitCell3D.h>
 #include <Geometry/Shell.h>
 #include <map>
+#include <utility>
 
 using namespace Geometry;
 
@@ -15,7 +16,6 @@ namespace Physics
     class RealStructureConstants
     {
     public:
-      explicit RealStructureConstants(const UnitCell3D &unit_cell_) : unit_cell(unit_cell_) {}
 
       std::complex<double> calculate(
         unsigned int l, int m, unsigned int lprime, int mprime,
@@ -27,7 +27,7 @@ namespace Physics
 
     struct StructureConstantsConfig
     {
-      StructureConstantsConfig(
+      explicit StructureConstantsConfig(
         const double ewald_param_ = default_ewald_param,
         const double lattice_cutoff_scale_ = default_lattice_cutoff_scale,
         const double reciprocal_lattice_cutoff_ = default_reciprocal_lattice_cutoff,
@@ -60,7 +60,7 @@ namespace Physics
         const std::shared_ptr<const std::vector<Shell>> &direct_shells,
         const std::shared_ptr<const StructureConstantsConfig> &config,
         unsigned int l_max_,
-        std::complex<double> z
+        const std::complex<double> &z
       );
 
       std::complex<double> get(unsigned int l, unsigned int n) const;
@@ -77,14 +77,15 @@ namespace Physics
 
     private:
       ReciprocalStructureConstantsCalculator(
-        const std::shared_ptr<const UnitCell3D> &unit_cell_,
-        const std::shared_ptr<const std::vector<Shell>> &direct_shells_,
-        const std::shared_ptr<const std::vector<Shell>> &reciprocal_shells_,
-        const std::shared_ptr<const StructureConstantsConfig> &config_,
+        std::shared_ptr<const UnitCell3D> unit_cell_,
+        std::shared_ptr<const std::vector<Shell>> direct_shells_,
+        std::shared_ptr<const std::vector<Shell>> reciprocal_shells_,
+        std::shared_ptr<const StructureConstantsConfig> config_,
         const std::complex<double> &z_,
-        const IntegralCache &integral_cache_
-      ) : unit_cell(unit_cell_), direct_shells(direct_shells_), reciprocal_shells(reciprocal_shells_),
-          config(config_), z(z_), integral_cache(integral_cache_) {}
+        IntegralCache integral_cache_
+      ) : unit_cell(std::move(unit_cell_)), direct_shells(std::move(direct_shells_)), reciprocal_shells(
+        std::move(reciprocal_shells_)),
+          config(std::move(config_)), z(z_), integral_cache(std::move(integral_cache_)) {}
 
       std::complex<double> D1(unsigned int l, int m, const Vector3D &k) const;
 
@@ -107,7 +108,7 @@ namespace Physics
     class ReciprocalStructureConstants
     {
     public:
-      ReciprocalStructureConstants(
+      explicit ReciprocalStructureConstants(
         const UnitCell3D &unit_cell_,
         const StructureConstantsConfig &config_ = StructureConstantsConfig()
       );
