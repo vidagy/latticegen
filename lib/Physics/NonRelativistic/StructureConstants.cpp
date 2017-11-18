@@ -120,7 +120,7 @@ ReciprocalStructureConstantsCalculator::D1(unsigned int l, int m, const Vector3D
 namespace
 {
   std::complex<double>
-  integral(int l, const StructureConstantsConfig &config, double R_squared, std::complex<double> &z)
+  integral(int l, const StructureConstantsConfig &config, double R_squared, const std::complex<double> &z)
   {
     const double tol = config.integral_tolerance;
     const int max_iter = config.max_step_count;

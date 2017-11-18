@@ -16,6 +16,7 @@ namespace Physics
     class RealStructureConstants
     {
     public:
+      explicit RealStructureConstants(UnitCell3D unit_cell_) : unit_cell(std::move(unit_cell_)) {}
 
       std::complex<double> calculate(
         unsigned int l, int m, unsigned int lprime, int mprime,
@@ -108,7 +109,7 @@ namespace Physics
     class ReciprocalStructureConstants
     {
     public:
-      explicit ReciprocalStructureConstants(
+      ReciprocalStructureConstants(
         const UnitCell3D &unit_cell_,
         const StructureConstantsConfig &config_ = StructureConstantsConfig()
       );
