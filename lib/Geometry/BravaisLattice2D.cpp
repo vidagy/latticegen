@@ -135,7 +135,7 @@ namespace
           ? x*b.y/b.x < y 
           : (a.x-x)*b.y/(a.x-b.x) < y )
           break;
-        result.push_back(Point2D(x,y));
+        result.emplace_back(x, y);
       }
     }
 

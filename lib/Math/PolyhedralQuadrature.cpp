@@ -33,10 +33,10 @@ namespace
       auto ac = (a + c) / 2.0;
       auto bc = (b + c) / 2.0;
 
-      range.push_back(Triangle{a, ab, ac});
-      range.push_back(Triangle{b, ab, bc});
-      range.push_back(Triangle{c, ac, bc});
-      range.push_back(Triangle{ab, ac, bc});
+      range.emplace_back(a, ab, ac);
+      range.emplace_back(b, ab, bc);
+      range.emplace_back(c, ac, bc);
+      range.emplace_back(ab, ac, bc);
     }
 
     virtual std::pair<Point3D, double> center_and_weight() const override
@@ -73,10 +73,10 @@ namespace
 
       auto abcd = (a + b + c + d) / 4.0;
 
-      range.push_back(Rectangle{a, ab, abcd, da});
-      range.push_back(Rectangle{ab, b, bc, abcd});
-      range.push_back(Rectangle{abcd, bc, c, cd});
-      range.push_back(Rectangle{da, abcd, cd, d});
+      range.emplace_back(a, ab, abcd, da);
+      range.emplace_back(ab, b, bc, abcd);
+      range.emplace_back(abcd, bc, c, cd);
+      range.emplace_back(da, abcd, cd, d);
     }
 
     virtual std::pair<Point3D, double> center_and_weight() const override

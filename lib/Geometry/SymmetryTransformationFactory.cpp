@@ -8,26 +8,26 @@ using namespace Geometry;
 
 namespace
 {
-  static const Vector3D x = {1.0, 0.0, 0.0};
-  static const Vector3D y = {0.0, 1.0, 0.0};
-  static const Vector3D z = {0.0, 0.0, 1.0};
+  const Vector3D x = {1.0, 0.0, 0.0};
+  const Vector3D y = {0.0, 1.0, 0.0};
+  const Vector3D z = {0.0, 0.0, 1.0};
 
-  static const Vector3D p30 = {sqrt(3.0) / 2.0, 0.5, 0.0};
-  static const Vector3D m30 = {sqrt(3.0) / 2.0, -0.5, 0.0};
-  static const Vector3D p60 = {0.5, sqrt(3.0) / 2.0, 0.0};
-  static const Vector3D m60 = {0.5, -sqrt(3.0) / 2.0, 0.0};
+  const Vector3D p30 = {sqrt(3.0) / 2.0, 0.5, 0.0};
+  const Vector3D m30 = {sqrt(3.0) / 2.0, -0.5, 0.0};
+  const Vector3D p60 = {0.5, sqrt(3.0) / 2.0, 0.0};
+  const Vector3D m60 = {0.5, -sqrt(3.0) / 2.0, 0.0};
 
-  static const Vector3D p1p10 = {1.0 / sqrt(2.0), 1.0 / sqrt(2.0), 0.0};
-  static const Vector3D p1m10 = {1.0 / sqrt(2.0), -1.0 / sqrt(2.0), 0.0};
-  static const Vector3D p10p1 = {1.0 / sqrt(2.0), 0.0, 1.0 / sqrt(2.0)};
-  static const Vector3D p10m1 = {1.0 / sqrt(2.0), 0.0, -1.0 / sqrt(2.0)};
-  static const Vector3D Np1p1 = {0.0, 1.0 / sqrt(2.0), 1.0 / sqrt(2.0)};
-  static const Vector3D Np1m1 = {0.0, 1.0 / sqrt(2.0), -1.0 / sqrt(2.0)};
+  const Vector3D p1p10 = {1.0 / sqrt(2.0), 1.0 / sqrt(2.0), 0.0};
+  const Vector3D p1m10 = {1.0 / sqrt(2.0), -1.0 / sqrt(2.0), 0.0};
+  const Vector3D p10p1 = {1.0 / sqrt(2.0), 0.0, 1.0 / sqrt(2.0)};
+  const Vector3D p10m1 = {1.0 / sqrt(2.0), 0.0, -1.0 / sqrt(2.0)};
+  const Vector3D Np1p1 = {0.0, 1.0 / sqrt(2.0), 1.0 / sqrt(2.0)};
+  const Vector3D Np1m1 = {0.0, 1.0 / sqrt(2.0), -1.0 / sqrt(2.0)};
 
-  static const Vector3D p1p1p1 = 1.0 / sqrt(3.0) * Vector3D{1.0, 1.0, 1.0};
-  static const Vector3D p1m1m1 = 1.0 / sqrt(3.0) * Vector3D{1.0, -1.0, -1.0};
-  static const Vector3D m1p1m1 = 1.0 / sqrt(3.0) * Vector3D{-1.0, 1.0, -1.0};
-  static const Vector3D m1m1p1 = 1.0 / sqrt(3.0) * Vector3D{-1.0, -1.0, 1.0};
+  const Vector3D p1p1p1 = 1.0 / sqrt(3.0) * Vector3D{1.0, 1.0, 1.0};
+  const Vector3D p1m1m1 = 1.0 / sqrt(3.0) * Vector3D{1.0, -1.0, -1.0};
+  const Vector3D m1p1m1 = 1.0 / sqrt(3.0) * Vector3D{-1.0, 1.0, -1.0};
+  const Vector3D m1m1p1 = 1.0 / sqrt(3.0) * Vector3D{-1.0, -1.0, 1.0};
 }
 
 
@@ -195,7 +195,7 @@ SymmetryTransformationFactory::Transformations SymmetryTransformationFactory::ge
   auto buffer = Transformations();
   buffer.reserve(48);
 
-  while (new_elements.size()) {
+  while (!new_elements.empty()) {
     auto new_element = new_elements.back();
     for (auto it = elements.begin(); it != elements.end(); ++it) {
       auto new_transformation = *it * new_element;

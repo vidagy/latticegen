@@ -9,13 +9,13 @@
 
 #define THROW_INVALID_ARGUMENT(msg__) \
 MULTILINE_MACRO_BEGIN \
-  Core::Logger::log(Core::Logger::Level::Error, __FILE__, __LINE__, __func__, std::string("std::invalid_argument : ") + msg__); \
+  Core::Logger::log(Core::Logger::Level::Error, __FILE__, __LINE__, __func__, std::string("std::invalid_argument : ") + (msg__)); \
   throw std::invalid_argument(msg__); \
 MULTILINE_MACRO_END
 
 #define THROW_LOGIC_ERROR(msg__) \
 MULTILINE_MACRO_BEGIN \
-  Core::Logger::log(Core::Logger::Level::Error, __FILE__, __LINE__, __func__, std::string("std::logic_error : ") + msg__); \
+  Core::Logger::log(Core::Logger::Level::Error, __FILE__, __LINE__, __func__, std::string("std::logic_error : ") + (msg__)); \
   throw std::logic_error(msg__); \
 MULTILINE_MACRO_END
 

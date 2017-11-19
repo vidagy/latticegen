@@ -16,12 +16,8 @@ namespace Physics
     struct ElectrostaticPotential
     {
       ElectrostaticPotential(const Core::lm_vector<std::vector<std::complex<double>>> &v_,
-      std::shared_ptr <ExponentialMesh> mesh_
-      )
-      :
-
-      mesh (std::move(mesh_)), v(v_)
-      {
+                             std::shared_ptr<ExponentialMesh> mesh_
+      ) : mesh(std::move(mesh_)), v(v_) {
         for (auto l = 0u; l <= v_.l_max; ++l) {
           for (auto m = -((int) l); m <= ((int) l); ++m) {
             if (mesh->get_points().size() != v.at(l, m).size())

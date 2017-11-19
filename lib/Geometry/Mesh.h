@@ -5,6 +5,7 @@
 #include <Math/CommonFunctions.h>
 #include <Geometry/UnitCell3D.h>
 #include <Geometry/Cutoff.h>
+#include <utility>
 #include <vector>
 #include <Math/SphericalHarmonics.h>
 
@@ -19,7 +20,7 @@ namespace Geometry
 
     const Cell3D cell;
   protected:
-    explicit Mesh(const Cell3D &cell_) : cell(cell_) {}
+    explicit Mesh(Cell3D cell_) : cell(std::move(cell_)) {}
   };
 
   class LatticeMesh : public Mesh

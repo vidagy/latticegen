@@ -1,6 +1,7 @@
 #ifndef LATTICEGEN_RADIALMESH_H
 #define LATTICEGEN_RADIALMESH_H
 
+#include <utility>
 #include <vector>
 #include <cmath>
 #include <cstdlib>
@@ -17,9 +18,9 @@ namespace Core
 
   struct GenericMesh : public RadialMesh
   {
-    explicit GenericMesh(const std::vector<double> &points) : points(points) {}
+    explicit GenericMesh(std::vector<double> points) : points(std::move(points)) {}
 
-    virtual const std::vector<double> &get_points() const override { return points; }
+    const std::vector<double> &get_points() const override { return points; }
 
   private:
     std::vector<double> points;
@@ -53,7 +54,7 @@ namespace Core
 
     double get_shift() const { return shift; }
 
-    virtual const std::vector<double> &get_points() const override { return points; }
+    const std::vector<double> &get_points() const override { return points; }
 
     const std::vector<double> &get_d_points() const { return d_points; }
 

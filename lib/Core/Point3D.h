@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
-#include <math.h>
+#include <cmath>
 
 #include <Core/ComparisonHelpers.h>
 
@@ -24,13 +24,8 @@ namespace Core
     }
     
     // operators
-    Point3D& operator=(const Point3D& rhs)
-    {	
-      this->x = rhs.x;
-      this->y = rhs.y;
-      this->z = rhs.z;
-     return *this;
-    }
+    Point3D &operator=(const Point3D &rhs) = default;
+
     Point3D& operator+=(const Point3D& rhs)
     {
       this->x += rhs.x;

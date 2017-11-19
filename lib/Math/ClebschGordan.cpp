@@ -10,12 +10,12 @@ using namespace Math;
 
 double ClebschGordan::calculate(double j1, double m1, double j2, double m2, double J, double M)
 {
-  int double_j1 = static_cast<int>(lround(2.0 * j1));
-  int double_j2 = static_cast<int>(lround(2.0 * j2));
-  int double_m1 = static_cast<int>(lround(2.0 * m1));
-  int double_m2 = static_cast<int>(lround(2.0 * m2));
-  int double_J = static_cast<int>(lround(2.0 * J));
-  int double_M = static_cast<int>(lround(2.0 * M));
+  auto double_j1 = static_cast<int>(lround(2.0 * j1));
+  auto double_j2 = static_cast<int>(lround(2.0 * j2));
+  auto double_m1 = static_cast<int>(lround(2.0 * m1));
+  auto double_m2 = static_cast<int>(lround(2.0 * m2));
+  auto double_J = static_cast<int>(lround(2.0 * J));
+  auto double_M = static_cast<int>(lround(2.0 * M));
 
   double tol = 10 * std::numeric_limits<double>::epsilon();
 

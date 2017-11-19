@@ -3,6 +3,7 @@
 
 #include <Core/Exceptions.h>
 #include <Core/Point3D.h>
+#include <utility>
 #include <vector>
 #include "Mesh.h"
 #include "SymmetryTransformationFactory.h"
@@ -14,7 +15,7 @@ namespace Geometry
   class Shell
   {
   public:
-    explicit Shell(const std::vector<Point3D> &points_) : points(points_)
+    explicit Shell(std::vector<Point3D> points_) : points(std::move(points_))
     {
       if (points.empty())
         THROW_INVALID_ARGUMENT("Cannot create shell with empty input");

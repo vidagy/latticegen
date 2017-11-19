@@ -45,9 +45,9 @@ using namespace Core;
 
 namespace
 {
-  static const Vector3D x = Vector3D(1.0,0.0,0.0);
-  static const Vector3D y = Vector3D(0.0,1.0,0.0);
-  static const Vector3D z = Vector3D(0.0,0.0,1.0);
+  const Vector3D x = Vector3D(1.0, 0.0, 0.0);
+  const Vector3D y = Vector3D(0.0, 1.0, 0.0);
+  const Vector3D z = Vector3D(0.0, 0.0, 1.0);
 }
 
 UnitCell3D UnitCell3D::create_triclinic_primitive(

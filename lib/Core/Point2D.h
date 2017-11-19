@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
-#include <math.h>
+#include <cmath>
 
 #include <Core/ComparisonHelpers.h>
 
@@ -18,12 +18,7 @@ namespace Core
       : x(x_), y(y_) {}
 
     // operators
-    Point2D &operator=(const Point2D &rhs)
-    {
-      this->x = rhs.x;
-      this->y = rhs.y;
-      return *this;
-    }
+    Point2D &operator=(const Point2D &rhs) = default;
 
     Point2D &operator+=(const Point2D &rhs)
     {

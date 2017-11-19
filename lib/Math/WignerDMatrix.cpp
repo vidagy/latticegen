@@ -27,7 +27,7 @@ Eigen::MatrixXcd WignerDMatrix::calculate(double alpha, double beta, double gamm
 
 Eigen::MatrixXd WignerDMatrix::calculate_small(double beta, unsigned int l)
 {
-  const int l_int = (int) l;
+  const auto l_int = (int) l;
 
   Eigen::MatrixXd res(2 * l_int + 1, 2 * l_int + 1);
   for (auto m_p = -l_int; m_p <= l_int; ++m_p) {

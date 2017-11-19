@@ -12,7 +12,7 @@ namespace Geometry
 
   struct ShapeFunctionsConfig
   {
-    ShapeFunctionsConfig(
+    explicit ShapeFunctionsConfig(
       unsigned int quadrature_order_ = default_qadrature_order,
       unsigned int r_ws_bits_ = default_r_ws_bits,
       unsigned int bracketing_max_iter_ = default_bracketing_max_iter

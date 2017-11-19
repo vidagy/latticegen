@@ -107,6 +107,5 @@ std::function<double(double)> Math::legendre_polynomial(int l, int m)
       }
   }
 
-  using std::placeholders::_1;
-  return std::bind(legendre_polynomial_slow, l, m, _1);
+  return [=](auto &&arg1) { return legendre_polynomial_slow(l, m, arg1); };
 }

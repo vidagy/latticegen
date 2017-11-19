@@ -5,7 +5,7 @@ using namespace Core;
 using namespace Geometry;
 
 namespace {
-  static const Matrix3D identity_matrix = {{
+  const Matrix3D identity_matrix = {{
                                              {{1.0, 0.0, 0.0}},
                                              {{0.0, 1.0, 0.0}},
                                              {{0.0, 0.0, 1.0}}
@@ -96,7 +96,7 @@ Rotation::EulerAngles Rotation::get_euler_angles() const {
     } else { // cos(alpha) != 0
       alpha = atan(-m[2][1] / m[2][0]);
       auto cos_alpha_flip = m[2][0] / cos(alpha) * sin(beta) > 0.0;
-      auto sin_alpha_flip = nearlyZero(sin(alpha)) ? false : m[2][1] / sin(alpha) * sin(beta) < 0.0;
+      auto sin_alpha_flip = !nearlyZero(sin(alpha)) && m[2][1] / sin(alpha) * sin(beta) < 0.0;
       if (sin_alpha_flip && cos_alpha_flip) {
         alpha += pi;
       } else if (sin_alpha_flip) {
@@ -110,7 +110,7 @@ Rotation::EulerAngles Rotation::get_euler_angles() const {
     } else { // cos(gamma) != 0
       gamma = atan(m[1][2] / m[0][2]);
       auto cos_gamma_flip = m[0][2] / cos(gamma) * sin(beta) < 0.0;
-      auto sin_gamma_flip = nearlyZero(sin(gamma)) ? false : m[1][2] / sin(gamma) * sin(beta) < 0.0;
+      auto sin_gamma_flip = !nearlyZero(sin(gamma)) && m[1][2] / sin(gamma) * sin(beta) < 0.0;
       if (sin_gamma_flip && cos_gamma_flip) {
         gamma += pi;
       } else if (sin_gamma_flip) {
@@ -152,7 +152,7 @@ ImproperRotation::ImproperRotation(const Vector3D &rotation_vector)
 ) {}
 
 namespace {
-  static const Matrix3D inversion_matrix = {{
+  const Matrix3D inversion_matrix = {{
                                               {{-1.0, 0.0, 0.0}},
                                               {{0.0, -1.0, 0.0}},
                                               {{0.0, 0.0, -1.0}}

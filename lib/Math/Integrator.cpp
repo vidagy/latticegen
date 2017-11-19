@@ -39,7 +39,7 @@ double IntegratorEquidistant::simpson(const std::vector<double> &f, double dx)
 
 double IntegratorEquidistant::simpson_3_8(const std::vector<double> &f, double dx)
 {
-  int f_size = static_cast<int>(f.size());
+  auto f_size = static_cast<int>(f.size());
 
   if (f_size < 4)
     return simpson(f, dx);
@@ -108,14 +108,14 @@ double IntegratorEquidistant::simpson_alt(const std::vector<double> &f, double d
 
 namespace
 {
-  static const double consts_1[1] = {0.5};
-  static const double consts_3[3] = {9.0 / 24.0, 28.0 / 24.0, 23.0 / 24.0};
-  static const double consts_5[5] = {475.0 / 1440.0, 1902.0 / 1440.0, 1104.0 / 1440.0, 1586.0 / 1440.0,
+  const double consts_1[1] = {0.5};
+  const double consts_3[3] = {9.0 / 24.0, 28.0 / 24.0, 23.0 / 24.0};
+  const double consts_5[5] = {475.0 / 1440.0, 1902.0 / 1440.0, 1104.0 / 1440.0, 1586.0 / 1440.0,
                                      1413.0 / 1440.0};
-  static const double consts_7[7] = {36799.0 / 120960.0, 176648.0 / 120960.0, 54851.0 / 120960.0, 177984.0 / 120960.0,
+  const double consts_7[7] = {36799.0 / 120960.0, 176648.0 / 120960.0, 54851.0 / 120960.0, 177984.0 / 120960.0,
                                      89437.0 / 120960.0, 130936.0 / 120960.0, 119585.0 / 120960.0};
 
-  static const double *trapezoid_consts[4] = {consts_1, consts_3, consts_5, consts_7};
+  const double *trapezoid_consts[4] = {consts_1, consts_3, consts_5, consts_7};
 }
 
 double IntegratorEquidistant::trapezoidal(const std::vector<double> &f, double dx, unsigned int quadrature)

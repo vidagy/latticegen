@@ -13,11 +13,11 @@ namespace Core
   public:
     lm_vector(const lm_vector<T> &other) = default;
 
-    lm_vector(lm_vector<T> &&other) = default;
+    lm_vector(lm_vector<T> &&other) noexcept = default;
 
-    lm_vector<T> &operator=(lm_vector<T> &other) = default;
+    lm_vector<T> &operator=(const lm_vector<T> &other) = default;
 
-    lm_vector<T> &operator=(lm_vector<T> &&other) = default;
+    lm_vector<T> &operator=(lm_vector<T> &&other) noexcept = default;
 
     explicit lm_vector(unsigned int l_)
       : l_max(l_), data(std::vector<T>((l_max + 1) * (l_max + 1), T())) {}

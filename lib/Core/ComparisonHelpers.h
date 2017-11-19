@@ -1,7 +1,7 @@
 #ifndef LATTICEGEN_COMPARISONHELPERS_H_
 #define LATTICEGEN_COMPARISONHELPERS_H_
 
-#include <math.h>
+#include <cmath>
 #include <complex>
 
 namespace Core

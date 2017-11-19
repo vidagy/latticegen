@@ -92,7 +92,7 @@ namespace
       auto upper_guess = cutoff.r_bs + 1e8 * std::numeric_limits<double>::epsilon();
 
       using namespace boost::math::tools;
-      uintmax_t max_iter = (uintmax_t) config.bracketing_max_iter;
+      auto max_iter = (uintmax_t) config.bracketing_max_iter;
       auto res = bisect(
         objective_function, lower_guess, upper_guess, eps_tolerance<double>(config.default_r_ws_bits), max_iter
       );

@@ -6,7 +6,7 @@
 
 namespace
 {
-  static const double pi = M_PI;
+  const double pi = M_PI;
 }
 
 namespace Math

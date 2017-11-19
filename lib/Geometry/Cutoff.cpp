@@ -149,7 +149,7 @@ namespace
 
     std::sort(
       face_points.begin(), face_points.end(),
-      [](const std::pair<Point3D, double> &lhs, const std::pair<Point3D, double> &rhs)
+      [](const std::pair<Point3D, double> &lhs, const std::pair<Point3D, double> &rhs) -> bool
       {
         return lhs.second < rhs.second;
       }
@@ -198,7 +198,7 @@ namespace
   {
     auto min = std::min_element(
       points.begin(), points.end(),
-      [](const std::pair<Point3D, double> &lhs, const std::pair<Point3D, double> &rhs)
+      [](const std::pair<Point3D, double> &lhs, const std::pair<Point3D, double> &rhs) -> bool
       {
         return lhs.second < rhs.second;
       });
@@ -212,7 +212,7 @@ namespace
     all_face_points.reserve(face_points.size() * 2);
     for (const auto &p : face_points) {
       all_face_points.push_back(p);
-      all_face_points.push_back(std::make_pair(-1.0 * p.first, p.second));
+      all_face_points.emplace_back(-1.0 * p.first, p.second);
     }
 
     auto possible_distances = std::vector<double>();

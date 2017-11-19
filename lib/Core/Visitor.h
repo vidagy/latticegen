@@ -42,7 +42,7 @@ namespace Core
     {
       typedef typename V::result_type result_type;
 
-      VisitorAdapterVisitor(const V &v, const Ts &... arguments)
+      explicit VisitorAdapterVisitor(const V &v, const Ts &... arguments)
         : v(v), arguments(std::make_tuple(std::cref(arguments)...)) {}
 
     private:

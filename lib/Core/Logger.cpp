@@ -16,7 +16,7 @@ using namespace Core;
 namespace
 {
   using namespace boost::log;
-  static const std::string default_filename = "latticegen.log";
+  const std::string default_filename = "latticegen.log";
 
   class LoggerImpl
   {
@@ -70,7 +70,7 @@ namespace
     sources::severity_logger<Logger::Level> lg;
   };
 
-  static std::unique_ptr<LoggerImpl> loggerImpl;
+  std::unique_ptr<LoggerImpl> loggerImpl;
 }
 
 namespace

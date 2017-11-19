@@ -109,7 +109,7 @@ namespace Physics
     class ReciprocalStructureConstants
     {
     public:
-      ReciprocalStructureConstants(
+      explicit ReciprocalStructureConstants(
         const UnitCell3D &unit_cell_,
         const StructureConstantsConfig &config_ = StructureConstantsConfig()
       );

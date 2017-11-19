@@ -23,7 +23,7 @@ namespace
 void LapackWrapper::invert_matrix(std::vector<double> &matrix, Majority majority)
 {
   auto lapack_majority = get_majority(majority);
-  unsigned int n = static_cast<unsigned int>(lround(sqrt(matrix.size())));
+  auto n = static_cast<unsigned int>(lround(sqrt(matrix.size())));
   if (n * n != matrix.size())
     THROW_INVALID_ARGUMENT("matrix not square in invert_matrix length = " + std::to_string(matrix.size()));
 
