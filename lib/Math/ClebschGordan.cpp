@@ -81,7 +81,7 @@ double ClebschGordan::calculate(double j1, double m1, double j2, double m2, doub
       * factorial((double_j2 + double_m2) / 2)
       * factorial((double_j2 - double_m2) / 2)
     ) * sum;
-};
+}
 
 double Gaunt::calculate(double l1, double m1, double l2, double m2, double L, double M)
 {

@@ -133,7 +133,7 @@ namespace
     );
 
     return res;
-  };
+  }
 
   void scale_weights(Quadrature &centers_and_weights)
   {

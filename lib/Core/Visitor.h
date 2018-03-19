@@ -55,7 +55,7 @@ namespace Core
       )
       {
         return VisitorAdapterVisitor<V, TTs..., TT>(v, (std::get<Is + 1>(arguments).get())..., t);
-      };
+      }
 
       template<typename VV, typename TT, typename T_ignored, typename... TTs,
         typename Indices = std::make_index_sequence<std::tuple_size<std::tuple<TTs...>>::value>>
@@ -66,7 +66,7 @@ namespace Core
       )
       {
         return VisitorAdapterVisitor<V, Ts...>::create_visitor_without_first(v, arguments, t, Indices{});
-      };
+      }
 
     public:
       template<typename T>

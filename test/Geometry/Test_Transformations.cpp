@@ -8,6 +8,7 @@ namespace
 }
 
 using namespace Geometry;
+using namespace Testing;
 
 TEST(TestTransformations,RotationCtorThrows)
 {
@@ -23,9 +24,9 @@ TEST(TestTransformations,RotationIdentity)
   const auto v010 = Point3D(0.0, 1.0, 0.0);
   const auto v001 = Point3D(0.0, 0.0, 1.0);
 
-  EXPECT_POINTS_CLOSE(v100, rotation(v100));
-  EXPECT_POINTS_CLOSE(v010, rotation(v010));
-  EXPECT_POINTS_CLOSE(v001, rotation(v001));
+  EXPECT_EQ(wrap({v100}), wrap({rotation(v100)}));
+  EXPECT_EQ(wrap({v010}), wrap({rotation(v010)}));
+  EXPECT_EQ(wrap({v001}), wrap({rotation(v001)}));
 }
 
 TEST(TestTransformations,RotationDegrees90)
@@ -39,19 +40,19 @@ TEST(TestTransformations,RotationDegrees90)
   Rotation rotation_z = Rotation(z);
 
   // rotation with x
-  EXPECT_POINTS_CLOSE(x, rotation_x(x));
-  EXPECT_POINTS_CLOSE(z, rotation_x(y));
-  EXPECT_POINTS_CLOSE(-1.0 * y, rotation_x(z));
+  EXPECT_EQ(wrap({x}), wrap({rotation_x(x)}));
+  EXPECT_EQ(wrap({z}), wrap({rotation_x(y)}));
+  EXPECT_EQ(wrap({-1.0 * y}), wrap({rotation_x(z)}));
 
   // rotation with y
-  EXPECT_POINTS_CLOSE(-1.0 * z, rotation_y(x));
-  EXPECT_POINTS_CLOSE(y, rotation_y(y));
-  EXPECT_POINTS_CLOSE(x, rotation_y(z));
+  EXPECT_EQ(wrap({-1.0 * z}), wrap({rotation_y(x)}));
+  EXPECT_EQ(wrap({y}), wrap({rotation_y(y)}));
+  EXPECT_EQ(wrap({x}), wrap({rotation_y(z)}));
 
   // rotation with z
-  EXPECT_POINTS_CLOSE(y, rotation_z(x));
-  EXPECT_POINTS_CLOSE(-1.0 * x, rotation_z(y));
-  EXPECT_POINTS_CLOSE(z, rotation_z(z));
+  EXPECT_EQ(wrap({y}), wrap({rotation_z(x)}));
+  EXPECT_EQ(wrap({-1.0 * x}), wrap({rotation_z(y)}));
+  EXPECT_EQ(wrap({z}), wrap({rotation_z(z)}));
 }
 
 TEST(TestTransformations,ReflectionCtorThrows)
@@ -68,10 +69,10 @@ TEST(TestTransformations,ReflectionPlaneXY)
   const auto y = Point3D(0.0, 1.0, 0.0);
   const auto z = Point3D(0.0, 0.0, 1.0);
 
-  EXPECT_POINTS_CLOSE(reflection(x), x);
-  EXPECT_POINTS_CLOSE(reflection(y), y);
+  EXPECT_EQ(wrap({reflection(x)}), wrap({x}));
+  EXPECT_EQ(wrap({reflection(y)}), wrap({y}));
 
-  EXPECT_POINTS_CLOSE(reflection(z), (-1.0) * z);
+  EXPECT_EQ(wrap({reflection(z)}), wrap({(-1.0) * z}));
 }
 
 TEST(TestTransformations,ReflectionPlane111)
@@ -82,7 +83,7 @@ TEST(TestTransformations,ReflectionPlane111)
   v111 = (1.0/sqrt(3)) * v111;
   Reflection reflection = Reflection(v111);
 
-  EXPECT_POINTS_CLOSE(reflection(x), Point3D(1.0 / 3.0, -2.0 / 3.0, -2.0 / 3.0));
+  EXPECT_EQ(wrap({reflection(x)}), wrap({Point3D(1.0 / 3.0, -2.0 / 3.0, -2.0 / 3.0)}));
 }
 
 TEST(TestTransformations,ImproperRotationRotateAndReflect)
@@ -92,7 +93,7 @@ TEST(TestTransformations,ImproperRotationRotateAndReflect)
   auto z90 = Point3D(0.0, 0.0, pi / 2.0);
   ImproperRotation improper_rotation = ImproperRotation(z90);
 
-  EXPECT_POINTS_CLOSE(improper_rotation * xz, Point3D(0.0, 1.0, -1.0));
+  EXPECT_EQ(wrap({improper_rotation * xz}), wrap({Point3D(0.0, 1.0, -1.0)}));
 }
 
 namespace 
@@ -111,8 +112,8 @@ namespace
         for (auto z = -2.0; z <= 2.0; z += 0.8)
         {
           auto v = Point3D(x, y, z);
-          EXPECT_POINTS_CLOSE(rotref(v), Inversion()(v));
-          EXPECT_POINTS_CLOSE(refrot(v), Inversion()(v));
+          EXPECT_EQ(wrap({rotref(v)}), wrap({Inversion()(v)}));
+          EXPECT_EQ(wrap({refrot(v)}), wrap({Inversion()(v)}));
         }
       }
     }
@@ -175,13 +176,13 @@ namespace
         for (auto z = -2.0; z <= 2.0; z += 0.8)
         {
           const auto v = Point3D(x, y, z);
-          EXPECT_POINTS_CLOSE(reflect2(v), Identity()(v));
+          EXPECT_EQ(wrap({reflect2(v)}), wrap({Identity()(v)}));
 
-          EXPECT_POINTS_CLOSE(rotinvrot(v), Identity()(v));
-          EXPECT_POINTS_CLOSE(invrotrot(v), Identity()(v));
+          EXPECT_EQ(wrap({rotinvrot(v)}), wrap({Identity()(v)}));
+          EXPECT_EQ(wrap({invrotrot(v)}), wrap({Identity()(v)}));
 
-          EXPECT_POINTS_CLOSE(irotinvirot(v), Identity()(v));
-          EXPECT_POINTS_CLOSE(invirotirot(v), Identity()(v));
+          EXPECT_EQ(wrap({irotinvirot(v)}), wrap({Identity()(v)}));
+          EXPECT_EQ(wrap({invirotirot(v)}), wrap({Identity()(v)}));
         }
       }
     }

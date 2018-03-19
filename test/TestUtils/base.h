@@ -13,30 +13,6 @@ MATCHER_P(NearWithTolerance, tolerance, "") {
   return std::fabs(std::get<0>(arg) - std::get<1>(arg)) <= tolerance;
 }
 
-MATCHER(PointClose, "") {
-  *result_listener << "the difference is " << std::setprecision(18) << (std::get<0>(arg) - std::get<1>(arg)).norm();
-  return Core::default_point_comparator.isEqual(std::get<0>(arg), std::get<1>(arg));
-}
-
-inline ::testing::AssertionResult PointCloseTo(const Core::Point3DCRef &lhs, const Core::Point3DCRef &rhs) {
-  if (Core::default_point_comparator.isEqual(lhs, rhs))
-    return ::testing::AssertionSuccess();
-  else
-    return ::testing::AssertionFailure() << "\n lhs = [" << std::to_string(lhs) << "] while \n rhs = ["
-                                         << std::to_string(rhs) << "]";
-}
-
-#define EXPECT_POINTS_CLOSE(lhs, rhs) EXPECT_TRUE(PointCloseTo((lhs), (rhs)));
-
-inline ::testing::AssertionResult MatrixCloseTo(const Core::Matrix3dCRef &lhs, const Core::Matrix3dCRef &rhs) {
-  if (lhs.isApprox(rhs))
-    return ::testing::AssertionSuccess();
-  else
-    return ::testing::AssertionFailure() << "\n lhs = [" << lhs << "] while \n rhs = [" << rhs << "]";
-}
-
-#define EXPECT_MATRICES_CLOSE(lhs, rhs) EXPECT_TRUE(MatrixCloseTo((lhs), (rhs)));
-
 namespace Testing {
   struct Point3DWrap : public Core::Point3D {
     Point3DWrap(double a1, double a2, double a3) : Core::Point3D(a1, a2, a3) {}

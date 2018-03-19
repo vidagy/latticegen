@@ -308,7 +308,7 @@ namespace
     EXPECT_TRUE(lessEqualsWithTolerance(cutoff.r_mt, c.norm() / 2.0));
 
     EXPECT_TRUE(lessEqualsWithTolerance(cutoff.r_bs, (a + b + c).norm() / 2.0));
-  };
+  }
 }
 
 TEST(TestCutoff, WSCellRadiusConsistency)

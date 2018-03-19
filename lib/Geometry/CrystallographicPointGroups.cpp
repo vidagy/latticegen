@@ -134,11 +134,11 @@ std::unique_ptr<CrystallographicPointGroup> CrystallographicPointGroup::create(C
 typedef CrystallographicPointGroup::Elements Elements;
 
 #define POPULATE_GROUP_CLASS(group_, crystal_class_) \
-  template<> const CrystalClass CrystallographicPointGroupX<group_>::crystal_class = crystal_class_;
+  template<> const CrystalClass CrystallographicPointGroupX<group_>::crystal_class = crystal_class_
 #define POPULATE_GROUP_GENERATORS(group_, ...) \
-  template<> const Elements CrystallographicPointGroupX<group_>::generators = Elements{__VA_ARGS__};
+  template<> const Elements CrystallographicPointGroupX<group_>::generators = Elements{__VA_ARGS__}
 #define POPULATE_GROUP_ELEMENTS(group_, ...) \
-  template<> const Elements CrystallographicPointGroupX<group_>::elements = Elements{__VA_ARGS__};
+  template<> const Elements CrystallographicPointGroupX<group_>::elements = Elements{__VA_ARGS__}
 
 ////////////////   Triclinic  ////////////////
 

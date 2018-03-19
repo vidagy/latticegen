@@ -27,7 +27,7 @@ namespace
     EXPECT_EQ(crystal_system, get_crystal_system(group.get_crystal_class()));
     EXPECT_THAT(generators, ::testing::UnorderedElementsAreArray(group.get_generators()) );
     EXPECT_THAT(elements, ::testing::UnorderedElementsAreArray(group.get_elements()) );
-  };
+  }
 }
 
 ////////////////   Triclinic  ////////////////
