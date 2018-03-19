@@ -61,7 +61,7 @@ namespace Utils
     out_R.open(filename + ".dat");
     for (auto p : R)
       out_R << std::setfill(' ') << std::setw(20) << std::setprecision(17) << std::fixed
-            << p.x << '\t' << p.y << '\t' << p.z << "\n";
+            << p(0) << '\t' << p(1) << '\t' << p(2) << "\n";
     out_R.close();
   }
 }

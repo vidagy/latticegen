@@ -23,9 +23,9 @@ RealStructureConstants::calculate(unsigned int l, int m, unsigned int lprime, in
       " n and nprime is the same = " + std::to_string(n));
 
   auto p = sqrt(z);
-  Vector3D R = (nprime.a - n.a) * unit_cell.v1
-               + (nprime.b - n.b) * unit_cell.v2
-               + (nprime.c - n.c) * unit_cell.v3;
+  auto R = (nprime.a - n.a) * unit_cell.v1
+           + (nprime.b - n.b) * unit_cell.v2
+           + (nprime.c - n.c) * unit_cell.v3;
 
   int mpp = mprime - m;
   auto lpp_min = static_cast<unsigned int>(static_cast<int>(lprime) - static_cast<int>(l));
@@ -34,7 +34,7 @@ RealStructureConstants::calculate(unsigned int l, int m, unsigned int lprime, in
   auto res = 0.0i;
   for (auto lpp = lpp_min; lpp <= lpp_max; ++lpp) {
     res += ipow(l - lprime - lpp)
-           * hankel_1(lpp, p * R.length())
+           * hankel_1(lpp, p * R.norm())
            * Complex::spherical_harmonic(lpp, mpp, R)
            * Gaunt::calculate(l, m, lpp, mpp, lprime, mprime);
 
@@ -45,7 +45,7 @@ RealStructureConstants::calculate(unsigned int l, int m, unsigned int lprime, in
 ///@brief Zabloudil et al (15.75)
 std::complex<double>
 ReciprocalStructureConstantsCalculator::calculate(unsigned int l, int m, unsigned int lprime, int mprime,
-                                                  const Vector3D &k) const
+                                                  const Point3DCRef &k) const
 {
   if (static_cast<unsigned int>(abs(m)) > l)
     THROW_INVALID_ARGUMENT(" m = " + std::to_string(m) + " is grater than l = " + std::to_string(l));
@@ -76,9 +76,8 @@ ReciprocalStructureConstantsCalculator::calculate(unsigned int l, int m, unsigne
 
 ///@brief Zabloudil et al (15.77)
 std::complex<double>
-ReciprocalStructureConstantsCalculator::D1(unsigned int l, int m, const Vector3D &k) const
-{
-  if (nearlyZero(k.length()))
+ReciprocalStructureConstantsCalculator::D1(unsigned int l, int m, const Point3DCRef &k) const {
+  if (nearlyZero(k.norm()))
     THROW_INVALID_ARGUMENT("k cannot be zero, k = " + std::to_string(k));
 
   auto p = std::sqrt(z);
@@ -90,7 +89,7 @@ ReciprocalStructureConstantsCalculator::D1(unsigned int l, int m, const Vector3D
     auto shell_diff = 0.0i;
     for (const auto &K: shell.points) {
       auto K_plus_k = K + k;
-      auto K_plus_k_squared = K_plus_k * K_plus_k;
+      auto K_plus_k_squared = K_plus_k.dot(K_plus_k);
       auto K_plus_k_squared_minus_z = K_plus_k_squared - z;
       if (nearlyZero(abs(K_plus_k_squared_minus_z)))
         THROW_LOGIC_ERROR(
@@ -98,7 +97,7 @@ ReciprocalStructureConstantsCalculator::D1(unsigned int l, int m, const Vector3D
           + " k = " + std::to_string(k)
           + " z = " + std::to_string(z.real()) + " (+) " + std::to_string(z.imag()) + "i");
 
-      shell_diff += Math::pow(K_plus_k.length(), l)
+      shell_diff += Math::pow(K_plus_k.norm(), l)
                     * exp(-K_plus_k_squared / ewald_param)
                     / (K_plus_k_squared_minus_z)
                     * std::conj(Complex::spherical_harmonic(l, m, K_plus_k));
@@ -110,7 +109,7 @@ ReciprocalStructureConstantsCalculator::D1(unsigned int l, int m, const Vector3D
   }
 
   return -4.0 * pi
-         / std::abs(unit_cell->v1 * cross_product(unit_cell->v2, unit_cell->v3))
+         / std::fabs(unit_cell->v1.dot(unit_cell->v2.cross(unit_cell->v3)))
          * ipow(l)
          / Math::pow(p, l)
          * std::exp(z / ewald_param)
@@ -147,7 +146,7 @@ namespace
 
 ///@brief Zabloudil et al (15.78)
 std::complex<double>
-ReciprocalStructureConstantsCalculator::D2(unsigned int l, int m, const Vector3D &k) const
+ReciprocalStructureConstantsCalculator::D2(unsigned int l, int m, const Point3DCRef &k) const
 {
   auto p = std::sqrt(z);
 
@@ -161,7 +160,7 @@ ReciprocalStructureConstantsCalculator::D2(unsigned int l, int m, const Vector3D
       auto shell_diff = 0.0i;
       for (const auto &R: shell.points) {
         shell_diff += Math::pow(length, l)
-                      * std::exp(1.0i * (R * k))
+                      * std::exp(1.0i * (R.dot(k)))
                       * std::conj(Complex::spherical_harmonic(l, m, R))
                       * integral;
       }
@@ -204,12 +203,8 @@ namespace
 {
   std::shared_ptr<const std::vector<Shell>> get_direct_shells(const Cell3D &cell, double cutoff_scale)
   {
-    auto scaled_cutoff = cutoff_scale * std::max(
-      std::max(
-        cell.v1.length(),
-        cell.v2.length()),
-      cell.v3.length()
-    );
+    const auto norms = std::vector<double>{cell.v1.norm(), cell.v2.norm(), cell.v3.norm()};
+    auto scaled_cutoff = cutoff_scale * *std::max_element(norms.cbegin(), norms.cend());
 
     auto mesh = LatticeMesh(cell).generate(CutoffSphere(scaled_cutoff));
     auto transformations = SymmetryTransformationFactory::generate(cell);

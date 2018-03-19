@@ -4,24 +4,25 @@
 
 using namespace Core;
 using namespace Geometry;
+using namespace Testing;
 
 TEST(TestMesh,LatticeMeshContainsOrigin)
 {
   UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-  LatticeMesh mesh = LatticeMesh(unit_cell);
+  auto mesh = LatticeMesh(unit_cell);
 
-  CutoffCube cutoff = CutoffCube(0.1);
+  auto cutoff = CutoffCube(0.1);
 
   const static std::vector< Point3D > reference = { {0.0,0.0,0.0} };
 
-  EXPECT_THAT( mesh.generate(cutoff), ::testing::ContainerEq(reference) );
+  EXPECT_THAT(wrap(mesh.generate(cutoff)), ::testing::ContainerEq(wrap(reference)));
 }
 
 TEST(TestMesh,LatticeMeshContainsCube)
 {
   UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-  CutoffCube cutoff = CutoffCube(1.0);
-  LatticeMesh mesh = LatticeMesh(unit_cell);
+  auto cutoff = CutoffCube(1.0);
+  auto mesh = LatticeMesh(unit_cell);
 
   const static std::vector< Point3D > reference =
     {
@@ -38,7 +39,7 @@ TEST(TestMesh,LatticeMeshContainsCube)
       {-1.0, 1.0, 1.0},{ 0.0, 1.0, 1.0},{ 1.0, 1.0, 1.0}
     };
 
-  EXPECT_THAT( mesh.generate(cutoff), ::testing::ContainerEq(reference) );
+  EXPECT_THAT(wrap(mesh.generate(cutoff)), ::testing::ContainerEq(wrap(reference)));
 }
 
 namespace
@@ -53,9 +54,9 @@ namespace
 
 TEST(TestMesh,LatticeMeshContainsSphere)
 {
-  CutoffSphere cutoff = CutoffSphere(1.0);
+  auto cutoff = CutoffSphere(1.0);
   UnitCell3D unit_cell = UnitCell3D::create_rhombohedral_centered(1.0, pi / 3.0);
-  LatticeMesh mesh = LatticeMesh(unit_cell);
+  auto mesh = LatticeMesh(unit_cell);
 
   const static std::vector< Point3D > reference =
     {
@@ -67,13 +68,13 @@ TEST(TestMesh,LatticeMeshContainsSphere)
       {0.0, d,-h}, { a,-c,-h}, {-a,-c,-h}
     };
 
-  EXPECT_THAT( mesh.generate(cutoff), ::testing::UnorderedElementsAreArray(reference) );
+  EXPECT_THAT(wrap(mesh.generate(cutoff)), ::testing::UnorderedElementsAreArray(wrap(reference)));
 }
 
 TEST(TestMesh,CubicMeshContainsSphere)
 {
-  CutoffSphere cutoff = CutoffSphere(sqrt(2.0));
-  CubicMesh mesh = CubicMesh(1.0);
+  auto cutoff = CutoffSphere(sqrt(2.0));
+  auto mesh = CubicMesh(1.0);
 
   const static std::vector< Point3D > reference =
     {
@@ -90,13 +91,13 @@ TEST(TestMesh,CubicMeshContainsSphere)
       { 0.0, 1.0, 1.0}
     };
 
-  EXPECT_THAT( mesh.generate(cutoff), ::testing::UnorderedElementsAreArray(reference) );
+  EXPECT_THAT(wrap(mesh.generate(cutoff)), ::testing::UnorderedElementsAreArray(wrap(reference)));
 }
 
 TEST(TestMesh, CubicMeshWithOffsetContainsSphere)
 {
-  CutoffSphere cutoff = CutoffSphere(sqrt(2.0));
-  CubicMesh mesh = CubicMesh(1.0);
+  auto cutoff = CutoffSphere(sqrt(2.0));
+  auto mesh = CubicMesh(1.0);
 
   const static std::vector<Point3D> reference =
     {
@@ -110,13 +111,13 @@ TEST(TestMesh, CubicMeshWithOffsetContainsSphere)
       {0.5,  0.5,  0.5}
     };
 
-  EXPECT_THAT(mesh.generate(cutoff, true), ::testing::UnorderedElementsAreArray(reference));
+  EXPECT_THAT(wrap(mesh.generate(cutoff, true)), ::testing::UnorderedElementsAreArray(wrap(reference)));
 }
 
 TEST(TestMesh,TetrahedronMeshContainsSphere)
 {
-  CutoffSphere cutoff = CutoffSphere(1.0);
-  TetrahedronMesh mesh = TetrahedronMesh(1.0);
+  auto cutoff = CutoffSphere(1.0);
+  auto mesh = TetrahedronMesh(1.0);
 
   const static std::vector< Point3D > reference =
     {
@@ -128,5 +129,5 @@ TEST(TestMesh,TetrahedronMeshContainsSphere)
       {0.0, d,-h}, { a,-c,-h}, {-a,-c,-h}
     };
 
-  EXPECT_THAT( mesh.generate(cutoff), ::testing::UnorderedElementsAreArray(reference) );
+  EXPECT_THAT(wrap(mesh.generate(cutoff)), ::testing::UnorderedElementsAreArray(wrap(reference)));
 }

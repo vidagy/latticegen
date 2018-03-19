@@ -1,6 +1,5 @@
 #include "PolyhedralQuadrature.h"
 #include <numeric>
-#include <algorithm>
 
 using namespace Math;
 
@@ -18,13 +17,13 @@ namespace
 
   struct Triangle : public Face<Triangle>
   {
-    Triangle(const Point3D &a_, const Point3D &b_, const Point3D &c_) : a(a_), b(b_), c(c_) {}
+    Triangle(const Point3DCRef &a_, const Point3DCRef &b_, const Point3DCRef &c_) : a(a_), b(b_), c(c_) {}
 
     virtual void remap() override final
     {
-      a /= a.length();
-      b /= b.length();
-      c /= c.length();
+      a /= a.norm();
+      b /= b.norm();
+      c /= c.norm();
     };
 
     virtual void refine(std::vector<Triangle> &range) const override
@@ -42,8 +41,8 @@ namespace
     virtual std::pair<Point3D, double> center_and_weight() const override
     {
       auto p = (a + b + c) / 3.0;
-      auto w = cross_product(b - a, c - a).length() / 2.0;
-      return std::make_pair(p / p.length(), w);
+      auto w = (b - a).cross(c - a).norm() / 2.0;
+      return std::make_pair(p.normalized(), w);
     }
 
     Point3D a;
@@ -53,15 +52,15 @@ namespace
 
   struct Rectangle : public Face<Rectangle>
   {
-    Rectangle(const Point3D &a_, const Point3D &b_, const Point3D &c_, const Point3D &d_)
+    Rectangle(const Point3DCRef &a_, const Point3DCRef &b_, const Point3DCRef &c_, const Point3DCRef &d_)
       : a(a_), b(b_), c(c_), d(d_) {}
 
     virtual void remap() override final
     {
-      a /= a.length();
-      b /= b.length();
-      c /= c.length();
-      d /= d.length();
+      a /= a.norm();
+      b /= b.norm();
+      c /= c.norm();
+      d /= d.norm();
     };
 
     virtual void refine(std::vector<Rectangle> &range) const override
@@ -82,8 +81,8 @@ namespace
     virtual std::pair<Point3D, double> center_and_weight() const override
     {
       auto p = (a + b + c + d) / 4.0;
-      auto w = cross_product(c - a, b - d).length() / 2.0;
-      return std::make_pair(p / p.length(), w);
+      auto w = (c - a).cross(b - d).norm() / 2.0;
+      return std::make_pair(p.normalized(), w);
     }
 
     Point3D a;

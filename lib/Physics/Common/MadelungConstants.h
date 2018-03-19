@@ -18,7 +18,7 @@ namespace Physics
     class RealMadelungConstants
     {
     public:
-      explicit RealMadelungConstants(UnitCell3D unit_cell_) : unit_cell(std::move(unit_cell_)) {}
+      explicit RealMadelungConstants(const UnitCell3D &unit_cell_) : unit_cell(unit_cell_) {}
 
       ///@brief Zabloudil et al (19.28)
       [[deprecated]]
@@ -39,8 +39,8 @@ namespace Physics
         const double ewald_param_ = default_ewald_param,
         const double lattice_cutoff_scale_ = default_lattice_cutoff_scale,
         const double reciprocal_lattice_cutoff_ = default_reciprocal_lattice_cutoff
-      ) : ewald_param(ewald_param_), lattice_cutoff_scale(lattice_cutoff_scale_),
-          reciprocal_lattice_cutoff(reciprocal_lattice_cutoff_) {}
+      ) noexcept : ewald_param(ewald_param_), lattice_cutoff_scale(lattice_cutoff_scale_),
+                   reciprocal_lattice_cutoff(reciprocal_lattice_cutoff_) {}
 
       const double ewald_param;
       const double lattice_cutoff_scale;

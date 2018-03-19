@@ -2,7 +2,7 @@
 #define LATTICEGEN_SYMMETRYTARNSFORMATIONFACTORY_H
 
 #include <Geometry/UnitCell3D.h>
-#include <Geometry/Matrix3D.h>
+#include <Core/Matrix3D.h>
 #include <Geometry/CrystallographicPointGroups.h>
 #include <Geometry/Transformations.h>
 

@@ -6,20 +6,20 @@ using namespace Geometry;
 namespace
 {
   bool is_same_shell(
-    const Point3D &lhs, const Point3D &rhs, const SymmetryTransformationFactory::Transformations &transformations
+    Point3D &lhs, Point3D &rhs, SymmetryTransformationFactory::Transformations &transformations
   )
   {
-    for (const auto &transformation: transformations) {
-      if (lhs == transformation * rhs)
+    for (auto &transformation: transformations) {
+      if (lhs.isApprox(transformation * rhs))
         return true;
     }
     return false;
   }
 
   std::vector<Shell> get_shells(
-    const std::vector<Point3D>::const_iterator &begin,
-    const std::vector<Point3D>::const_iterator &end,
-    const SymmetryTransformationFactory::Transformations &transformations
+    const std::vector<Point3D>::iterator &begin,
+    const std::vector<Point3D>::iterator &end,
+    SymmetryTransformationFactory::Transformations &transformations
   )
   {
     if (begin == end)
@@ -52,7 +52,7 @@ namespace
 }
 
 std::vector<Shell> Shell::get_shells(
-  const SymmetryTransformationFactory::Transformations &transformations, const std::vector<Point3D> &mesh)
+  SymmetryTransformationFactory::Transformations &transformations, const std::vector<Point3D> &mesh)
 {
   auto res = std::vector<Shell>();
 
@@ -63,16 +63,16 @@ std::vector<Shell> Shell::get_shells(
   std::sort(sorted_mesh.begin(), sorted_mesh.end(),
             [](const Point3D &lhs, const Point3D &rhs)
             {
-              return lhs.length() < rhs.length();
+              return lhs.norm() < rhs.norm();
             });
 
-  auto pre_length = sorted_mesh[0].length();
+  auto pre_length = sorted_mesh[0].norm();
   auto begin = sorted_mesh.begin();
   for (auto it = sorted_mesh.begin(); it != sorted_mesh.end(); ++it) {
-    if (!equalsWithTolerance(pre_length, it->length())) {
+    if (!equalsWithTolerance(pre_length, it->norm())) {
       auto current_shells = ::get_shells(begin, it, transformations);
       std::copy(current_shells.begin(), current_shells.end(), std::back_inserter(res));
-      pre_length = it->length();
+      pre_length = it->norm();
       begin = it;
     }
   }

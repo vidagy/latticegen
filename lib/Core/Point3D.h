@@ -40,7 +40,7 @@ namespace Core
       : x_abs_tol(x_abs_tol_), y_abs_tol(y_abs_tol_), z_abs_tol(z_abs_tol_), x_rel_tol(x_rel_tol_),
         y_rel_tol(y_rel_tol_), z_rel_tol(z_rel_tol_) {}
 
-    bool isEqual(const Point3D &lhs, const Point3D &rhs) const
+    bool isEqual(const Point3DCRef &lhs, const Point3DCRef &rhs) const
     {
       return equalsWithTolerance(lhs(0), rhs(0), x_abs_tol, x_rel_tol) &&
              equalsWithTolerance(lhs(1), rhs(1), y_abs_tol, y_rel_tol) &&
@@ -61,12 +61,11 @@ namespace Core
 
 namespace std
 {
-  using namespace Core;
-
-  inline std::string to_string(const Point3DCRef &point)
+  template<typename Derived>
+  std::string to_string(const Eigen::MatrixBase<Derived> &m)
   {
     std::stringstream ss;
-    ss << std::scientific << std::setprecision(std::numeric_limits<double>::max_digits10) << point;
+    ss << std::scientific << std::setprecision(std::numeric_limits<double>::max_digits10) << m;
     return ss.str();
   }
 }

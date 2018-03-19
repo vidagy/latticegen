@@ -30,7 +30,7 @@ namespace
     out_R.open("Lebedev_" + std::to_string(LebedevQuadrature::order_to_uint(order)) + ".dat");
     for (auto r : res)
       out_R << std::setw(20) << std::setprecision(17) << std::fixed
-            << r.first.x << "\t" << r.first.y << "\t" << r.first.z << "\t" << r.second << "\n";
+            << r.first(0) << "\t" << r.first(1) << "\t" << r.first(2) << "\t" << r.second << "\n";
     out_R.close();
   }
 }
@@ -62,7 +62,7 @@ TEST(LebedevQuadrature, LengthOfPoints)
         res.begin(), res.end(),
         [](const std::pair<Point3D, double> &p)
         {
-          EXPECT_DOUBLE_EQ(p.first.length(), 1.0);
+          EXPECT_DOUBLE_EQ(p.first.norm(), 1.0);
         }
       );
     }

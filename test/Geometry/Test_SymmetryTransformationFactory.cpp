@@ -36,14 +36,14 @@ namespace
     std::for_each(
       generated_elements.begin(),
       generated_elements.end(),
-      [&elements](const Matrix3D& generated_element)
+      [&elements](const Transformation &generated_element)
       {
         auto it = std::find_if(
           elements.begin(),
           elements.end(),
-          [&generated_element](const Matrix3D& element)
+          [&generated_element](const Transformation &element)
           {
-            return element == generated_element;
+            return element.transformation_matrix.isApprox(generated_element.transformation_matrix);
           });
 
         if (it == elements.end())

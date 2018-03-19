@@ -3,6 +3,7 @@
 #include <Geometry/Shell.h>
 
 using namespace Geometry;
+using namespace Testing;
 
 TEST(TestShell, SmallCube)
 {
@@ -16,7 +17,7 @@ TEST(TestShell, SmallCube)
   EXPECT_EQ(shells.size(), 4u);
 
   const auto reference_0 = std::vector<Point3D>{{0, 0, 0}};
-  EXPECT_THAT(shells[0].points, ::testing::UnorderedElementsAreArray(reference_0));
+  EXPECT_THAT(wrap(shells[0].points), ::testing::UnorderedElementsAreArray(wrap(reference_0)));
 
   const auto reference_1 = std::vector<Point3D>{
     {1,  0,  0},
@@ -26,7 +27,7 @@ TEST(TestShell, SmallCube)
     {0,  -1, 0},
     {0,  0,  -1}
   };
-  EXPECT_THAT(shells[1].points, ::testing::UnorderedElementsAreArray(reference_1));
+  EXPECT_THAT(wrap(shells[1].points), ::testing::UnorderedElementsAreArray(wrap(reference_1)));
 
   const auto reference_2 = std::vector<Point3D>{
     {1,  1,  0},
@@ -42,7 +43,7 @@ TEST(TestShell, SmallCube)
     {0,  1,  -1},
     {0,  -1, -1}
   };
-  EXPECT_THAT(shells[2].points, ::testing::UnorderedElementsAreArray(reference_2));
+  EXPECT_THAT(wrap(shells[2].points), ::testing::UnorderedElementsAreArray(wrap(reference_2)));
 
   const auto reference_3 = std::vector<Point3D>{
     {1,  1,  1},
@@ -54,7 +55,7 @@ TEST(TestShell, SmallCube)
     {1,  -1, -1},
     {-1, -1, -1}
   };
-  EXPECT_THAT(shells[3].points, ::testing::UnorderedElementsAreArray(reference_3));
+  EXPECT_THAT(wrap(shells[3].points), ::testing::UnorderedElementsAreArray(wrap(reference_3)));
 }
 
 TEST(TestShell, SameDistance)
@@ -69,7 +70,7 @@ TEST(TestShell, SameDistance)
   std::copy_if(points.begin(), points.end(), std::back_inserter(skin),
                [](const Point3D &p)
                {
-                 return p.length() > 2.95;
+                 return p.norm() > 2.95;
                });
 
   auto shells = Shell::get_shells(transformations, skin);
@@ -103,7 +104,7 @@ TEST(TestShell, SameDistance)
     {-2, -1, -2},
     {-2, -2, -1}
   };
-  EXPECT_THAT(shell_0.points, ::testing::UnorderedElementsAreArray(reference_0));
+  EXPECT_THAT(wrap(shell_0.points), ::testing::UnorderedElementsAreArray(wrap(reference_0)));
 
   const auto reference_1 = std::vector<Point3D>{
     {3,  0,  0},
@@ -113,6 +114,6 @@ TEST(TestShell, SameDistance)
     {0,  -3, 0},
     {0,  0,  -3}
   };
-  EXPECT_THAT(shell_1.points, ::testing::UnorderedElementsAreArray(reference_1));
+  EXPECT_THAT(wrap(shell_1.points), ::testing::UnorderedElementsAreArray(wrap(reference_1)));
 
 }

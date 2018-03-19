@@ -19,12 +19,12 @@ namespace Geometry
     {
       if (points.empty())
         THROW_INVALID_ARGUMENT("Cannot create shell with empty input");
-      auto r = points[0].length();
+      auto r = points[0].norm();
       for (const auto &p: points) {
-        if (!equalsWithTolerance(r, p.length()))
+        if (!equalsWithTolerance(r, p.norm()))
           THROW_INVALID_ARGUMENT(
             "Shell with different distances: r = " + std::to_string(r) +
-            " p.length() = " + std::to_string(p.length())
+            " p.length() = " + std::to_string(p.norm())
           );
       }
     }
@@ -33,11 +33,11 @@ namespace Geometry
 
     double r() const
     {
-      return points[0].length();
+      return points[0].norm();
     }
 
     static std::vector<Shell> get_shells(
-      const SymmetryTransformationFactory::Transformations &transformations, const std::vector<Point3D> &mesh);
+      SymmetryTransformationFactory::Transformations &transformations, const std::vector<Point3D> &mesh);
   };
 }
 #endif //LATTICEGEN_SHELL_H

@@ -1,6 +1,5 @@
 #include <TestUtils/base.h>
 
-#include <Core/Point3D.h>
 #include <Math/SphericalHarmonics.h>
 
 using namespace Math;
@@ -26,8 +25,8 @@ namespace
 
   template<class T>
   void compare_equals(
-    const std::function<T(const Vector3D &)> &lhs,
-    const std::function<T(const Vector3D &)> &rhs, unsigned int l, int m)
+    const std::function<T(const Point3D &)> &lhs,
+    const std::function<T(const Point3D &)> &rhs, unsigned int l, int m)
   {
     for (double x = -1.95; x < 2.0; x += 0.5) {
       for (double y = -1.95; y < 2.0; y += 0.5) {

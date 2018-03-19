@@ -45,9 +45,9 @@ using namespace Core;
 
 namespace
 {
-  const Vector3D x = Vector3D(1.0, 0.0, 0.0);
-  const Vector3D y = Vector3D(0.0, 1.0, 0.0);
-  const Vector3D z = Vector3D(0.0, 0.0, 1.0);
+  const auto x = Point3D(1.0, 0.0, 0.0);
+  const auto y = Point3D(0.0, 1.0, 0.0);
+  const auto z = Point3D(0.0, 0.0, 1.0);
 }
 
 UnitCell3D UnitCell3D::create_triclinic_primitive(
@@ -56,14 +56,14 @@ UnitCell3D UnitCell3D::create_triclinic_primitive(
   CHECK_LENGTH(a_, b_, c_);
   CHECK_ANGLE(alpha_, beta_, gamma_);
 
-  const Vector3D v1 = x;
+  const Point3D v1 = x;
 
-  const Vector3D v2 = Rotation(gamma_ * z) * x;
+  const Point3D v2 = Rotation(gamma_ * z)(x);
 
   const double v3x = cos(beta_);
   const double v3y = ( cos(alpha_)-cos(beta_)*cos(gamma_) )/sin(gamma_);
   const double v3z = sqrt(1.0 - v3x*v3x - v3y*v3y);
-  const Vector3D v3 = Vector3D( v3x , v3y , v3z );
+  const Point3D v3 = Point3D(v3x, v3y, v3z);
 
   return UnitCell3D(Triclinic_Primitive, a_ * v1, b_ * v2, c_ * v3);
 }
@@ -73,9 +73,9 @@ UnitCell3D UnitCell3D::create_monoclinic_primitive(
   CHECK_LENGTH(a_, b_, c_);
   CHECK_ANGLE_ACUTE(beta_);
 
-  const Vector3D v1 = a_*x;
-  const Vector3D v2 = b_*y;
-  const Vector3D v3 = c_* (Rotation(beta_ * y)*z);
+  const Point3D v1 = a_ * x;
+  const Point3D v2 = b_ * y;
+  const Point3D v3 = c_ * Rotation(beta_ * y)(z);
 
   return UnitCell3D(Monoclinic_Primitive, v1, v2, v3);
 }
@@ -85,9 +85,9 @@ UnitCell3D UnitCell3D::create_monoclinic_base(
   CHECK_LENGTH(a_, b_, c_);
   CHECK_ANGLE_ACUTE(beta_);
 
-  const Vector3D v1 = a_*x;
-  const Vector3D v2 = 1.0 / 2.0 * (a_*x + b_*y);
-  const Vector3D v3 = c_*(Rotation(beta_ * y)*z);
+  const Point3D v1 = a_ * x;
+  const Point3D v2 = 1.0 / 2.0 * (a_ * x + b_ * y);
+  const Point3D v3 = c_ * Rotation(beta_ * y)(z);
 
   return UnitCell3D(Monoclinic_Base, v1, v2, v3);
 }
@@ -96,9 +96,9 @@ UnitCell3D UnitCell3D::create_orthorhombic_primitive(double a_, double b_, doubl
 {
   CHECK_LENGTH(a_, b_, c_);
 
-  const Vector3D v1 = a_*x;
-  const Vector3D v2 = b_*y;
-  const Vector3D v3 = c_*z;
+  const Point3D v1 = a_ * x;
+  const Point3D v2 = b_ * y;
+  const Point3D v3 = c_ * z;
 
   return UnitCell3D(Orthorhombic_Primitive, v1, v2, v3);
 }
@@ -107,9 +107,9 @@ UnitCell3D UnitCell3D::create_orthorhombic_base(double a_, double b_, double c_)
 {
   CHECK_LENGTH(a_, b_, c_);
 
-  const Vector3D v1 = a_*x;
-  const Vector3D v2 = 1.0 / 2.0 * (a_*x + b_*y);
-  const Vector3D v3 = c_*z;
+  const Point3D v1 = a_ * x;
+  const Point3D v2 = 1.0 / 2.0 * (a_ * x + b_ * y);
+  const Point3D v3 = c_ * z;
 
   return UnitCell3D(Orthorhombic_Base, v1, v2, v3);
 }
@@ -118,9 +118,9 @@ UnitCell3D UnitCell3D::create_orthorhombic_body(double a_, double b_, double c_)
 {
   CHECK_LENGTH(a_, b_, c_);
 
-  const Vector3D v1 = a_*x;
-  const Vector3D v2 = b_*y;
-  const Vector3D v3 = (a_*x) + (b_*y) + 1.0 / 2.0 * (c_*z);
+  const Point3D v1 = a_ * x;
+  const Point3D v2 = b_ * y;
+  const Point3D v3 = (a_ * x) + (b_ * y) + 1.0 / 2.0 * (c_ * z);
 
   return UnitCell3D(Orthorhombic_Body, v1, v2, v3);
 }
@@ -129,9 +129,9 @@ UnitCell3D UnitCell3D::create_orthorhombic_face(double a_, double b_, double c_)
 {
   CHECK_LENGTH(a_, b_, c_);
 
-  const Vector3D v1 = 1.0 / 2.0 * (a_*x + b_*y);
-  const Vector3D v2 = 1.0 / 2.0 * (b_*y + c_*z);
-  const Vector3D v3 = 1.0 / 2.0 * (a_*x + c_*z);
+  const Point3D v1 = 1.0 / 2.0 * (a_ * x + b_ * y);
+  const Point3D v2 = 1.0 / 2.0 * (b_ * y + c_ * z);
+  const Point3D v3 = 1.0 / 2.0 * (a_ * x + c_ * z);
 
   return UnitCell3D(Orthorhombic_Face, v1, v2, v3);
 }
@@ -140,9 +140,9 @@ UnitCell3D UnitCell3D::create_tetragonal_primitive(double a_, double c_)
 {
   CHECK_LENGTH2(a_, c_);
 
-  const Vector3D v1 = a_*x;
-  const Vector3D v2 = a_*y;
-  const Vector3D v3 = c_*z;
+  const Point3D v1 = a_ * x;
+  const Point3D v2 = a_ * y;
+  const Point3D v3 = c_ * z;
 
   return UnitCell3D(Tetragonal_Primitive, v1, v2, v3);
 }
@@ -151,9 +151,9 @@ UnitCell3D UnitCell3D::create_tetragonal_body(double a_, double c_)
 {
   CHECK_LENGTH2(a_, c_);
 
-  const Vector3D v1 = a_*x;
-  const Vector3D v2 = a_*y;
-  const Vector3D v3 = a_*(x+y) + 1.0 / 2.0 * (c_*z);
+  const Point3D v1 = a_ * x;
+  const Point3D v2 = a_ * y;
+  const Point3D v3 = a_ * (x + y) + 1.0 / 2.0 * (c_ * z);
 
   return UnitCell3D(Tetragonal_Body, v1, v2, v3);
 }
@@ -163,10 +163,10 @@ UnitCell3D UnitCell3D::create_rhombohedral_centered(double a_, double alpha_)
   CHECK_LENGTH_POSITIVE(a_);
   CHECK_ANGLE_ACUTE(alpha_);
 
-  const Vector3D v1 = x;
-  const Vector3D v2 = Vector3D(cos(alpha_), sin(alpha_), 0.0);
+  const Point3D v1 = x;
+  const Point3D v2 = Point3D(cos(alpha_), sin(alpha_), 0.0);
   const double cosBeta = cos(alpha_) / cos(alpha_/2.0);
-  const Vector3D v3 = Vector3D(cosBeta*cos(alpha_/2.0), cosBeta*sin(alpha_/2.0) , sqrt(1.0 - pow(cosBeta,2)) );
+  const Point3D v3 = Point3D(cosBeta * cos(alpha_ / 2.0), cosBeta * sin(alpha_ / 2.0), sqrt(1.0 - pow(cosBeta, 2)));
 
   return UnitCell3D(Rhombohedral_Centered, a_*v1, a_*v2, a_*v3);
 }
@@ -175,9 +175,9 @@ UnitCell3D UnitCell3D::create_hexagonal_primitive(double a_, double c_)
 {
   CHECK_LENGTH2(a_, c_);
 
-  const Vector3D v1 = x;
-  const Vector3D v2 = Vector3D(cos(pi/3.0), sin(pi/3.0), 0.0);
-  const Vector3D v3 = z;
+  const Point3D v1 = x;
+  const Point3D v2 = Point3D(cos(pi / 3.0), sin(pi / 3.0), 0.0);
+  const Point3D v3 = z;
 
   return UnitCell3D(Hexagonal_Primitive, a_*v1, a_*v2, c_*v3);
 }
@@ -186,9 +186,9 @@ UnitCell3D UnitCell3D::create_cubic_primitive(double a_)
 {
   CHECK_LENGTH_POSITIVE(a_);
 
-  const Vector3D v1 = a_*x;
-  const Vector3D v2 = a_*y;
-  const Vector3D v3 = a_*z;
+  const Point3D v1 = a_ * x;
+  const Point3D v2 = a_ * y;
+  const Point3D v3 = a_ * z;
 
   return UnitCell3D(Cubic_Primitive, v1, v2, v3);
 }
@@ -197,9 +197,9 @@ UnitCell3D UnitCell3D::create_cubic_body(double a_)
 {
   CHECK_LENGTH_POSITIVE(a_);
 
-  const Vector3D v1 = a_*x;
-  const Vector3D v2 = a_*y;
-  const Vector3D v3 = a_*(x + y + 1.0/2.0*z);
+  const Point3D v1 = a_ * x;
+  const Point3D v2 = a_ * y;
+  const Point3D v3 = a_ * (x + y + 1.0 / 2.0 * z);
 
   return UnitCell3D(Cubic_Body, v1, v2, v3);
 }
@@ -208,23 +208,22 @@ UnitCell3D UnitCell3D::create_cubic_face(double a_)
 {
   CHECK_LENGTH_POSITIVE(a_);
 
-  const Vector3D v1 = a_ / 2.0 * (x+y);
-  const Vector3D v2 = a_ / 2.0 * (y+z);
-  const Vector3D v3 = a_ / 2.0 * (x+z);
+  const Point3D v1 = a_ / 2.0 * (x + y);
+  const Point3D v2 = a_ / 2.0 * (y + z);
+  const Point3D v3 = a_ / 2.0 * (x + z);
 
   return UnitCell3D(Cubic_Face, v1, v2, v3);
 }
 
 namespace
 {
-  long get_steps(const Point3D& unit_vector, const Point3D& perp1, const Point3D& perp2, const Point3D& to_digest)
-  {
-    Point3D parallel = cross_product(perp1, perp2);
-    const double parallel_length = parallel.length();
-    parallel = 1.0 / parallel_length * parallel;
-    
-    double parallel_to_digest = to_digest * parallel; 
-    double parallel_unit_ = unit_vector * parallel; 
+  long get_steps(const Point3DCRef &unit_vector, const Point3DCRef &perp1, const Point3DCRef &perp2,
+                 const Point3DCRef &to_digest) {
+    auto parallel = perp1.cross(perp2);
+    parallel.normalize();
+
+    double parallel_to_digest = to_digest.dot(parallel);
+    double parallel_unit_ = unit_vector.dot(parallel);
 
     double ratio = parallel_to_digest / parallel_unit_;
     long l_ratio = std::lround(ratio);
@@ -284,9 +283,9 @@ CrystalClass Cell3D::get_point_group() const
 ReciprocalUnitCell3D::ReciprocalUnitCell3D(const UnitCell3D &unit_cell)
   : Cell3D(
   unit_cell.type,
-  2 * pi * (cross_product(unit_cell.v2, unit_cell.v3)) / (unit_cell.v1 * cross_product(unit_cell.v2, unit_cell.v3)),
-  2 * pi * (cross_product(unit_cell.v3, unit_cell.v1)) / (unit_cell.v2 * cross_product(unit_cell.v3, unit_cell.v1)),
-  2 * pi * (cross_product(unit_cell.v1, unit_cell.v2)) / (unit_cell.v3 * cross_product(unit_cell.v1, unit_cell.v2))
+  2 * pi * unit_cell.v2.cross(unit_cell.v3) / unit_cell.v1.dot(unit_cell.v2.cross(unit_cell.v3)),
+  2 * pi * unit_cell.v3.cross(unit_cell.v1) / unit_cell.v2.dot(unit_cell.v3.cross(unit_cell.v1)),
+  2 * pi * unit_cell.v1.cross(unit_cell.v2) / unit_cell.v3.dot(unit_cell.v1.cross(unit_cell.v2))
 )
 {
 }

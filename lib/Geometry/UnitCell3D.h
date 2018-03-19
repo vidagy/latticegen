@@ -68,17 +68,17 @@ namespace Geometry
 
     double volume() const
     {
-      return v1 * cross_product(v2, v3);
+      return v1.dot(v2.cross(v3));
     }
   protected:
-    Cell3D(BravaisLattice3DType type_, const Point3D &v1_, const Point3D &v2_, const Point3D &v3_)
+    Cell3D(BravaisLattice3DType type_, const Point3DCRef &v1_, const Point3DCRef &v2_, const Point3DCRef &v3_)
       : type(type_), v1(v1_), v2(v2_), v3(v3_)
     {
-      if (!strictlyPositive(v1_.length()))
+      if (!strictlyPositive(v1_.norm()))
         THROW_INVALID_ARGUMENT("In UnitCell3D::ctor: a must be non null vector but a = " + std::to_string(v1_));
-      if (!strictlyPositive(v2_.length()))
+      if (!strictlyPositive(v2_.norm()))
         THROW_INVALID_ARGUMENT("In UnitCell3D::ctor: b must be non null vector but b = " + std::to_string(v2_));
-      if (!strictlyPositive(v3_.length()))
+      if (!strictlyPositive(v3_.norm()))
         THROW_INVALID_ARGUMENT("In UnitCell3D::ctor: c must be non null vector but c = " + std::to_string(v3_));
     }
   };

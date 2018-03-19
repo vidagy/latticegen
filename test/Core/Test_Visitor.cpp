@@ -54,13 +54,19 @@ namespace
   {
     typedef std::string result_type;
 
+    LATTICEGEN_MUTE_BEGIN
+    LATTICEGEN_MUTE_UNUSED_VAR
     result_type operator()(const B &b) const
     {
+      LATTICEGEN_MUTE_END
       return "B";
     }
 
+    LATTICEGEN_MUTE_BEGIN
+    LATTICEGEN_MUTE_UNUSED_VAR
     result_type operator()(const C &c) const
     {
+      LATTICEGEN_MUTE_END
       return "C";
     }
   };
@@ -148,13 +154,19 @@ namespace
   {
     typedef std::string result_type;
 
+    LATTICEGEN_MUTE_BEGIN
+    LATTICEGEN_MUTE_UNUSED_VAR
     result_type operator()(const E &e) const
     {
+      LATTICEGEN_MUTE_END
       return "E";
     }
 
+    LATTICEGEN_MUTE_BEGIN
+    LATTICEGEN_MUTE_UNUSED_VAR
     result_type operator()(const F &f) const
     {
+      LATTICEGEN_MUTE_END
       return "F";
     }
   };

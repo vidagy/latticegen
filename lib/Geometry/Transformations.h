@@ -4,7 +4,7 @@
 #include <Core/ComparisonHelpers.h>
 #include <Core/Exceptions.h>
 #include <Core/Point3D.h>
-#include "Matrix3D.h"
+#include <Core/Matrix3D.h>
 #include <array>
 
 using namespace Core;
@@ -27,33 +27,30 @@ namespace Geometry
       Inversion
     };
 
-    operator const Matrix3D&() const
-    {
-      return transformation_matrix;
-    }
-    Vector3D operator()(const Vector3D& vector) const
+    Eigen::Vector3d operator()(const Point3DCRef &vector) const
     {
       return transformation_matrix * vector;
     }
 
     Type type;
-    Matrix3D transformation_matrix;
+    Eigen::Matrix3d transformation_matrix;
 
   protected:
-    Transformation(const Type type_, const Matrix3D& matrix_)
-      : type(type_), transformation_matrix(matrix_)
+    Transformation(const Type type_, Eigen::Matrix3d matrix_)
+      : type(type_), transformation_matrix(std::move(matrix_))
     {}
 
     friend Transformation Geometry::operator*(const Transformation &, const Transformation &);
   };
 
-  inline Vector3D operator*(const Transformation& symmetry_element, const Vector3D& vector)
+  inline Eigen::Vector3d operator*(Transformation &symmetry_element, const Point3DCRef &vector)
   {
     return symmetry_element.transformation_matrix * vector;
   }
   inline bool operator==(const Transformation& lhs, const Transformation& rhs)
   {
-    return lhs.type == rhs.type && lhs.transformation_matrix == rhs.transformation_matrix;
+    // TODO comparison cannot shortcut on the Transformation::Type, since Rotation(0,0,0) is equal to Identity()
+    return lhs.transformation_matrix.isApprox(rhs.transformation_matrix);
   }
 
   class Identity : public Transformation
@@ -65,7 +62,7 @@ namespace Geometry
   class Rotation : public Transformation
   {
   public:
-    explicit Rotation(const Vector3D& rotation_vector);
+    explicit Rotation(const Point3DCRef &rotation_vector);
 
     /// create from euler angles using the z-y-z convention
     /// R = R_z(gamma) * R_z(beta) * R_z(alpha)
@@ -86,14 +83,14 @@ namespace Geometry
   class Reflection : public Transformation
   {
   public:
-    explicit Reflection(const Vector3D& reflection_plane);
+    explicit Reflection(const Point3DCRef &reflection_plane);
   };
 
 
   class ImproperRotation : public Transformation
   {
   public:
-    explicit ImproperRotation(const Vector3D& rotation_vector);
+    explicit ImproperRotation(const Point3DCRef &rotation_vector);
   };
 
   class Inversion : public Transformation
@@ -107,10 +104,10 @@ namespace std
 {
   using namespace Geometry;
 
-  inline std::string to_string(const Geometry::Transformation &transformation)
+  inline std::string to_string(const Geometry::Transformation::Type type)
   {
     std::stringstream ss;
-    switch (transformation.type) {
+    switch (type) {
       case Geometry::Transformation::Identity:
         ss << "Identity";
         break;
@@ -127,9 +124,15 @@ namespace std
         ss << "Inversion";
         break;
       default:
-        THROW_LOGIC_ERROR("unhandled transformation type " + std::to_string(transformation.type));
+        THROW_LOGIC_ERROR("unhandled transformation type " + std::to_string(static_cast<int>(type)));
     }
-    ss << std::to_string(transformation.transformation_matrix);
+    return ss.str();
+  }
+
+  inline std::string to_string(const Geometry::Transformation &transformation) {
+    std::stringstream ss;
+    ss << std::to_string(transformation.type);
+    ss << transformation.transformation_matrix;
     return ss.str();
   }
 

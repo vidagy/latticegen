@@ -9,7 +9,6 @@
 LATTICEGEN_MUTE_BEGIN
 LATTICEGEN_MUTE_EIGEN
 #include <Eigen/Dense>
-
 LATTICEGEN_MUTE_END
 
 namespace Math

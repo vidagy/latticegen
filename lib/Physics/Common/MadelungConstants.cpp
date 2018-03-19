@@ -31,7 +31,7 @@ std::complex<double> RealMadelungConstants::calculate(
     / double_factorial(((int) (2 * lprime)) - 1)
     * ClebschGordan::calculate(l, m, l + lprime, mprime - m, lprime, mprime)
     * std::conj(Complex::spherical_harmonic(l + lprime, mprime - m, R_minus_Rprime))
-    / Math::pow(R_minus_Rprime.length(), l + lprime + 1);
+    / Math::pow(R_minus_Rprime.norm(), l + lprime + 1);
   return res;
 }
 
@@ -48,7 +48,7 @@ std::complex<double> RealMadelungConstants::calculateReduced(
   auto res =
     Math::sign(l) * 4.0 * pi / (2.0 * l + 1)
     * std::conj(Complex::spherical_harmonic(l, m, R_minus_Rprime))
-    / Math::pow(R_minus_Rprime.length(), l + 1);
+    / Math::pow(R_minus_Rprime.norm(), l + 1);
   return res;
 }
 
@@ -56,12 +56,8 @@ namespace
 {
   std::vector<Shell> get_direct_shells(const Cell3D &cell, double cutoff_scale)
   {
-    auto scaled_cutoff = cutoff_scale * std::max(
-      std::max(
-        cell.v1.length(),
-        cell.v2.length()),
-      cell.v3.length()
-    );
+    const auto norms = std::vector<double>{cell.v1.norm(), cell.v2.norm(), cell.v3.norm()};
+    auto scaled_cutoff = cutoff_scale * (*std::max_element(norms.cbegin(), norms.cend()));
 
     auto mesh = LatticeMesh(cell).generate(CutoffSphere(scaled_cutoff));
     auto transformations = SymmetryTransformationFactory::generate(cell);

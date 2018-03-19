@@ -15,7 +15,7 @@ namespace Geometry
   public:
     static std::vector<Point3D> reduce_by_symmetries(
       std::vector<Point3D> points,
-      const SymmetryTransformationFactory::Transformations &transformations,
+      SymmetryTransformationFactory::Transformations &transformations,
       double abs_tolerance = default_abs_tolerance);
 
     static std::vector<Point3D> get_irreducible_wedge(const Cell3D &cell, size_t sample, bool centered = false);
@@ -34,7 +34,7 @@ namespace Geometry
       for (const auto &point: irreducible_data) {
         auto sub_res = std::vector<std::pair<Point3D, T>>();
         for (const auto &transformation: transformations) {
-          auto transformed = transformation * point.first;
+          auto transformed = transformation(point.first);
           auto already_there = false;
           for (const auto &replicated: sub_res) {
             if (comparator.isEqual(replicated.first, transformed)) {

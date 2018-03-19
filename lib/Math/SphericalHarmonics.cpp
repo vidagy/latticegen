@@ -3,10 +3,9 @@
 
 using namespace Math::Real;
 
-double Math::Real::spherical_harmonic_slow(unsigned int l, int m, const Vector3D &v)
-{
-  double cos_theta = v.z / v.length();
-  double phi = atan2(v.y, v.x);
+double Math::Real::spherical_harmonic_slow(unsigned int l, int m, const Point3D &v) {
+  double cos_theta = v(2) / v.norm();
+  double phi = atan2(v(1), v(0));
 
   if (m < 0) {
     int abs_m = abs(m);
@@ -21,7 +20,7 @@ double Math::Real::spherical_harmonic_slow(unsigned int l, int m, const Vector3D
   }
 }
 
-double Math::Real::spherical_harmonic(unsigned int l, int m, const Vector3D &v)
+double Math::Real::spherical_harmonic(unsigned int l, int m, const Point3D &v)
 {
   if ((unsigned int) abs(m) > l)
     THROW_INVALID_ARGUMENT("m is not valid: " + std::to_string(m) + " while l is " + std::to_string(l));
@@ -94,7 +93,7 @@ double Math::Real::spherical_harmonic(unsigned int l, int m, const Vector3D &v)
   return spherical_harmonic_slow(l, m, v);
 }
 
-std::complex<double> Math::Complex::spherical_harmonic_slow(unsigned int l, int m, const Vector3D &v)
+std::complex<double> Math::Complex::spherical_harmonic_slow(unsigned int l, int m, const Point3D &v)
 {
   if (m == 0) {
     return std::complex<double>(Math::Real::spherical_harmonic_slow(l, m, v), 0.0);
@@ -112,7 +111,7 @@ std::complex<double> Math::Complex::spherical_harmonic_slow(unsigned int l, int 
 
 }
 
-std::complex<double> Math::Complex::spherical_harmonic(unsigned int l, int m, const Vector3D &v)
+std::complex<double> Math::Complex::spherical_harmonic(unsigned int l, int m, const Point3D &v)
 {
 
   switch (l) {

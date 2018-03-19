@@ -133,9 +133,9 @@ TEST(TestCutoff,SphereCutoffFalse)
 TEST(TestCutoff,UnitVectorsCutoffTrue)
 {
   UnitCell3D unit_cell = UnitCell3D::create_rhombohedral_centered(1.0, pi / 3.0);
-  const Vector3D &a = unit_cell.v1;
-  const Vector3D &b = unit_cell.v2;
-  const Vector3D &c = unit_cell.v3;
+  const auto &a = unit_cell.v1;
+  const auto &b = unit_cell.v2;
+  const auto &c = unit_cell.v3;
 
   CutoffUnitVectors cutoff = CutoffUnitVectors(unit_cell, 1, 2, 3);
 
@@ -175,9 +175,9 @@ TEST(TestCutoff,UnitVectorsCutoffTrue)
 TEST(TestCutoff,UnitVectorsCutoffFalse)
 {
   UnitCell3D unit_cell = UnitCell3D::create_rhombohedral_centered(1.0, pi / 3.0);
-  const Vector3D &a = unit_cell.v1;
-  const Vector3D &b = unit_cell.v2;
-  const Vector3D &c = unit_cell.v3;
+  const auto &a = unit_cell.v1;
+  const auto &b = unit_cell.v2;
+  const auto &c = unit_cell.v3;
 
   CutoffUnitVectors cutoff = CutoffUnitVectors(unit_cell, 1, 2, 3);
 
@@ -207,9 +207,9 @@ TEST(TestCutoff,UnitVectorsCutoffFalse)
 TEST(TestCutoff,WSCellCutoffTrue)
 {
   UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-  const Vector3D &a = unit_cell.v1;
-  const Vector3D &b = unit_cell.v2;
-  const Vector3D &c = unit_cell.v3;
+  const auto &a = unit_cell.v1;
+  const auto &b = unit_cell.v2;
+  const auto &c = unit_cell.v3;
 
   CutoffWSCell cutoff = CutoffWSCell(UnitCell3D::create_cubic_primitive(3.0));
 
@@ -245,9 +245,9 @@ TEST(TestCutoff,WSCellCutoffTrue)
 TEST(TestCutoff,WSCellCutoffFalse)
 {
   UnitCell3D unit_cell = UnitCell3D::create_cubic_primitive(1.0);
-  const Vector3D &a = 2.0 * unit_cell.v1;
-  const Vector3D &b = 2.0 * unit_cell.v2;
-  const Vector3D &c = 2.0 * unit_cell.v3;
+  const auto &a = 2.0 * unit_cell.v1;
+  const auto &b = 2.0 * unit_cell.v2;
+  const auto &c = 2.0 * unit_cell.v3;
 
   CutoffWSCell cutoff = CutoffWSCell(UnitCell3D::create_cubic_primitive(3.0));
 
@@ -303,11 +303,11 @@ namespace
     const auto &b = cutoff.cell.v2;
     const auto &c = cutoff.cell.v3;
 
-    EXPECT_TRUE(lessEqualsWithTolerance(cutoff.r_mt, a.length() / 2.0));
-    EXPECT_TRUE(lessEqualsWithTolerance(cutoff.r_mt, b.length() / 2.0));
-    EXPECT_TRUE(lessEqualsWithTolerance(cutoff.r_mt, c.length() / 2.0));
+    EXPECT_TRUE(lessEqualsWithTolerance(cutoff.r_mt, a.norm() / 2.0));
+    EXPECT_TRUE(lessEqualsWithTolerance(cutoff.r_mt, b.norm() / 2.0));
+    EXPECT_TRUE(lessEqualsWithTolerance(cutoff.r_mt, c.norm() / 2.0));
 
-    EXPECT_TRUE(lessEqualsWithTolerance(cutoff.r_bs, (a + b + c).length() / 2.0));
+    EXPECT_TRUE(lessEqualsWithTolerance(cutoff.r_bs, (a + b + c).norm() / 2.0));
   };
 }
 

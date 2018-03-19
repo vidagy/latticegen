@@ -117,13 +117,13 @@ TEST(WignerDMatrix, smallDRotateSphericalHarmonics)
     Eigen::MatrixXcd d2 = WignerDMatrix::calculate_small(beta, 2).cast<std::complex<double>>();
     Eigen::MatrixXcd d3 = WignerDMatrix::calculate_small(beta, 3).cast<std::complex<double>>();
 
-    const auto rotation = Geometry::Rotation(beta * Point3D(0, 1, 0));
+    const auto rotation = Geometry::Rotation(Point3D(0, beta, 0));
 
     for (const auto &mp: mesh) {
       const auto p = mp.first;
-      check_spherical_harmonics_rotation(p, rotation * p, 1, d1);
-      check_spherical_harmonics_rotation(p, rotation * p, 2, d2);
-      check_spherical_harmonics_rotation(p, rotation * p, 3, d3);
+      check_spherical_harmonics_rotation(p, rotation(p), 1, d1);
+      check_spherical_harmonics_rotation(p, rotation(p), 2, d2);
+      check_spherical_harmonics_rotation(p, rotation(p), 3, d3);
     }
   }
 }
@@ -146,7 +146,7 @@ TEST(WignerDMatrix, fullDRotateSphericalHarmonics)
 
         for (const auto &mp: mesh) {
           const auto p = mp.first;
-          const auto rotated_p = rotation * p;
+          const auto rotated_p = rotation(p);
           check_spherical_harmonics_rotation(p, rotated_p, 1, d1, 1e-14);
           check_spherical_harmonics_rotation(p, rotated_p, 2, d2, 1e-14);
           check_spherical_harmonics_rotation(p, rotated_p, 3, d3, 1e-14);

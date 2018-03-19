@@ -122,7 +122,7 @@ namespace
             res.at(l, m) = std::vector<std::complex<double>>(unique_mesh.size(), 0.0);
           } else {
             auto spherical_harmonics_values = get_spherical_harmonics_values(l, m);
-            auto integral = integrate(l, m, spherical_harmonics_values);
+            auto integral = integrate(spherical_harmonics_values);
             if (integral.size() != unique_mesh.size())
               THROW_LOGIC_ERROR(
                 "integral.size() = " + std::to_string(integral.size()) + " while " +
@@ -225,7 +225,6 @@ namespace
     }
 
     std::vector<std::complex<double>> integrate(
-      const unsigned int l, const int m,
       const std::vector<std::complex<double>> &spherical_harmonics_values
     ) const
     {

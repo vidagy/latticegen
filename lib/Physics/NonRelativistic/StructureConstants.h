@@ -74,7 +74,8 @@ namespace Physics
     class ReciprocalStructureConstantsCalculator
     {
     public:
-      std::complex<double> calculate(unsigned int l, int m, unsigned int lprime, int mprime, const Vector3D &k) const;
+      std::complex<double>
+      calculate(unsigned int l, int m, unsigned int lprime, int mprime, const Point3DCRef &k) const;
 
     private:
       ReciprocalStructureConstantsCalculator(
@@ -88,9 +89,9 @@ namespace Physics
         std::move(reciprocal_shells_)),
           config(std::move(config_)), z(z_), integral_cache(std::move(integral_cache_)) {}
 
-      std::complex<double> D1(unsigned int l, int m, const Vector3D &k) const;
+      std::complex<double> D1(unsigned int l, int m, const Point3DCRef &k) const;
 
-      std::complex<double> D2(unsigned int l, int m, const Vector3D &k) const;
+      std::complex<double> D2(unsigned int l, int m, const Point3DCRef &k) const;
 
       std::complex<double> D3(unsigned int l, int m) const;
 

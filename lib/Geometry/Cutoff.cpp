@@ -17,14 +17,14 @@ namespace
     const Point3D &v, const Point3D &perpendicular1, const Point3D &perpendicular2, double max_distance
   )
   {
-    Point3D perpendicular = cross_product(perpendicular1, perpendicular2);
-    const double perpendicular_length = perpendicular.length();
+    Point3D perpendicular = perpendicular1.cross(perpendicular2);
+    const double perpendicular_length = perpendicular.norm();
     perpendicular = 1.0 / perpendicular_length * perpendicular;
-    double perpendicular_component = v * perpendicular;
+    double perpendicular_component = v.dot(perpendicular);
 
     long max_steps = long(max_distance / perpendicular_component) + 1;
-    long offset1 = long((perpendicular1 * v * max_steps) / perpendicular1.length()) + 1;
-    long offset2 = long((perpendicular2 * v * max_steps) / perpendicular2.length()) + 1;
+    long offset1 = long((perpendicular1.dot(v) * max_steps) / perpendicular1.norm()) + 1;
+    long offset2 = long((perpendicular2.dot(v) * max_steps) / perpendicular2.norm()) + 1;
 
     return std::make_tuple(max_steps, offset1, offset2);
   }
@@ -34,9 +34,9 @@ namespace
   )
   {
     long a_max_steps, a_offset1, a_offset2, b_max_steps, b_offset1, b_offset2, c_max_steps, c_offset1, c_offset2;
-    const Vector3D &a = cell.v1;
-    const Vector3D &b = cell.v2;
-    const Vector3D &c = cell.v3;
+    const auto &a = cell.v1;
+    const auto &b = cell.v2;
+    const auto &c = cell.v3;
 
     std::tie(a_max_steps, b_offset1, c_offset1) = get_max_steps_and_offsets(a, b, c, max_distance);
     std::tie(b_max_steps, c_offset2, a_offset1) = get_max_steps_and_offsets(b, c, a, max_distance);
@@ -59,9 +59,9 @@ CutoffCube::CutoffCube(double a_)
 
 bool CutoffCube::is_included(const Point3D &point) const
 {
-  return lessEqualsWithTolerance(fabs(point.x), a) &&
-         lessEqualsWithTolerance(fabs(point.y), a) &&
-         lessEqualsWithTolerance(fabs(point.z), a);
+  return lessEqualsWithTolerance(fabs(point(0)), a) &&
+         lessEqualsWithTolerance(fabs(point(1)), a) &&
+         lessEqualsWithTolerance(fabs(point(2)), a);
 }
 
 Cutoff::StepsToCover CutoffCube::steps_to_cover(const Cell3D &cell) const
@@ -78,7 +78,7 @@ CutoffSphere::CutoffSphere(double r_)
 
 bool CutoffSphere::is_included(const Point3D &point) const
 {
-  return lessEqualsWithTolerance(point.length(), r);
+  return lessEqualsWithTolerance(point.norm(), r);
 }
 
 Cutoff::StepsToCover CutoffSphere::steps_to_cover(const Cell3D &cell) const
@@ -102,8 +102,11 @@ bool CutoffUnitVectors::is_included(const Point3D &point) const
          (size_t) labs(nz) <= c_max;
 }
 
+LATTICEGEN_MUTE_BEGIN
+LATTICEGEN_MUTE_UNUSED_VAR
 Cutoff::StepsToCover CutoffUnitVectors::steps_to_cover(const Cell3D &cell) const
 {
+  LATTICEGEN_MUTE_END
   if (positive_only)
     return {0l, 0l, 0l, (long) a_max, (long) b_max, (long) c_max};
   else
@@ -135,7 +138,7 @@ namespace
       face_points.begin(), face_points.end(), std::back_inserter(res),
       [](const Point3D &p)
       {
-        auto len = p.length();
+        auto len = p.norm();
         return std::make_pair(p / len, len);
       }
     );
@@ -167,16 +170,16 @@ namespace
           const auto a = face_points[it1];
           const auto b = face_points[it2];
           const auto c = face_points[it3];
-          if (strictlyPositive(fabs(cross_product(a.first, b.first) * c.first))) {
+          if (strictlyPositive(fabs(a.first.cross(b.first).dot(c.first)))) {
             face_points.erase(
               std::remove_if(
                 face_points.begin(), face_points.end(),
                 [&a, &b, &c](const std::pair<Point3D, double> &p)
                 {
                   auto outside_of_parallelepiped =
-                    greaterEqualsWithTolerance(p.second * fabs(p.first * a.first), a.second) ||
-                    greaterEqualsWithTolerance(p.second * fabs(p.first * b.first), b.second) ||
-                    greaterEqualsWithTolerance(p.second * fabs(p.first * c.first), c.second);
+                    greaterEqualsWithTolerance(p.second * fabs(p.first.dot(a.first)), a.second) ||
+                    greaterEqualsWithTolerance(p.second * fabs(p.first.dot(b.first)), b.second) ||
+                    greaterEqualsWithTolerance(p.second * fabs(p.first.dot(c.first)), c.second);
                   auto is_current_point =
                     (a.first == p.first && a.second == p.second) ||
                     (b.first == p.first && b.second == p.second) ||
@@ -224,12 +227,12 @@ namespace
           auto a2 = all_face_points[j];
           auto a3 = all_face_points[k];
 
-          if (!nearlyZero(fabs(cross_product(a1.first, a2.first) * a3.first))) { // non co-planar
+          if (!nearlyZero(fabs(a1.first.cross(a2.first).dot(a3.first)))) { // non co-planar
             Eigen::Matrix3d m(3, 3);
             m <<
-              a1.first.x, a1.first.y, a1.first.z,
-              a2.first.x, a2.first.y, a2.first.z,
-              a3.first.x, a3.first.y, a3.first.z;
+              a1.first(0), a1.first(1), a1.first(2),
+              a2.first(0), a2.first(1), a2.first(2),
+              a3.first(0), a3.first(1), a3.first(2);
 
             Eigen::Vector3d v(a1.second, a2.second, a3.second);
             Eigen::Vector3d res = m.colPivHouseholderQr().solve(v);
@@ -237,7 +240,7 @@ namespace
             // we only add it to the intersections if the point is on the surface
             auto is_included = true;
             for (const auto &p : face_points) {
-              const auto scalar_prod = res(0) * p.first.x + res(1) * p.first.y + res(2) * p.first.z;
+              const auto scalar_prod = res(0) * p.first(0) + res(1) * p.first(1) + res(2) * p.first(2);
               if (strictlyGreater(fabs(scalar_prod), p.second)) {
                 is_included = false;
                 break;
@@ -263,13 +266,13 @@ CutoffWSCell::CutoffWSCell(const Cell3D &cell_)
 
 bool CutoffWSCell::is_included(const Point3D &point) const
 {
-  auto length2 = point.length2();
+  auto length2 = point.squaredNorm();
   if (strictlyLess(length2, r_mt * r_mt))
     return true;
   if (strictlyGreater(length2, r_bs * r_bs))
     return false;
   for (const auto &face_point: face_points) {
-    if (strictlyGreater(fabs(point * face_point.first), face_point.second))
+    if (strictlyGreater(fabs(point.dot(face_point.first)), face_point.second))
       return false;
   }
   return true;

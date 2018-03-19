@@ -5,11 +5,12 @@
 #include <Geometry/IrreducibleWedge.h>
 
 using namespace Geometry;
+using namespace Testing;
 
 TEST(TestIrreducibleWedge,ReduceBySymmetriesCubic)
 {
-  CubicMesh mesh = CubicMesh(1.0);
-  CutoffCube cutoff = CutoffCube(2.0);
+  auto mesh = CubicMesh(1.0);
+  auto cutoff = CutoffCube(2.0);
 
   auto points = mesh.generate(cutoff);
   auto symmetries = SymmetryTransformationFactory::generate(Oh().get_generators());
@@ -27,7 +28,7 @@ TEST(TestIrreducibleWedge,ReduceBySymmetriesCubic)
     {-2, 1, 2},
     {2, 2, 2}
   };
-  EXPECT_THAT( irreducible_points, ::testing::UnorderedElementsAreArray(reference) );
+  EXPECT_THAT(wrap(irreducible_points), ::testing::UnorderedElementsAreArray(wrap(reference)));
 }
 
 TEST(TestIrreducibleWedge,GetCubic)
@@ -46,14 +47,20 @@ TEST(TestIrreducibleWedge,GetCubic)
     {-2, 1,  2},
     {2,  2,  2}
   };
-  EXPECT_THAT( irreducible_points, ::testing::UnorderedElementsAreArray(reference) );
+  EXPECT_THAT(wrap(irreducible_points), ::testing::UnorderedElementsAreArray(wrap(reference)));
 }
 
 namespace
 {
   struct NoData
   {
-    bool operator==(const NoData &other) const { return true; }
+    LATTICEGEN_MUTE_BEGIN
+    LATTICEGEN_MUTE_UNUSED_VAR
+
+    bool operator==(const NoData &other) const {
+      LATTICEGEN_MUTE_END
+      return true;
+    }
   };
 
   std::vector<std::pair<Point3D, NoData>> zip(const std::vector<Point3D> &points)
@@ -93,7 +100,7 @@ TEST(TestIrreducibleWedge, Replicate)
 
   auto reference_mesh = CubicMesh(1.0).generate(CutoffCube(1.0));
 
-  EXPECT_THAT(replicated_points, ::testing::UnorderedElementsAreArray(reference_mesh));
+  EXPECT_THAT(wrap(replicated_points), ::testing::UnorderedElementsAreArray(wrap(reference_mesh)));
 }
 
 TEST(TestIrreducibleWedge, Roundtrip)
@@ -108,7 +115,7 @@ TEST(TestIrreducibleWedge, Roundtrip)
   std::copy_if(all_points.begin(), all_points.end(), std::back_inserter(points),
                [](const Point3D &p)
                {
-                 return p.length() > sqrt(3.0) * 4.42 && p.length() < sqrt(3.0) * 5.1;
+                 return p.norm() > sqrt(3.0) * 4.42 && p.norm() < sqrt(3.0) * 5.1;
                });
   auto transformations = SymmetryTransformationFactory::generate(Oh().get_generators());
   auto irreducible_points = IrreducibleWedge::reduce_by_symmetries(points, transformations, abs_tol);
@@ -117,9 +124,8 @@ TEST(TestIrreducibleWedge, Roundtrip)
   auto replicated = IrreducibleWedge::replicate(irreduc, transformations, abs_tol);
   auto replicated_points = unzip(replicated);
 
-  EXPECT_THAT(replicated_points, ::testing::UnorderedElementsAreArray(points));
+  EXPECT_THAT(wrap(replicated_points), ::testing::UnorderedElementsAreArray(wrap(points)));
 }
-
 
 
 TEST(DISABLED_TestIrreducibleWedge, Speed)

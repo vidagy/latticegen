@@ -41,14 +41,14 @@ namespace Physics
     {
     public:
       static std::complex<double> D1(
-        const ReciprocalStructureConstantsCalculator &structure_constants, unsigned int l, int m, const Vector3D &k
+        const ReciprocalStructureConstantsCalculator &structure_constants, unsigned int l, int m, const Point3DCRef &k
       )
       {
         return structure_constants.D1(l, m, k);
       }
 
       static std::complex<double> D2(
-        const ReciprocalStructureConstantsCalculator &structure_constants, unsigned int l, int m, const Vector3D &k
+        const ReciprocalStructureConstantsCalculator &structure_constants, unsigned int l, int m, const Point3DCRef &k
       )
       {
         return structure_constants.D2(l, m, k);
@@ -100,7 +100,7 @@ namespace
     out_R.open(filename + ".dat");
     for (auto p : R)
       out_R << std::setfill(' ') << std::setw(20) << std::setprecision(17) << std::fixed
-            << p.first.x << '\t' << p.first.y << '\t' << p.first.z << '\t'
+            << p.first(0) << '\t' << p.first(1) << '\t' << p.first(2) << '\t'
             << p.second.real() << '\t' << p.second.imag() << "\n";
     out_R.close();
   }
@@ -113,8 +113,8 @@ TEST(DISABLED_TestStructureConstants, GenerateSlice)
   std::cout << "start to generate irreduc wedge" << std::endl;
   // TODO cannot use replicate that simply because spherical harmonics have their own transformations
   //auto irreduc_wedge = IrreducibleWedge::get_irreducible_wedge(reciprocal_unit_cell, 10, true);
-  auto irreduc_wedge = CubicMesh(reciprocal_unit_cell.v1.length() / 10).generate(CutoffWSCell(reciprocal_unit_cell),
-                                                                                 true);
+  auto irreduc_wedge = CubicMesh(reciprocal_unit_cell.v1.norm() / 10).generate(CutoffWSCell(reciprocal_unit_cell),
+                                                                               true);
   Utils::log(irreduc_wedge, "irreduc_wedge");
   std::cout << "start to generate irreduc wedge... done" << std::endl;
 

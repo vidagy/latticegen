@@ -8,26 +8,26 @@ using namespace Geometry;
 
 namespace
 {
-  const Vector3D x = {1.0, 0.0, 0.0};
-  const Vector3D y = {0.0, 1.0, 0.0};
-  const Vector3D z = {0.0, 0.0, 1.0};
+  const Point3D x = {1.0, 0.0, 0.0};
+  const Point3D y = {0.0, 1.0, 0.0};
+  const Point3D z = {0.0, 0.0, 1.0};
 
-  const Vector3D p30 = {sqrt(3.0) / 2.0, 0.5, 0.0};
-  const Vector3D m30 = {sqrt(3.0) / 2.0, -0.5, 0.0};
-  const Vector3D p60 = {0.5, sqrt(3.0) / 2.0, 0.0};
-  const Vector3D m60 = {0.5, -sqrt(3.0) / 2.0, 0.0};
+  const Point3D p30 = {sqrt(3.0) / 2.0, 0.5, 0.0};
+  const Point3D m30 = {sqrt(3.0) / 2.0, -0.5, 0.0};
+  const Point3D p60 = {0.5, sqrt(3.0) / 2.0, 0.0};
+  const Point3D m60 = {0.5, -sqrt(3.0) / 2.0, 0.0};
 
-  const Vector3D p1p10 = {1.0 / sqrt(2.0), 1.0 / sqrt(2.0), 0.0};
-  const Vector3D p1m10 = {1.0 / sqrt(2.0), -1.0 / sqrt(2.0), 0.0};
-  const Vector3D p10p1 = {1.0 / sqrt(2.0), 0.0, 1.0 / sqrt(2.0)};
-  const Vector3D p10m1 = {1.0 / sqrt(2.0), 0.0, -1.0 / sqrt(2.0)};
-  const Vector3D Np1p1 = {0.0, 1.0 / sqrt(2.0), 1.0 / sqrt(2.0)};
-  const Vector3D Np1m1 = {0.0, 1.0 / sqrt(2.0), -1.0 / sqrt(2.0)};
+  const Point3D p1p10 = {1.0 / sqrt(2.0), 1.0 / sqrt(2.0), 0.0};
+  const Point3D p1m10 = {1.0 / sqrt(2.0), -1.0 / sqrt(2.0), 0.0};
+  const Point3D p10p1 = {1.0 / sqrt(2.0), 0.0, 1.0 / sqrt(2.0)};
+  const Point3D p10m1 = {1.0 / sqrt(2.0), 0.0, -1.0 / sqrt(2.0)};
+  const Point3D Np1p1 = {0.0, 1.0 / sqrt(2.0), 1.0 / sqrt(2.0)};
+  const Point3D Np1m1 = {0.0, 1.0 / sqrt(2.0), -1.0 / sqrt(2.0)};
 
-  const Vector3D p1p1p1 = 1.0 / sqrt(3.0) * Vector3D{1.0, 1.0, 1.0};
-  const Vector3D p1m1m1 = 1.0 / sqrt(3.0) * Vector3D{1.0, -1.0, -1.0};
-  const Vector3D m1p1m1 = 1.0 / sqrt(3.0) * Vector3D{-1.0, 1.0, -1.0};
-  const Vector3D m1m1p1 = 1.0 / sqrt(3.0) * Vector3D{-1.0, -1.0, 1.0};
+  const Point3D p1p1p1 = 1.0 / sqrt(3.0) * Point3D{1.0, 1.0, 1.0};
+  const Point3D p1m1m1 = 1.0 / sqrt(3.0) * Point3D{1.0, -1.0, -1.0};
+  const Point3D m1p1m1 = 1.0 / sqrt(3.0) * Point3D{-1.0, 1.0, -1.0};
+  const Point3D m1m1p1 = 1.0 / sqrt(3.0) * Point3D{-1.0, -1.0, 1.0};
 }
 
 
