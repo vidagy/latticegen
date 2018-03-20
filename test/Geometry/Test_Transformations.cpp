@@ -17,7 +17,8 @@ TEST(TestTransformations,RotationCtorThrows)
 
 TEST(TestTransformations,RotationIdentity)
 {
-  auto v = Point3D(1.0, 2.0, 3.0) * 2.0 * pi / sqrt(1.0 + 4.0 + 9.0);
+  auto v = Point3D{1.0, 2.0, 3.0};
+  v *= (2.0 * pi / sqrt(1.0 + 4.0 + 9.0));
   auto rotation = Rotation(v);
 
   const auto v100 = Point3D(1.0, 0.0, 0.0);
