@@ -35,7 +35,7 @@ namespace
 
   Point3D get_offset(const Cell3D &unit_cell, bool shift)
   {
-    return shift ? (unit_cell.v1 + unit_cell.v2 + unit_cell.v3) / 2.0 : Point3D();
+    return shift ? (unit_cell.v1 + unit_cell.v2 + unit_cell.v3) / 2.0 : Point3D{0.0, 0.0, 0.0};
   }
 }
 

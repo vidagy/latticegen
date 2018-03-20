@@ -44,12 +44,12 @@ TEST(TestMesh,LatticeMeshContainsCube)
 
 namespace
 {
-  const static double a = 0.5;
-  const static double b = sqrt(3.0) / 2.0;
+  const double a = 0.5;
+  const double b = sqrt(3.0) / 2.0;
 
-  const static double c = sqrt(3.0) / 6.0;
-  const static double d = 1.0 / sqrt(3.0);
-  const static double h = sqrt(2.0 / 3.0);
+  const double c = sqrt(3.0) / 6.0;
+  const double d = 1.0 / sqrt(3.0);
+  const double h = sqrt(2.0 / 3.0);
 }
 
 TEST(TestMesh,LatticeMeshContainsSphere)
